@@ -1,0 +1,5 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile', '-t', 'me-central3-docker.pkg.dev/ecc-model/ecc-model/ecc-model', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'me-central3-docker.pkg.dev/ecc-model/ecc-model/ecc-model:latest']

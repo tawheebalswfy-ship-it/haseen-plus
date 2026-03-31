@@ -1,0 +1,22 @@
+{
+  "total_samples": 36,
+  "by_policy_type": {
+    "password_policy": 18,
+    "risk_assessment": 18
+  },
+  "by_language": {
+    "en": 18,
+    "ar": 18
+  },
+  "by_quality": {
+    "excellent": 12,
+    "partial": 12,
+    "weak": 12
+  },
+  "by_label": {
+    "Fully Compliant": 12,
+    "Partially Compliant": 12,
+    "Non-Compliant": 12
+  },
+  "generated_at": "2026-02-02T02:29:41.000841"
+}

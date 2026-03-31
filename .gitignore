@@ -1,0 +1,36 @@
+# Legacy source snapshot retained during migration
+iso-policy-project/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local ML binaries - keep on disk, move to Git LFS or DVC if versioning is required
+ml/models/**/*.safetensors
+ml/models/**/*.pt
+ml/models/**/*.pth
+ml/models/**/*.bin

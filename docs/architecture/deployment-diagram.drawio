@@ -1,0 +1,141 @@
+<mxfile host="draw.io">
+  <diagram name="Deployment Diagram" id="deploy">
+    <mxGraphModel dx="1500" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;PolicyShield – Deployment Diagram (UML)&lt;/b&gt;" style="text;html=1;align=center;fontSize=18;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="10" width="400" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== CLIENT DEVICE ===== -->
+        <mxCell id="node1" value="&lt;&lt;device&gt;&gt;&lt;br&gt;&lt;b&gt;Client Device&lt;/b&gt;&lt;br&gt;(PC / Laptop / Mobile)" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="380" height="320" as="geometry"/>
+        </mxCell>
+
+        <!-- Browser -->
+        <mxCell id="node1a" value="&lt;&lt;execution environment&gt;&gt;&lt;br&gt;&lt;b&gt;Web Browser&lt;/b&gt; (Chrome / Firefox)" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;align=left;verticalAlign=top;spacingLeft=6;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="340" height="240" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="art1" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;iso-security-app&lt;/b&gt;&lt;br&gt;React 19 + TS 5.9&lt;br&gt;Vite 7 SPA Bundle&lt;br&gt;(~2 MB gzipped)" style="shape=note;size=20;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="170" width="145" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="art2" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;AIcomplainec&lt;/b&gt;&lt;br&gt;React + Vite SPA&lt;br&gt;Standalone (localStorage)&lt;br&gt;(~1.5 MB gzipped)" style="shape=note;size=20;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="170" width="145" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="art3" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;localStorage&lt;/b&gt;&lt;br&gt;compliance_guard_* keys" style="shape=note;size=20;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== STATIC HOSTING ===== -->
+        <mxCell id="node2" value="&lt;&lt;cloud&gt;&gt;&lt;br&gt;&lt;b&gt;Static Hosting&lt;/b&gt;&lt;br&gt;(Vercel / Netlify)" style="shape=cloud;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="120" y="440" width="220" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="art4" value="Static files:&lt;br&gt;index.html, JS, CSS, assets" style="text;html=1;fontSize=9;fontStyle=2;align=center;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="505" width="160" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Browser ↔ Static Host -->
+        <mxCell id="conn1" value="CDN / HTTPS" style="endArrow=block;endFill=1;strokeColor=#82b366;strokeWidth=2;fontSize=10;labelBackgroundColor=#FFF;" edge="1" source="node1" target="node2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ===== GOOGLE CLOUD ===== -->
+        <mxCell id="gc" value="&lt;&lt;cloud&gt;&gt;&lt;br&gt;&lt;b&gt;Google Cloud Platform&lt;/b&gt;" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;shadow=1;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="70" width="520" height="420" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Run -->
+        <mxCell id="node3" value="&lt;&lt;execution environment&gt;&gt;&lt;br&gt;&lt;b&gt;Cloud Run&lt;/b&gt;&lt;br&gt;Region: me-central1 (Doha)" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;verticalAlign=top;spacingLeft=6;spacingTop=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="130" width="240" height="250" as="geometry"/>
+        </mxCell>
+
+        <!-- Docker -->
+        <mxCell id="node3a" value="&lt;&lt;container&gt;&gt;&lt;br&gt;&lt;b&gt;Docker&lt;/b&gt;&lt;br&gt;Python 3.11-slim" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;verticalAlign=top;spacingLeft=5;spacingTop=2;" vertex="1" parent="1">
+          <mxGeometry x="535" y="185" width="210" height="175" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="art5" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;app.py&lt;/b&gt;&lt;br&gt;FastAPI + Uvicorn&lt;br&gt;Port 8080" style="shape=note;size=15;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="230" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="art6" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;mBERT Model&lt;/b&gt;&lt;br&gt;model.safetensors&lt;br&gt;~681 MB" style="shape=note;size=15;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="310" width="120" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Resource limits -->
+        <mxCell id="res" value="&lt;b&gt;Resources:&lt;/b&gt;&lt;br&gt;CPU: 2 vCPU&lt;br&gt;RAM: 2 GB&lt;br&gt;Max instances: auto&lt;br&gt;Min instances: 0&lt;br&gt;Timeout: 300s" style="text;html=1;fillColor=none;strokeColor=none;fontSize=9;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="685" y="230" width="100" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- GCS -->
+        <mxCell id="node4" value="&lt;&lt;storage&gt;&gt;&lt;br&gt;&lt;b&gt;Cloud Storage&lt;/b&gt;&lt;br&gt;(GCS Bucket)" style="shape=cylinder3;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="130" width="170" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="art7" value="model.safetensors&lt;br&gt;tokenizer.json&lt;br&gt;config.json" style="text;html=1;fontSize=9;fontStyle=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="830" y="200" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Run ↔ GCS -->
+        <mxCell id="conn2" value="download&lt;br&gt;on startup" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=9;labelBackgroundColor=#FFF;dashed=1;" edge="1" source="node3" target="node4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ===== NEON CLOUD ===== -->
+        <mxCell id="node5" value="&lt;&lt;cloud&gt;&gt;&lt;br&gt;&lt;b&gt;Neon Cloud&lt;/b&gt;" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;shadow=1;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="530" width="520" height="210" as="geometry"/>
+        </mxCell>
+
+        <!-- Neon Serverless Postgres -->
+        <mxCell id="node5a" value="" style="shape=cylinder3;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="590" width="200" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="node5al" value="&lt;b&gt;Neon Serverless&lt;br&gt;PostgreSQL&lt;/b&gt;&lt;br&gt;&lt;br&gt;• users table&lt;br&gt;• classification_history" style="text;html=1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="545" y="610" width="170" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Neon Auth -->
+        <mxCell id="node5b" value="&lt;&lt;service&gt;&gt;&lt;br&gt;&lt;b&gt;Neon Auth&lt;/b&gt;&lt;br&gt;Email OTP Provider&lt;br&gt;@neondatabase/neon-js" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;shadow=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="790" y="600" width="190" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== CONNECTIONS ===== -->
+        <!-- Browser → Cloud Run (API) -->
+        <mxCell id="conn3" value="HTTPS/REST&lt;br&gt;POST /classify" style="endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=10;labelBackgroundColor=#FFF;" edge="1" source="node1" target="node3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Browser → Neon DB (SQL) -->
+        <mxCell id="conn4" value="SQL over&lt;br&gt;WebSocket" style="endArrow=block;endFill=1;strokeColor=#9673a6;strokeWidth=2;fontSize=10;labelBackgroundColor=#FFF;" edge="1" source="node1" target="node5a" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="230" y="650"/></Array></mxGeometry></mxCell>
+
+        <!-- Browser → Neon Auth -->
+        <mxCell id="conn5" value="OTP Auth" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1.5;dashed=1;fontSize=10;labelBackgroundColor=#FFF;" edge="1" source="node1" target="node5b" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="440" y="640"/></Array></mxGeometry></mxCell>
+
+        <!-- ===== DEVELOPER MACHINE ===== -->
+        <mxCell id="node6" value="&lt;&lt;device&gt;&gt;&lt;br&gt;&lt;b&gt;Developer Machine&lt;/b&gt;&lt;br&gt;(Training &amp; Dataset Gen)" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;align=left;verticalAlign=top;spacingLeft=6;spacingTop=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="70" width="260" height="320" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="art8" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;generate_compliance_dataset.py&lt;/b&gt;&lt;br&gt;Python 3.11 + Gemini API" style="shape=note;size=15;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="130" width="230" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="art9" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;model_building.ipynb&lt;/b&gt;&lt;br&gt;Jupyter Notebook&lt;br&gt;mBERT Fine-tuning" style="shape=note;size=15;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="200" width="230" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="art10" value="&lt;&lt;artifact&gt;&gt;&lt;br&gt;&lt;b&gt;dataset/&lt;/b&gt;&lt;br&gt;compliance_dataset.csv&lt;br&gt;compliance_dataset.json" style="shape=note;size=15;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="280" width="230" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Dev → GCS (deploy model) -->
+        <mxCell id="conn6" value="deploy model artifacts" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1.5;dashed=1;fontSize=9;labelBackgroundColor=#FFF;" edge="1" source="node6" target="node4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Dev → Gemini API -->
+        <mxCell id="gemini" value="&lt;&lt;external&gt;&gt;&lt;br&gt;&lt;b&gt;Gemini 2.0 Flash API&lt;/b&gt;" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="440" width="170" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="conn7" value="API calls" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=9;labelBackgroundColor=#FFF;" edge="1" source="node6" target="gemini" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Protocol labels -->
+        <mxCell id="proto" value="&lt;b&gt;Protocols:&lt;/b&gt; HTTPS, WebSocket (wss://), gRPC (internal)" style="text;html=1;fontSize=10;fillColor=#f5f5f5;strokeColor=#666;rounded=1;spacingLeft=8;spacingRight=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="770" width="350" height="25" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,142 @@
+<mxfile host="draw.io">
+  <diagram name="Class / Component Diagram" id="class-comp">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;PolicyShield – Class / Component Diagram&lt;/b&gt;" style="text;html=1;align=center;fontSize=18;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="10" width="400" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== FRONTEND: iso-security-app ===== -->
+        <mxCell id="pkg1" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;iso-security-app&lt;/b&gt; (React + TypeScript)" style="shape=folder;fontStyle=0;tabWidth=180;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="700" height="520" as="geometry"/>
+        </mxCell>
+
+        <!-- Pages -->
+        <mxCell id="p1" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;LandingPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ hero section&lt;br&gt;+ feature cards&lt;br&gt;+ CTA buttons" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="140" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;AuthPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ emailInput&lt;br&gt;+ otpInput&lt;br&gt;+ handleSignIn()&lt;br&gt;+ handleSignUp()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="200" y="110" width="140" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;DashboardPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ policyTextInput&lt;br&gt;+ categorySelect&lt;br&gt;+ classifyPolicy()&lt;br&gt;+ historyTable&lt;br&gt;+ resultDisplay" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="360" y="110" width="150" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;AccountPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ profileForm&lt;br&gt;+ updateProfile()&lt;br&gt;+ signOut()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="530" y="110" width="140" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Shared Components -->
+        <mxCell id="c1" value="&lt;&lt;component&gt;&gt;&lt;br&gt;&lt;b&gt;Navbar&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ navigation links&lt;br&gt;+ language toggle&lt;br&gt;+ auth state display" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="260" width="150" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="c2" value="&lt;&lt;component&gt;&gt;&lt;br&gt;&lt;b&gt;Footer&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ copyright&lt;br&gt;+ social links" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="210" y="260" width="140" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Contexts -->
+        <mxCell id="ctx1" value="&lt;&lt;context&gt;&gt;&lt;br&gt;&lt;b&gt;AuthContext&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ user: User | null&lt;br&gt;+ isAuthenticated: bool&lt;br&gt;+ signIn(email)&lt;br&gt;+ verifyOTP(code)&lt;br&gt;+ signOut()" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="160" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="ctx2" value="&lt;&lt;context&gt;&gt;&lt;br&gt;&lt;b&gt;LanguageContext&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ language: 'ar' | 'en'&lt;br&gt;+ direction: 'rtl' | 'ltr'&lt;br&gt;+ t(key): string&lt;br&gt;+ setLanguage(lang)" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="400" width="170" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Lib / API layer -->
+        <mxCell id="lib1" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;api.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ analyzePolicy(text)&lt;br&gt;+ healthCheck()&lt;br&gt;+ getComplianceColor()" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="410" y="280" width="150" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="lib2" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;auth.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ neonClient&lt;br&gt;+ createOTP(email)&lt;br&gt;+ verifyOTP(email, code)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="410" y="410" width="150" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="lib3" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;extract.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ extractPDF(file)&lt;br&gt;+ extractText(file)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="580" y="280" width="130" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="lib4" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;i18n.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ translations: Map&lt;br&gt;+ getTranslation(key)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="580" y="400" width="130" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== BACKEND: model-deployment ===== -->
+        <mxCell id="pkg2" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;model-deployment&lt;/b&gt; (FastAPI + Python)" style="shape=folder;fontStyle=0;tabWidth=220;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="760" y="60" width="480" height="420" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="b1" value="&lt;&lt;class&gt;&gt;&lt;br&gt;&lt;b&gt;FastAPI App (app.py)&lt;/b&gt;&lt;br&gt;────────────────&lt;br&gt;- model: GapDetectionModel&lt;br&gt;- tokenizer: AutoTokenizer&lt;br&gt;- GAP_LABELS: list[str] (16)&lt;br&gt;- device: str (cpu)&lt;br&gt;────────────────&lt;br&gt;+ load_model(): void&lt;br&gt;+ GET /health&lt;br&gt;+ POST /analyze(text, threshold)&lt;br&gt;+ chunk_document(text)&lt;br&gt;+ detect_domains(text)" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="780" y="110" width="240" height="210" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="b2" value="&lt;&lt;model&gt;&gt;&lt;br&gt;&lt;b&gt;GapDetectionModel&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;base: bert-base-multilingual-cased&lt;br&gt;num_labels: 16 (multi-label)&lt;br&gt;classifier: Linear(768→256→16)&lt;br&gt;activation: Sigmoid&lt;br&gt;weights: SafeTensors (~681 MB)&lt;br&gt;max_length: 512" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="110" width="200" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- DTO classes -->
+        <mxCell id="dto1" value="&lt;&lt;DTO&gt;&gt;&lt;br&gt;&lt;b&gt;AnalyzeRequest&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ text: str (1–50K chars)&lt;br&gt;+ threshold: float (0.6)" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#999;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="280" width="200" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="dto2" value="&lt;&lt;DTO&gt;&gt;&lt;br&gt;&lt;b&gt;AnalyzeResponse&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ overall_compliance: str&lt;br&gt;+ overall_score: float&lt;br&gt;+ gap_count: int&lt;br&gt;+ domains_detected: list&lt;br&gt;+ password_policy: DomainResult&lt;br&gt;+ risk_assessment: DomainResult&lt;br&gt;+ all_gap_probabilities: dict" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#999;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="370" width="200" height="160" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== FRONTEND: AIcomplainec ===== -->
+        <mxCell id="pkg3" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;AIcomplainec&lt;/b&gt; (React + Vite)" style="shape=folder;fontStyle=0;tabWidth=200;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="610" width="700" height="340" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ai1" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;PoliciesPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ listPolicies()&lt;br&gt;+ createPolicy()&lt;br&gt;+ analyzePolicy()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="670" width="130" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai2" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;AssessmentsPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ runAssessment()&lt;br&gt;+ viewResults()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="190" y="670" width="130" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai3" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;TasksPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ listTasks()&lt;br&gt;+ updateStatus()&lt;br&gt;+ assignTask()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="340" y="670" width="130" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai4" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;ReportsPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ generateReport()&lt;br&gt;+ exportPDF()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="490" y="670" width="130" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- API modules for AIcomplainec -->
+        <mxCell id="ai5" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;localStorageAPI&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ getItem(key)&lt;br&gt;+ setItem(key, val)&lt;br&gt;+ deleteItem(key)&lt;br&gt;prefix: compliance_guard_" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="810" width="170" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai6" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;gapDetector&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ detectGaps(policy, ctrl)&lt;br&gt;+ calcScore(results)&lt;br&gt;+ suggestRemediation()" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="230" y="810" width="170" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai7" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;reportGenerator&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ createReport(assessment)&lt;br&gt;+ formatPDF()&lt;br&gt;+ formatCSV()" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="420" y="810" width="170" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== DATA GENERATION PACKAGE ===== -->
+        <mxCell id="pkg4" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Dataset Generation&lt;/b&gt; (Python)" style="shape=folder;fontStyle=0;tabWidth=210;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="760" y="550" width="480" height="200" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="dg1" value="&lt;&lt;script&gt;&gt;&lt;br&gt;&lt;b&gt;generate_compliance_dataset.py&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ generate_samples(category, lang)&lt;br&gt;+ call_gemini_api(prompt)&lt;br&gt;+ save_incremental(sample)" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="780" y="600" width="220" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="dg2" value="&lt;&lt;utility&gt;&gt;&lt;br&gt;&lt;b&gt;dataset_utils.py&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ load_dataset(path)&lt;br&gt;+ compute_statistics()&lt;br&gt;+ validate_samples()" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="600" width="190" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== DEPENDENCY ARROWS ===== -->
+        <!-- DashboardPage uses api.ts -->
+        <mxCell id="dep1" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="p3" target="lib1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- AuthPage uses auth.ts -->
+        <mxCell id="dep2" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="p2" target="lib2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- DashboardPage uses extract.ts -->
+        <mxCell id="dep3" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="p3" target="lib3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- api.ts calls FastAPI -->
+        <mxCell id="dep4" value="HTTP/REST" style="endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=9;fontStyle=1;" edge="1" source="lib1" target="b1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- FastAPI uses mBERT -->
+        <mxCell id="dep5" value="loads" style="endArrow=open;endFill=0;dashed=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="b1" target="b2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- Pages use localStorage -->
+        <mxCell id="dep6" value="persists" style="endArrow=open;endFill=0;dashed=1;strokeColor=#9673a6;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="ai1" target="ai5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- AssessmentPage uses gapDetector -->
+        <mxCell id="dep7" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#9673a6;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="ai2" target="ai6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

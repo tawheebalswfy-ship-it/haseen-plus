@@ -1,0 +1,57 @@
+{
+  "total_samples": 260,
+  "compliance_distribution": {
+    "compliant": 48,
+    "non_compliant": 120,
+    "partially_compliant": 92
+  },
+  "language_distribution": {
+    "en": 130,
+    "ar": 130
+  },
+  "domain_coverage": {
+    "password_policy_only": 89,
+    "risk_assessment_only": 79,
+    "both": 92
+  },
+  "gap_frequency": {
+    "GAP_PP_001": 82,
+    "GAP_PP_002": 91,
+    "GAP_PP_003": 95,
+    "GAP_PP_004": 91,
+    "GAP_PP_005": 97,
+    "GAP_PP_006": 89,
+    "GAP_PP_007": 86,
+    "GAP_PP_008": 92,
+    "GAP_RA_001": 80,
+    "GAP_RA_002": 75,
+    "GAP_RA_003": 72,
+    "GAP_RA_004": 72,
+    "GAP_RA_005": 69,
+    "GAP_RA_006": 72,
+    "GAP_RA_007": 80,
+    "GAP_RA_008": 69
+  },
+  "gap_count_distribution": {
+    "0": 48,
+    "1": 21,
+    "2": 29,
+    "3": 17,
+    "4": 20,
+    "5": 27,
+    "6": 15,
+    "7": 15,
+    "8": 23,
+    "9": 3,
+    "10": 4,
+    "11": 4,
+    "12": 8,
+    "13": 4,
+    "14": 8,
+    "15": 7,
+    "16": 7
+  },
+  "avg_gap_count": 5.05,
+  "avg_score": 0.68,
+  "total_tokens_used": 485549
+}

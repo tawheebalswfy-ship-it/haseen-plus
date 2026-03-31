@@ -1,0 +1,22 @@
+# NCA ECC & ISO 27001 Compliance Dataset Generator
+# Dependencies
+
+# Google Generative AI SDK
+google-genai>=1.0.0
+
+# Data handling
+pandas>=2.0.0
+
+# For future model training
+transformers>=4.35.0
+torch>=2.0.0
+datasets>=2.14.0
+scikit-learn>=1.3.0
+
+# For Arabic NLP support
+arabert>=1.0.0
+pyarabic>=0.6.15
+
+# Utilities
+python-dotenv>=1.0.0
+tqdm>=4.66.0

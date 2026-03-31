@@ -1,0 +1,33 @@
+{
+  "name": "ComplianceReport",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "assessment_id": {
+      "type": "string"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "executive_summary",
+        "detailed",
+        "gap_analysis",
+        "remediation_plan"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "description": "Generated report content"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "report_type"
+  ]
+}

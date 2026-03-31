@@ -1,0 +1,125 @@
+<mxfile host="draw.io">
+  <diagram name="Activity – Policy Assessment" id="act-assess">
+    <mxGraphModel dx="1200" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1350" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;Activity Diagram: Policy Compliance Assessment Workflow&lt;/b&gt;" style="text;html=1;align=center;fontSize=16;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="200" y="10" width="500" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Swimlanes -->
+        <mxCell id="sw1" value="User" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="50" width="250" height="1250" as="geometry"/>
+        </mxCell>
+        <mxCell id="sw2" value="System (Frontend)" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="50" width="280" height="1250" as="geometry"/>
+        </mxCell>
+        <mxCell id="sw3" value="System (Backend / ML)" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="50" width="280" height="1250" as="geometry"/>
+        </mxCell>
+        <mxCell id="sw4" value="Database" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="50" width="200" height="1250" as="geometry"/>
+        </mxCell>
+
+        <!-- Start -->
+        <mxCell id="start" value="" style="ellipse;html=1;shape=mxgraph.flowchart.start_2;fillColor=#000000;fontSize=12;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="135" y="100" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Actions -->
+        <mxCell id="a1" value="Open Dashboard /&lt;br&gt;Assessment Page" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="85" y="180" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a2" value="Enter/Paste&lt;br&gt;Policy Text" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="85" y="260" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Decision: input method -->
+        <mxCell id="d1" value="Input&lt;br&gt;method?" style="rhombus;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="105" y="340" width="90" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a3" value="Upload PDF/TXT&lt;br&gt;Document" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="460" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a3b" value="Extract text&lt;br&gt;from document" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="460" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a4" value="Select Category&lt;br&gt;(Password / Risk)" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="85" y="560" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a5" value="Click &quot;Classify&quot;&lt;br&gt;/ &quot;Assess&quot;" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="85" y="650" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a6" value="Validate input&lt;br&gt;(non-empty text)" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="650" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a7" value="Send POST /classify&lt;br&gt;request to API" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="740" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a8" value="Tokenize text&lt;br&gt;(max 512 tokens)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="740" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a9" value="mBERT Forward Pass&lt;br&gt;→ Softmax → Label" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="830" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a10" value="Return label +&lt;br&gt;confidence + probs" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="920" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a11" value="Display results:&lt;br&gt;label, confidence bar,&lt;br&gt;probability breakdown" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="920" width="150" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a12" value="Save classification&lt;br&gt;to history" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1020" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a13" value="INSERT into&lt;br&gt;classification_history" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1020" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a14" value="View results &amp;&lt;br&gt;updated history" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="85" y="1120" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- End -->
+        <mxCell id="end" value="" style="ellipse;html=1;shape=mxgraph.flowchart.terminate;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="135" y="1220" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Flow arrows -->
+        <mxCell id="f1" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="start" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f2" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a1" target="a2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a2" target="d1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f4" value="Upload" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;fontSize=9;" edge="1" source="d1" target="a3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f4b" value="Paste text" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;fontSize=9;" edge="1" source="d1" target="a4" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="375"/><mxPoint x="200" y="580"/></Array></mxGeometry></mxCell>
+        <mxCell id="f5" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a3" target="a3b" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f5b" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a3b" target="a4" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="415" y="530"/><mxPoint x="200" y="530"/></Array></mxGeometry></mxCell>
+        <mxCell id="f6" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a4" target="a5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f7" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a5" target="a6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f8" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a6" target="a7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f9" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a7" target="a8" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f10" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a8" target="a9" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f11" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a9" target="a10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f12" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a10" target="a11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f13" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a11" target="a12" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f14" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a12" target="a13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f15" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a13" target="a14" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="945" y="1100"/><mxPoint x="500" y="1100"/><mxPoint x="500" y="1140"/></Array></mxGeometry></mxCell>
+        <mxCell id="f16" style="endArrow=block;endFill=1;strokeColor=#333;strokeWidth=1.5;" edge="1" source="a14" target="end" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

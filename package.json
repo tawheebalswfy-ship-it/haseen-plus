@@ -1,0 +1,29 @@
+{
+  "name": "aicg-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/web",
+    "apps/ai-complainec-legacy",
+    "packages/*"
+  ],
+  "scripts": {
+    "install:web": "npm --prefix apps/web install",
+    "dev:web": "npm --prefix apps/web run dev",
+    "build:web": "npm --prefix apps/web run build",
+    "lint:web": "npm --prefix apps/web run lint",
+    "preview:web": "npm --prefix apps/web run preview",
+    "install:model-api": "python -m pip install -r apps/model-api/requirements.txt",
+    "dev:model-api": "python -m uvicorn app:app --app-dir apps/model-api --host 0.0.0.0 --port 8080 --reload",
+    "test:model-api:local": "python apps/model-api/test_local.py",
+    "install:legacy": "npm --prefix apps/ai-complainec-legacy install",
+    "dev:legacy": "npm --prefix apps/ai-complainec-legacy run dev",
+    "build:legacy": "npm --prefix apps/ai-complainec-legacy run build",
+    "lint:legacy": "npm --prefix apps/ai-complainec-legacy run lint",
+    "report:gp1": "python scripts/reporting/generate_report.py",
+    "report:gp1:update": "python scripts/reporting/update_report.py",
+    "report:gp2:figures": "python scripts/reporting/generate_gp2_figures.py",
+    "report:gp2": "python scripts/reporting/generate_gp2_report.py",
+    "report:screenshots": "python scripts/reporting/take_screenshots.py"
+  }
+}

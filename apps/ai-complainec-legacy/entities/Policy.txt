@@ -1,0 +1,66 @@
+{
+  "name": "Policy",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Policy document title"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL of uploaded policy document"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": [
+        "pdf",
+        "docx",
+        "txt"
+      ],
+      "description": "Type of uploaded file"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "analyzing",
+        "analyzed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "compliance_score": {
+      "type": "number",
+      "description": "Overall compliance score 0-100"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "access_control",
+        "data_protection",
+        "incident_response",
+        "network_security",
+        "asset_management",
+        "business_continuity",
+        "third_party",
+        "physical_security",
+        "other"
+      ],
+      "description": "Policy category"
+    },
+    "analysis_result": {
+      "type": "object",
+      "description": "AI analysis results including gaps and recommendations"
+    },
+    "nca_controls_mapped": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "NCA control IDs this policy maps to"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "name": "ComplianceAssessment",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Assessment name"
+    },
+    "framework": {
+      "type": "string",
+      "enum": [
+        "ECC",
+        "CSCC",
+        "DCC",
+        "OTCC",
+        "TCC"
+      ],
+      "description": "NCA Framework being assessed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_progress",
+        "completed"
+      ],
+      "default": "draft"
+    },
+    "overall_score": {
+      "type": "number",
+      "description": "Overall compliance percentage"
+    },
+    "total_controls": {
+      "type": "number"
+    },
+    "compliant_controls": {
+      "type": "number"
+    },
+    "partial_controls": {
+      "type": "number"
+    },
+    "non_compliant_controls": {
+      "type": "number"
+    },
+    "control_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "control_id": {
+            "type": "string"
+          },
+          "control_name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "gap": {
+            "type": "string"
+          },
+          "recommendation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "framework"
+  ]
+}

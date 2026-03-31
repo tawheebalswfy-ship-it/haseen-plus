@@ -1,0 +1,47 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Recipient email"
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "task_assigned",
+        "task_updated",
+        "comment_added",
+        "mention",
+        "due_soon"
+      ],
+      "default": "task_assigned"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "policy",
+        "remediation_task",
+        "assessment"
+      ]
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email",
+    "title",
+    "message"
+  ]
+}

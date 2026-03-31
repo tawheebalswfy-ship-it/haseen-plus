@@ -1,0 +1,48 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "Action performed (e.g. policy_analyzed, assessment_started)"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "policy",
+        "assessment",
+        "remediation_task",
+        "report",
+        "schedule"
+      ],
+      "description": "Type of entity affected"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the affected entity"
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "Human-readable name of the entity"
+    },
+    "performed_by": {
+      "type": "string",
+      "description": "Email of user who performed the action"
+    },
+    "performed_by_name": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional details about the action"
+    },
+    "ip_address": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action",
+    "entity_type",
+    "entity_id"
+  ]
+}

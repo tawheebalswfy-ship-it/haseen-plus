@@ -1,0 +1,25 @@
+{
+  "name": "Team",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of user emails"
+    },
+    "lead_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -1,0 +1,179 @@
+// Shared types for the compliance system
+export interface Policy {
+  id: string;
+  title: string;
+  status: "uploaded" | "analyzing" | "analyzed";
+  category?: string;
+  compliance_score?: number;
+  file_url?: string;
+  nca_controls_mapped?: string[];
+  analysis_result?: Record<string, unknown>;
+  created_date: string;
+}
+
+export interface ComplianceAssessment {
+  id: string;
+  name: string;
+  framework: string;
+  status: "draft" | "in_progress" | "completed";
+  overall_score: number;
+  results?: ControlResult[];
+  comments?: Comment[];
+  created_date: string;
+}
+
+export interface ControlResult {
+  control_id: string;
+  control_name: string;
+  domain: string;
+  status: "compliant" | "partial" | "non_compliant" | "not_assessed";
+  score: number;
+  findings?: string;
+  evidence?: string;
+  evidence_files?: EvidenceFile[];
+  gap?: string;
+  recommendation?: string;
+}
+
+export interface RemediationTask {
+  id: string;
+  title: string;
+  description: string;
+  control_id?: string;
+  assessment_id?: string;
+  priority: "critical" | "high" | "medium" | "low";
+  status: "open" | "in_progress" | "completed" | "deferred";
+  assigned_to?: string;
+  due_date?: string;
+  ai_guidance?: AIGuidance;
+  comments?: Comment[];
+  created_date: string;
+}
+
+export interface AIGuidance {
+  steps: string[];
+  estimated_effort?: string;
+  resources_needed?: string[];
+  tools_needed?: string[];
+  success_criteria?: string;
+  quick_wins?: string[];
+}
+
+export interface ComplianceReport {
+  id: string;
+  title: string;
+  type: string;
+  assessment_id?: string;
+  framework?: string;
+  content?: ReportContent;
+  created_date: string;
+}
+
+export interface ReportContent {
+  summary?: string;
+  score?: number;
+  sections?: { title: string; body: string }[];
+  recommendations?: string[];
+  risk_rating?: string;
+  share_token?: string;
+}
+
+// Evidence for assessment controls
+export interface EvidenceFile {
+  id: string;
+  name: string;
+  url: string;
+  size: number;
+  uploaded_date: string;
+}
+
+// Comment for assessments / tasks
+export interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  created_date: string;
+}
+
+// NCA Controls data
+export const NCA_CONTROLS: Record<string, NCAControl[]> = {
+  ECC: [
+    { id: "ECC-1-1-1", name: "Cybersecurity Strategy", domain: "Governance", description: "Organizations must develop and maintain a cybersecurity strategy aligned with their business objectives and risk appetite.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "critical" },
+    { id: "ECC-1-1-2", name: "Cybersecurity Policies", domain: "Governance", description: "Establish, approve, and communicate cybersecurity policies covering all key areas of information security.", maturity_levels: ["Initial", "Defined", "Managed"], priority: "critical" },
+    { id: "ECC-1-1-3", name: "Cybersecurity Roles & Responsibilities", domain: "Governance", description: "Define and assign cybersecurity roles and responsibilities across the organization.", maturity_levels: ["Defined", "Managed"], priority: "high" },
+    { id: "ECC-1-2-1", name: "Risk Management Program", domain: "Risk Management", description: "Establish a formal cybersecurity risk management program that identifies, assesses, and treats risks.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "critical" },
+    { id: "ECC-1-2-2", name: "Risk Assessment", domain: "Risk Management", description: "Conduct periodic cybersecurity risk assessments to identify threats and vulnerabilities.", maturity_levels: ["Initial", "Defined", "Managed"], priority: "high" },
+    { id: "ECC-2-1-1", name: "Asset Inventory", domain: "Asset Management", description: "Maintain a comprehensive inventory of all information assets including hardware, software, and data.", maturity_levels: ["Initial", "Defined"], priority: "high" },
+    { id: "ECC-2-1-2", name: "Asset Classification", domain: "Asset Management", description: "Classify all information assets based on criticality and sensitivity.", maturity_levels: ["Defined", "Managed"], priority: "medium" },
+    { id: "ECC-2-2-1", name: "Identity Management", domain: "Identity & Access Management", description: "Implement identity management controls for all users accessing organizational systems.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "critical" },
+    { id: "ECC-2-2-2", name: "Access Control", domain: "Identity & Access Management", description: "Enforce least-privilege access control principles for all systems and data.", maturity_levels: ["Defined", "Managed"], priority: "critical" },
+    { id: "ECC-2-2-3", name: "Privileged Access Management", domain: "Identity & Access Management", description: "Implement enhanced controls for privileged accounts and administrative access.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "critical" },
+    { id: "ECC-3-1-1", name: "Network Security Architecture", domain: "Network Security", description: "Design and implement a secure network architecture with appropriate defense layers.", maturity_levels: ["Defined", "Managed"], priority: "high" },
+    { id: "ECC-3-1-2", name: "Network Segmentation", domain: "Network Security", description: "Segment networks based on security zones and implement controls between segments.", maturity_levels: ["Defined", "Managed"], priority: "high" },
+    { id: "ECC-3-2-1", name: "Data Classification", domain: "Data Protection", description: "Classify organizational data based on sensitivity and implement appropriate handling procedures.", maturity_levels: ["Initial", "Defined", "Managed"], priority: "high" },
+    { id: "ECC-3-2-2", name: "Data Encryption", domain: "Data Protection", description: "Encrypt sensitive data at rest and in transit using approved cryptographic algorithms.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "critical" },
+    { id: "ECC-4-1-1", name: "Security Monitoring", domain: "Security Operations", description: "Implement continuous security monitoring to detect potential security incidents.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "high" },
+    { id: "ECC-4-1-2", name: "Incident Detection", domain: "Security Operations", description: "Deploy tools and processes for timely detection of cybersecurity incidents.", maturity_levels: ["Defined", "Managed"], priority: "high" },
+    { id: "ECC-4-2-1", name: "Incident Response Plan", domain: "Incident Management", description: "Develop and maintain a formal incident response plan covering detection, analysis, and recovery.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "critical" },
+    { id: "ECC-4-2-2", name: "Incident Handling Procedures", domain: "Incident Management", description: "Establish procedures for handling various types of cybersecurity incidents.", maturity_levels: ["Defined", "Managed"], priority: "high" },
+    { id: "ECC-5-1-1", name: "Business Continuity Plan", domain: "Business Continuity", description: "Develop and test a business continuity plan that addresses cybersecurity disruptions.", maturity_levels: ["Defined", "Managed"], priority: "high" },
+    { id: "ECC-5-1-2", name: "Disaster Recovery", domain: "Business Continuity", description: "Implement disaster recovery procedures with defined RTO and RPO targets.", maturity_levels: ["Defined", "Managed", "Optimized"], priority: "high" },
+  ],
+};
+
+export interface NCAControl {
+  id: string;
+  name: string;
+  domain: string;
+  description: string;
+  maturity_levels: string[];
+  priority: "critical" | "high" | "medium" | "low";
+}
+
+export const FRAMEWORK_COLORS: Record<string, string> = {
+  ECC: "#374151",
+};
+
+export const FRAMEWORKS = ["ECC"] as const;
+
+/**
+ * Maps detected policy domains to the ECC controls they can meaningfully assess.
+ * The model was trained on password_policy and risk_assessment data only.
+ * Controls not listed here should be marked "not_assessed" — the model has no training signal for them.
+ */
+export const DOMAIN_CONTROL_MAP: Record<string, string[]> = {
+  password_policy: [
+    "ECC-2-2-1",  // Identity Management
+    "ECC-2-2-2",  // Access Control
+    "ECC-2-2-3",  // Privileged Access Management
+    "ECC-3-2-2",  // Data Encryption (password storage/transit)
+  ],
+  risk_assessment: [
+    "ECC-1-2-1",  // Risk Management Program
+    "ECC-1-2-2",  // Risk Assessment
+  ],
+};
+
+/**
+ * Maps GAP_PP / GAP_RA gap IDs to the specific ECC control they are most relevant to.
+ */
+export const GAP_CONTROL_MAP: Record<string, string> = {
+  // Password policy gaps → IAM controls
+  GAP_PP_001: "ECC-2-2-2",  // Weak password complexity → Access Control
+  GAP_PP_002: "ECC-2-2-2",  // Inadequate expiration → Access Control
+  GAP_PP_003: "ECC-2-2-2",  // Weak account lockout → Access Control
+  GAP_PP_004: "ECC-2-2-1",  // Missing MFA → Identity Management
+  GAP_PP_005: "ECC-2-2-3",  // Missing PAM → Privileged Access Management
+  GAP_PP_006: "ECC-3-2-2",  // Missing encryption → Data Encryption
+  GAP_PP_007: "ECC-2-2-1",  // Missing review schedule → Identity Management
+  GAP_PP_008: "ECC-2-2-1",  // Missing roles/responsibilities → Identity Management
+  // Risk assessment gaps → Risk Management controls
+  GAP_RA_001: "ECC-1-2-1",  // Missing methodology → Risk Management Program
+  GAP_RA_002: "ECC-1-2-2",  // Missing risk identification → Risk Assessment
+  GAP_RA_003: "ECC-1-2-2",  // Missing impact/likelihood scales → Risk Assessment
+  GAP_RA_004: "ECC-1-2-1",  // Missing treatment options → Risk Management Program
+  GAP_RA_005: "ECC-1-2-2",  // Missing assessment triggers → Risk Assessment
+  GAP_RA_006: "ECC-1-2-1",  // Missing risk register → Risk Management Program
+  GAP_RA_007: "ECC-1-2-1",  // Missing periodic review → Risk Management Program
+  GAP_RA_008: "ECC-1-2-1",  // Missing project integration → Risk Management Program
+};

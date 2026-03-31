@@ -1,0 +1,51 @@
+{
+  "name": "ScheduledAnalysis",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Schedule name"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly"
+      ],
+      "default": "weekly"
+    },
+    "next_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policy_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Policies to analyze"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused"
+      ],
+      "default": "active"
+    },
+    "notify_on_completion": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "frequency"
+  ]
+}

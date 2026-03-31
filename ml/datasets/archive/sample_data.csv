@@ -1,0 +1,983 @@
+﻿id,policy_type,language,quality_level,policy_text,label,compliance_score,gaps_found,gap_count,analysis_summary,ecc_control_reference,ecc_sub_controls,iso_controls,generated_at
+password_policy_en_excellent_1_20260202014904,password_policy,en,excellent,"## [Company Name] Password and Multi-Factor Authentication Policy
+
+**Document Information:**
+
+*   **Policy Name:** Password and Multi-Factor Authentication Policy
+*   **Document ID:** SEC-POL-003
+*   **Version:** 1.0
+*   **Effective Date:** October 26, 2023
+*   **Last Review Date:** N/A
+*   **Next Review Date:** January 26, 2024 (Quarterly)
+*   **Author:** [CISO Office/IT Security Department]
+*   **Approver:** [Board of Directors/Executive Management]
+
+---
+
+### 1. Purpose and Scope
+
+**1.1. Purpose:**
+The purpose of this Password and Multi-Factor Authentication (MFA) Policy is to establish robust standards for creating, protecting, and managing user credentials across all [Company Name] information systems and services. This policy is critical to safeguarding our sensitive logistics data, ensuring the integrity of our supply chain operations, and protecting customer information from unauthorized access, disclosure, modification, or destruction. By enforcing strong authentication practices, we aim to minimize the risk of credential-based attacks, enhance overall cybersecurity posture, and maintain the trust of our partners and customers.
+
+**1.2. Scope:**
+This policy applies to all [Company Name] employees (full-time, part-time, temporary), contractors, vendors, and any third-party entities who are granted access to [Company Name]'s information systems, applications, networks, and data, regardless of their physical location or the device used for access. This includes, but is not limited to, all corporate workstations, mobile devices, servers, network devices, cloud services, and proprietary logistics management systems. Given our large enterprise size (5000+ employees) and significant remote workforce, adherence to this policy is paramount for every individual interacting with our IT environment.
+
+**1.3. Compliance:**
+This policy has been developed to fully comply with and support the requirements of:
+*   **NCA ECC Control 2-2:** Identity and Access Management
+*   **ISO 27001 Annex A.9:** Access Control
+
+### 2. Password Complexity Requirements
+
+All passwords for [Company Name] systems and applications must adhere to the following minimum complexity standards to ensure robust protection against brute-force and dictionary attacks:
+
+*   **Minimum Length:** Passwords must be at least twelve (12) characters in length.
+*   **Character Types:** Passwords must contain characters from at least three (3) of the following four (4) categories:
+    *   Uppercase letters (A-Z)
+    *   Lowercase letters (a-z)
+    *   Numbers (0-9)
+    *   Special characters (e.g., !, @, #, $, %, ^, &, *, ?, -, _, +, =)
+*   **Forbidden Content:**
+    *   Passwords must not contain any part of the user's name, username, or email address.
+    *   Passwords must not be dictionary words in any language, common phrases, or easily guessable sequences (e.g., ""password123"", ""qwerty"").
+    *   Passwords must not be directly derived from personal information (e.g., birth dates, employee IDs).
+*   **Passphrases Encouraged:** Users are encouraged to utilize passphrases (e.g., ""MyL0gisticsJ0urney!2023"") that are long, complex, and memorable.
+
+### 3. Password Expiration Policy
+
+To mitigate the risk of compromised credentials remaining active indefinitely, passwords for all user accounts must be changed periodically:
+
+*   **Maximum Lifespan:** User passwords must be changed at least every ninety (90) days.
+*   **Forced Reset:** The system will automatically prompt users to change their password upon expiration and will not allow access until the change is completed.
+*   **Immediate Change:** Users are required to change their password immediately if there is any suspicion of compromise.
+
+### 4. Password History
+
+To prevent users from cycling through a small set of familiar passwords, the following history retention policy is enforced:
+
+*   **Reuse Restriction:** Users are prohibited from reusing any of their last twelve (12) previously used passwords. The system will enforce this restriction automatically.
+
+### 5. Account Lockout Policy
+
+To protect against persistent brute-force attempts, user accounts will be temporarily locked after multiple failed login attempts:
+
+*   **Failed Attempts Threshold:** An account will be locked after five (5) consecutive failed login attempts within a specified timeframe.
+*   **Lockout Duration:** Locked accounts will remain inaccessible for a period of thirty (30) minutes.
+*   **Automatic Unlock:** After the 30-minute lockout period, the account will automatically unlock, allowing the user to attempt login again.
+*   **Manual Unlock (Optional):** For high-risk accounts or persistent issues, IT Support may be required to manually unlock an account after verifying the user's identity.
+
+### 6. Multi-Factor Authentication (MFA) Requirements
+
+Multi-Factor Authentication (MFA) is a mandatory control to provide an additional layer of security beyond traditional passwords. This is especially critical for our remote workforce and the protection of sensitive logistics operations.
+
+*   **Remote Access:** MFA is **mandatory** for all remote access to [Company Name]'s network and resources, including:
+    *   Virtual Private Network (VPN) access
+    *   Virtual Desktop Infrastructure (VDI)
+    *   Cloud-based applications (e.g., Microsoft 365, ERP systems, CRM)
+    *   Web portals providing access to corporate data or systems
+*   **Privileged Accounts:** MFA is **mandatory** for all privileged accounts, including but not limited to:
+    *   Domain Administrators
+    *   Local Administrators on servers and workstations
+    *   Database Administrators
+    *   Security Administrators
+    *   Accounts with elevated permissions on critical logistics management systems (e.g., WMS, TMS)
+*   **Administrative Systems:** MFA is **mandatory** for accessing all administrative systems, including:
+    *   Identity and Access Management (IAM) systems (e.g., Active Directory, Okta, Azure AD)
+    *   Network device management interfaces (e.g., firewalls, routers, switches)
+    *   Server management consoles
+    *   Cloud provider management portals
+    *   Security Information and Event Management (SIEM) systems
+    *   Critical logistics operational control systems
+*   **Approved MFA Methods:** [Company Name] supports and mandates the use of approved MFA methods, which may include:
+    *   Hardware security keys (e.g., FIDO2-compliant keys)
+    *   Authenticator applications (e.g., Microsoft Authenticator, Google Authenticator, Okta Verify) using Time-based One-Time Passwords (TOTP)
+    *   Push notifications to approved mobile devices
+    *   Biometric authentication integrated with corporate devices
+
+### 7. Privileged Access Management (PAM) Procedures
+
+All privileged access to critical systems and data is strictly controlled and managed through dedicated Privileged Access Management (PAM) procedures. This is crucial for protecting the backbone of our logistics operations.
+
+*   **Least Privilege:** All users, including administrators, are granted the minimum necessary access rights required to perform their job functions.
+*   **Separate Accounts:** Privileged tasks must be performed using dedicated, non-personal administrative accounts that are separate from daily user accounts. These accounts must adhere to stricter password policies and MFA requirements.
+*   **Just-in-Time (JIT) Access:** Access to privileged resources should be granted on a ""just-in-time"" basis, meaning access is provided only for the duration required to complete a specific task and is automatically revoked afterward.
+*   **Session Recording and Monitoring:** All privileged sessions, especially those involving critical logistics systems, must be recorded and actively monitored for suspicious activities. Audit logs must be retained for compliance and forensic purposes.
+*   **Regular Review:** Privileged access rights will be reviewed at least quarterly (or more frequently if deemed necessary) to ensure they remain appropriate and necessary.
+*   **PAM Solution:** [Company Name] utilizes an enterprise-grade PAM solution to enforce these procedures, centralize credential management, and automate access provisioning/de-provisioning.
+
+### 8. Password Storage and Transmission
+
+The security of passwords, both at rest and in transit, is paramount.
+
+*   **Storage:**
+    *   All passwords stored within [Company Name]'s systems (e.g., Active Directory, IAM systems, databases) must never be stored in plain text.
+    *   Passwords must be stored using strong cryptographic hashing algorithms with adequate salting (e.g., Argon2, bcrypt, scrypt) to protect against rainbow table attacks.
+    *   Access to password hashes must be restricted to authorized system administrators on a need-to-know basis.
+*   **Transmission:**
+    *   Passwords and other authentication credentials must always be transmitted over encrypted channels using strong, industry-standard cryptographic protocols (e.g., TLS 1.2 or higher for HTTPS, SSH for remote command-line access, strong VPN tunnels).
+    *   Unencrypted transmission of passwords over any network (internal or external) is strictly prohibited.
+
+### 9. Emergency Access Procedures
+
+In the event of a catastrophic system failure, disaster, or loss of primary administrative credentials that prevents normal authentication, emergency access procedures (""Break Glass"" accounts) are established.
+
+*   **Purpose:** To restore critical business functions and ensure the continuity of essential logistics operations when standard access mechanisms are unavailable.
+*   **Dedicated Accounts:** A limited number of highly privileged, emergency-only accounts will be created. These accounts will be distinct from regular administrative accounts.
+*   **Secure Storage:** Emergency access credentials (e.g., password components, hardware tokens) must be physically secured in a tamper-evident manner (e.g., sealed envelopes in a fireproof safe) at a designated secure location, with access restricted to authorized personnel.
+*   **Strict Access Protocol:** Access to emergency credentials requires multi-person authorization, detailed logging, and immediate notification to the CISO and Executive Management.
+*   **Logging and Audit:** All usage of emergency access accounts must be meticulously logged, reviewed, and audited immediately after use to ensure legitimacy and identify potential misuse.
+*   **Re-keying:** Immediately after use, emergency access accounts must be re-keyed (passwords changed, MFA tokens reset) and returned to secure storage.
+*   **Periodic Testing:** These procedures will be tested annually (or more frequently if significant changes occur) to ensure their effectiveness and readiness.
+
+### 10. Periodic Review Schedule
+
+This Password and Multi-Factor Authentication Policy will undergo regular review to ensure its continued relevance, effectiveness, and alignment with evolving threats, technologies, and regulatory requirements.
+
+*   **Review Frequency:** This policy will be formally reviewed and updated at least **quarterly**.
+*   **Review Authority:** The IT Security Department, led by the CISO, is responsible for conducting the reviews.
+*   **Approval:** Any significant changes to this policy must be approved by Executive Management and the Board of Directors.
+*   **Scope of Review:** Reviews will consider:
+    *   Effectiveness of existing controls in preventing unauthorized access.
+    *   Emerging threats and vulnerabilities relevant to a logistics enterprise.
+    *   Changes in industry best practices for identity and access management.
+    *   Updates to NCA ECC, ISO 27001, and other applicable regulations.
+    *   Feedback from audits, incident responses, and user experience.
+
+### 11. Roles and Responsibilities
+
+Clear roles and responsibilities are essential for the effective implementation and enforcement of this policy across a large, distributed workforce.
+
+*   **Board of Directors/Executive Management:**
+    *   Approve the Password and MFA Policy.
+    *   Provide resources necessary for policy implementation and enforcement.
+    *   Ensure overall organizational commitment to cybersecurity.
+*   **Chief Information Security Officer (CISO) & IT Security Department:**
+    *   Develop, maintain, and enforce this policy.
+    *   Implement and manage technical controls for password complexity, MFA, PAM, and secure storage.
+    *   Monitor for policy violations and respond to security incidents involving credentials.
+    *   Conduct periodic reviews and audits of access controls.
+    *   Provide guidance and training on secure password practices and MFA usage.
+*   **IT Operations & Help Desk:**
+    *   Implement and manage user accounts and access permissions in accordance with this policy.
+    *   Assist users with password resets and MFA enrollment/troubleshooting, strictly adhering to identity verification procedures.
+    *   Enforce account lockout policies.
+    *   Maintain accurate records of user access and authentication events.
+*   **All Employees, Contractors, and Third Parties:**
+    *   Read, understand, and fully comply with all aspects of this policy.
+    *   Create and maintain strong, unique passwords for all [Company Name] systems.
+    *   Enroll in and utilize MFA as required.
+    *   Protect their credentials and MFA tokens from compromise.
+    *   Report any suspected password compromise, unauthorized access, or policy violations immediately to the IT Security Department.
+    *   Never share passwords or MFA credentials with anyone, including IT personnel.
+
+### 12. Non-compliance Consequences
+
+Failure to comply with this Password and Multi-Factor Authentication Policy poses a significant risk to [Company Name]'s information assets, operational continuity, and reputation, potentially leading to supply chain disruptions, data breaches, and financial losses.
+
+*   **Disciplinary Action:** Any individual found to be in violation of this policy will be subject to disciplinary action, up to and including:
+    *   Formal warnings
+    *   Suspension of network and system access
+    *   Termination of employment or contract
+*   **Legal Action:** In cases of gross negligence, willful misconduct, or actions that result in significant harm to the company (e.g., data breach, operational sabotage), legal action may be pursued in accordance with applicable laws and contractual agreements.
+*   **Accountability:** Managers are responsible for ensuring their teams understand and comply with this policy. Failure of managers to enforce this policy within their teams may also result in disciplinary action.
+
+---",Fully Compliant,1.0,[],0,"The provided Password and Multi-Factor Authentication Policy is exceptionally robust and comprehensive. It effectively addresses all specified gap categories with strong controls, clear definitions, and explicit alignment with NCA ECC Control 2-2 and ISO 27001 Annex A.9 requirements. Password complexity, expiration, history, and account lockout policies are well-defined. Multi-Factor Authentication is mandated for critical access points, and Privileged Access Management procedures are thoroughly outlined, including least privilege, separate accounts, JIT access, and session monitoring. Password storage and transmission requirements specify strong cryptographic methods. A clear quarterly review schedule and detailed roles and responsibilities are also established. No gaps were found based on the provided categories.",2-2 Identity and Access Management,"[""2-2-3-1: Single-factor authentication based on username and password"", ""2-2-3-2: Multi-factor authentication for remote access and privileged accounts"", ""2-2-3-3: User authorization based on Need-to-Know, Least Privilege, and Segregation of Duties"", ""2-2-3-4: Privileged access management"", ""2-2-3-5: Periodic review of identities and access rights""]","[""A.9.2.1: User registration and de-registration"", ""A.9.2.4: Management of secret authentication information"", ""A.9.3.1: Use of secret authentication information"", ""A.9.4.3: Password management system""]",2026-02-02T01:49:04.692756
+password_policy_en_excellent_2_20260202014954,password_policy,en,excellent,"## [Company Name] Password Policy
+
+**Document Version:** 2.0
+**Effective Date:** October 26, 2023
+**Review Date:** January 26, 2024
+**Owner:** Chief Information Security Officer (CISO)
+**Approval:** [Leadership Board/CEO Name]
+
+---
+
+### 1. Introduction
+
+#### 1.1 Purpose
+The purpose of this Password Policy is to establish stringent requirements for the creation, management, storage, and protection of passwords and other authentication credentials used to access [Company Name]'s information systems and data. As a logistics company with a significant remote workforce, protecting our critical supply chain data, client information, and operational continuity from unauthorized access is paramount. This policy aims to minimize the risk of security breaches, maintain the confidentiality, integrity, and availability of our information assets, and ensure full compliance with the National Cybersecurity Authority (NCA) Essential Cybersecurity Controls (ECC) Control 2-2 (Identity and Access Management) and ISO 27001 Annex A.9 (Access Control).
+
+#### 1.2 Scope
+This policy applies to all employees (full-time, part-time, temporary, contractors), third-party vendors, and any external entities with access to [Company Name]'s information systems, networks, applications, and data. This includes all corporate devices (laptops, mobile phones), personal devices used for company business (BYOD), cloud services, and on-premises infrastructure, regardless of geographical location. Special emphasis is placed on securing remote access pathways critical for our distributed workforce.
+
+#### 1.3 Policy Statement
+[Company Name] is committed to maintaining a robust security posture to protect its valuable information assets. All individuals accessing [Company Name] resources are required to adhere strictly to the guidelines set forth in this policy. Non-compliance will result in disciplinary action as outlined in Section 12.
+
+### 2. Password Requirements
+
+#### 2.1 Password Complexity Requirements
+All passwords for [Company Name] systems and applications must meet the following minimum complexity requirements:
+*   **Minimum Length:** Passwords must be at least twelve (12) characters in length.
+*   **Character Types:** Passwords must contain characters from at least three (3) of the following four (4) categories:
+    *   Uppercase English letters (A-Z)
+    *   Lowercase English letters (a-z)
+    *   Numerals (0-9)
+    *   Non-alphanumeric characters (e.g., !, @, #, $, %, ^, &, *, ?, <, >)
+*   **Prohibited Content:** Passwords must not contain dictionary words, common sequences (e.g., ""123456"", ""abcdef""), keyboard patterns (e.g., ""qwerty""), or easily guessable personal information (e.g., username, first/last name, birthdate, company name).
+*   **Passphrase Recommendation:** Users are strongly encouraged to use unique, long passphrases (e.g., ""MyLogisticsRouteIsSecureToday!"") for enhanced security.
+
+#### 2.2 Password Expiration Policy
+To reduce the risk of compromised credentials, user passwords for all systems and applications must be changed regularly:
+*   **Maximum Lifetime:** All user passwords must be changed at least every ninety (90) days.
+*   **Privileged Accounts:** Passwords for privileged accounts (refer to Section 4) may be subject to more frequent changes or managed dynamically by a Privileged Access Management (PAM) solution.
+
+#### 2.3 Password History
+To prevent the reuse of compromised or predictable passwords:
+*   **Uniqueness Enforcement:** Users are strictly prevented from reusing their last twelve (12) unique passwords for any system or application.
+
+#### 2.4 Account Lockout Policy
+To deter brute-force and credential-stuffing attacks:
+*   **Failed Attempts Threshold:** After five (5) consecutive failed login attempts, the user account will be automatically locked out.
+*   **Lockout Duration:** The account will remain locked out for a period of thirty (30) minutes, after which it will automatically unlock. During this lockout period, no further login attempts will be permitted.
+*   **Critical Systems Exception:** For highly critical systems or privileged accounts, IT Security may implement stricter lockout policies, including requiring manual unlocking by authorized IT personnel after verification.
+
+### 3. Multi-Factor Authentication (MFA) Requirements
+
+Multi-Factor Authentication (MFA) is a mandatory security control implemented to provide an additional layer of security beyond single-factor password authentication.
+
+#### 3.1 General MFA Requirements
+MFA must be utilized wherever technically feasible and is explicitly required for the following scenarios:
+
+#### 3.2 Remote Access
+All remote access to [Company Name]'s network, systems, and applications must utilize MFA. This includes, but is not limited to:
+*   **Virtual Private Network (VPN) Access:** Mandatory for all employees, contractors, and third parties connecting to the corporate network from external locations.
+*   **Cloud Services:** Access to all cloud-based applications (e.g., Microsoft 365, Google Workspace, SaaS logistics platforms) and infrastructure (e.g., AWS, Azure) containing company data.
+*   **Remote Desktop/Terminal Services:** Any access to internal workstations or servers from outside the corporate network.
+
+#### 3.3 Privileged Accounts
+MFA is mandatory for all privileged accounts across all systems, applications, and network devices. This includes:
+*   Accounts with administrative rights (e.g., domain administrators, local administrators, root users).
+*   Database administrators.
+*   Accounts used for system configuration or security management.
+*   Service accounts with elevated permissions, where MFA can be programmatically enforced.
+
+#### 3.4 Administrative Systems
+Access to critical administrative systems requires MFA. This includes, but is not limited to:
+*   Directory Services (e.g., Active Directory).
+*   Enterprise Resource Planning (ERP) systems.
+*   Customer Relationship Management (CRM) systems.
+*   Human Resources Information Systems (HRIS).
+*   Financial Management systems.
+*   Network infrastructure management platforms (e.g., firewalls, routers, switches).
+*   Security Information and Event Management (SIEM) systems.
+*   Logistics-specific platforms such as Transportation Management Systems (TMS) and Warehouse Management Systems (WMS).
+
+### 4. Privileged Access Management (PAM) Procedures
+
+[Company Name] implements robust Privileged Access Management (PAM) procedures to safeguard accounts with elevated permissions:
+*   **PAM Solution:** A dedicated Privileged Access Management (PAM) solution will be utilized to manage, monitor, and audit all privileged accounts and their access sessions.
+*   **Just-in-Time (JIT) Access:** Privileged access rights will be granted only for the specific duration required to perform a task, automatically revoking access upon completion or expiration.
+*   **Principle of Least Privilege:** Privileged accounts must only have the absolute minimum necessary access rights required to perform their assigned duties.
+*   **Separation of Duties:** Critical administrative functions will be separated among multiple individuals to prevent a single point of failure or compromise.
+*   **Unique Privileged Accounts:** Each administrator will be assigned a unique privileged account for their administrative tasks. Shared privileged accounts are strictly prohibited.
+*   **Session Monitoring and Recording:** All activities performed with privileged accounts will be logged, monitored in real-time, and recorded for audit and forensic purposes.
+*   **Regular Review:** All privileged access rights and associated accounts will be formally reviewed at least quarterly, or more frequently for critical systems, by the CISO and relevant department heads.
+*   **Secure Credential Rotation:** Passwords for privileged accounts will be regularly rotated, with complexity managed by the PAM solution, often automatically and more frequently than standard user accounts.
+
+### 5. Password Storage and Transmission
+
+Protecting passwords at rest and in transit is crucial to prevent compromise:
+*   **Secure Storage:** Passwords must never be stored in plain text. All stored passwords, including those in databases, configuration files, or any other repositories, must be protected using strong, industry-standard cryptographic hashing functions with proper salting.
+*   **Encrypted Transmission:** Passwords and other authentication credentials must always be transmitted over secure, encrypted channels. This includes, but is not limited to, using TLS 1.2 or higher for HTTPS, SSH, and VPN connections. The unencrypted transmission of credentials over public or untrusted networks is strictly prohibited.
+*   **No Insecure Sharing:** Passwords must never be shared via insecure methods such as email, instant messaging, unencrypted documents, or written notes in public view.
+
+### 6. Emergency Access Procedures
+
+A formal and documented process for emergency access to critical systems and data is established to ensure business continuity during unforeseen circumstances (e.g., administrator unavailability, system failure, security incident):
+*   **Documented Process:** The emergency access procedure is clearly documented, regularly updated, and accessible to authorized personnel.
+*   **Emergency Access Credentials (""Break-Glass"" Accounts):** Dedicated emergency access accounts with elevated privileges will be created. These accounts must be unique, not used for daily operations, and protected with extremely strong, complex passwords.
+*   **Secure Storage:** Emergency access credentials will be stored securely under dual control (e.g., encrypted vault requiring multiple individuals to unlock) and physically safeguarded.
+*   **Strict Usage Protocol:** Emergency access will only be granted in verifiable emergency situations after explicit authorization from two senior members of management, including at least one from the IT Security department.
+*   **Logging and Audit:** All emergency access events, including reasons for access, individuals involved, and actions taken, must be thoroughly logged, audited, and reviewed immediately after the event.
+*   **Immediate Password Reset:** All emergency access passwords must be immediately reset to new, complex, and unique values after each use.
+*   **Regular Testing:** Emergency access procedures will be periodically tested to ensure their effectiveness and readiness.
+
+### 7. Employee Responsibilities
+
+All employees, contractors, and third parties with access to [Company Name] systems and data are personally responsible for adhering to this policy:
+*   **Password Protection:** Safeguard your passwords and never share them with anyone, including colleagues, managers, or IT personnel. IT personnel will never ask for your password.
+*   **Reporting Suspicious Activity:** Immediately report any suspected compromise of your password, account, or any unusual login activity to the IT Service Desk.
+*   **Security Awareness:** Actively participate in mandatory security awareness training and apply best practices in daily operations.
+*   **Device Security:** Ensure that any device used to access [Company Name] resources (company-issued or personal) is adequately secured (e.g., screen lock, antivirus, OS updates).
+*   **Logoff/Lockout:** Always log off or lock your computer when leaving it unattended, even for a short period.
+
+### 8. Roles and Responsibilities
+
+*   **Chief Information Security Officer (CISO):**
+    *   Overall ownership, development, approval, and enforcement oversight of this policy.
+    *   Ensures compliance with NCA ECC, ISO 27001, and other relevant regulations.
+    *   Leads the quarterly review process for this policy.
+*   **IT Department / System Administrators:**
+    *   Implement and maintain technical controls (e.g., password policies, MFA, PAM solutions) across all systems and applications.
+    *   Provide support and guidance to users on password best practices.
+    *   Monitor compliance with this policy and investigate violations.
+    *   Manage user accounts, provisioning, and de-provisioning in line with access control policies.
+    *   Maintain and test emergency access procedures.
+*   **Human Resources (HR) Department:**
+    *   Assist in communicating this policy to new hires during onboarding.
+    *   Collaborate with IT Security on disciplinary actions for non-compliance.
+    *   Ensure timely de-provisioning of accounts during employee offboarding processes.
+*   **All Employees and Contractors:**
+    *   Read, understand, and fully comply with all aspects of this Password Policy.
+    *   Report any suspected security incidents or vulnerabilities immediately.
+*   **Management:**
+    *   Promote a culture of cybersecurity awareness and compliance within their respective teams.
+    *   Ensure their teams have the necessary resources and training to comply with this policy.
+
+### 9. Policy Review and Maintenance
+
+*   **Periodic Review:** This Password Policy document will be formally reviewed and updated at least **quarterly** by the CISO and the IT Department. This ensures its continued effectiveness, alignment with evolving cybersecurity standards (NCA ECC, ISO 27001), changes in the threat landscape, and [Company Name]'s operational needs as a growing logistics company with a remote workforce.
+*   **Ad-hoc Reviews:** Ad-hoc reviews may be conducted as necessitated by significant changes to systems, applications, regulatory requirements, or in response to security incidents.
+
+### 10. Non-Compliance and Enforcement
+
+*   **Investigation:** Any suspected or confirmed violation of this policy will be thoroughly investigated by the IT Security and Human Resources departments.
+*   **Disciplinary Action:** Non-compliance with this policy may result in disciplinary action, up to and including:
+    *   Mandatory re-training.
+    *   Suspension of system access.
+    *   Formal warnings.
+    *   Termination of employment or contract.
+*   **Legal Action:** In cases of severe negligence, malicious intent, or violations leading to significant data breaches, [Company Name] reserves the right to pursue appropriate legal action.
+
+### 11. Related Policies and Documents
+
+*   Information Security Policy
+*   Access Control Policy
+*   Acceptable Use Policy
+*   Data Classification Policy
+*   Incident Response Plan
+*   Remote Work Policy
+
+---
+
+### Appendix A: NCA ECC Control 2-2 (Identity and Access Management) Mapping
+
+This policy directly addresses and complies with the following aspects of NCA ECC Control 2-2:
+
+*   **2-2-1 User Identity and Authentication:** Enforced through strong password complexity (Section 2.1), regular expiration (Section 2.2), uniqueness (Section 2.3), and mandatory MFA (Section 3).
+*   **2-2-2 Privileged Access Management:** Covered extensively by Section 4 (Privileged Access Management Procedures), including Just-in-Time access, least privilege, session monitoring, and regular reviews.
+*   **2-2-3 Access Reviews:** Explicitly mentioned in Section 4 for privileged accounts and implied through regular policy review (Section 9) and IT responsibilities (Section 8).
+*   **2-2-4 Separation of Duties:** Addressed in Section 4 for privileged roles.
+*   **2-2-5 Password Policy:** Fully detailed in Section 2, covering complexity, expiration, history, and account lockout.
+*   **2-2-6 Multi-Factor Authentication (MFA):** Mandated for remote access, privileged accounts, and administrative systems (Section 3).
+*   **2-2-7 Emergency Access:** Detailed procedures for emergency access are outlined in Section 6.
+*   **2-2-8 Secure Credential Storage:** Addressed by Section 5 for password storage (hashing and salting).
+*   **2-2-9 User Access Provisioning and De-provisioning:** Covered by IT and HR responsibilities in Section 8.
+
+### Appendix B: ISO 27001 Annex A.9 (Access Control) Mapping
+
+This policy directly addresses and complies with the following controls within ISO 27001 Annex A.9:
+
+*   **A.9.2.1 User registration and de-registration:** Covered by IT and HR responsibilities (Section 8) for account lifecycle management.
+*   **A.9.2.2 User access provisioning:** Addressed by IT responsibilities (Section 8) and PAM procedures (Section 4).
+*   **A.9.2.3 Management of privileged access rights:** Comprehensively covered in Section 4 (Privileged Access Management Procedures).
+*   **A.9.2.4 Review of user access rights:** Explicitly mentioned in Section 4 for privileged accounts and as part of the overall policy review (Section 9).
+*   **A.9.2.5 Removal or adjustment of access rights:** Handled by IT and HR responsibilities (Section 8) during offboarding or role changes.
+*   **A.9.2.6 Authentication of users:** Fully addressed by Section 2 (Password Requirements) and Section 3 (MFA Requirements).
+*   **A.9.3.1 Network access control:** Ensured through mandatory MFA for remote access (Section 3.2) and secure transmission (Section 5).
+*   **A.9.4.1 Information access restriction:** Supported by the strong authentication mechanisms and PAM principles outlined in this policy.
+*   **A.9.4.2 Secure log-on procedures:** Detailed in Section 2 (Password Requirements), Section 3 (MFA Requirements), and Section 2.4 (Account Lockout Policy).
+*   **A.9.4.3 Password management system:** The policy specifies requirements for such systems and their implementation (Sections 2, 4, 5).",Fully Compliant,1.0,[],0,"The provided password policy document is exceptionally comprehensive and robust, demonstrating strong adherence to best practices and explicit compliance with NCA ECC Control 2-2 (Identity and Access Management) and ISO 27001 Annex A.9 (Access Control). All specified gap categories are thoroughly addressed with clear, stringent requirements. The policy includes strong password complexity, a well-defined expiration policy, robust account lockout mechanisms, mandatory Multi-Factor Authentication (MFA) for critical access, comprehensive Privileged Access Management (PAM) procedures, secure password storage and transmission requirements, a clear periodic review schedule, and well-defined roles and responsibilities. No significant gaps were identified based on the provided categories.",2-2 Identity and Access Management,"[""2-2-3-1: Single-factor authentication based on username and password"", ""2-2-3-2: Multi-factor authentication for remote access and privileged accounts"", ""2-2-3-3: User authorization based on Need-to-Know, Least Privilege, and Segregation of Duties"", ""2-2-3-4: Privileged access management"", ""2-2-3-5: Periodic review of identities and access rights""]","[""A.9.2.1: User registration and de-registration"", ""A.9.2.4: Management of secret authentication information"", ""A.9.3.1: Use of secret authentication information"", ""A.9.4.3: Password management system""]",2026-02-02T01:49:54.738450
+password_policy_en_excellent_3_20260202015042,password_policy,en,excellent,"# **Manufacturing Innovations Corp. (MIC)**
+
+## **Information Security Policy: Password and Authentication Management**
+
+---
+
+| Document ID: | MIC-ISP-PAM-001 | Version: | 3.0 |
+| :----------- | :-------------- | :------- | :-- |
+| Status:      | Approved        | Date:    | 2023-10-26 |
+| Author:      | CISO Office     | Approver:| CEO, Board of Directors |
+| Review Date: | Quarterly (Next: 2024-01-26) |
+
+---
+
+### **Table of Contents**
+
+1.  Purpose and Scope
+2.  Compliance Framework
+3.  Password Complexity Requirements
+4.  Password Expiration Policy
+5.  Password History
+6.  Account Lockout Policy
+7.  Multi-Factor Authentication (MFA) Requirements
+8.  Privileged Access Management Procedures
+9.  Password Storage and Transmission
+10. Emergency Access Procedures
+11. Periodic Review Schedule
+12. Roles and Responsibilities
+13. Non-compliance Consequences
+14. Definitions
+
+---
+
+### **1. Purpose and Scope**
+
+**1.1. Purpose:**
+This Password and Authentication Management Policy establishes the mandatory requirements for creating, protecting, and managing all user passwords and authentication mechanisms within Manufacturing Innovations Corp. (MIC). The primary objective is to safeguard MIC's information assets, intellectual property, operational technology (OT) systems, and critical business data from unauthorized access, disclosure, modification, or destruction. This policy aims to minimize the risk of security breaches originating from weak or compromised authentication credentials, particularly given MIC's distributed workforce and reliance on remote access.
+
+**1.2. Scope:**
+This policy applies to all individuals who access or use MIC's information technology (IT) systems, networks, applications, data, and services, regardless of their employment status, location, or device ownership. This includes, but is not limited to:
+*   All full-time and part-time employees.
+*   Contractors, consultants, temporary staff, and interns.
+*   Third-party vendors and business partners requiring access to MIC resources.
+*   All information systems, applications, databases, network devices, servers, workstations, and cloud services owned, managed, or utilized by MIC, including those accessed remotely.
+*   This policy is especially critical for securing remote access points and protecting data accessed by our growing remote workforce.
+
+### **2. Compliance Framework**
+
+This policy is designed to ensure full compliance with the following critical cybersecurity standards and regulations:
+
+*   **NCA ECC Control 2-2 (Identity and Access Management):** Addresses requirements for unique user identification, robust authentication, least privilege, access review, secure password management, account lockout, emergency access, and privileged access management.
+*   **ISO 27001 Annex A.9 (Access Control):** Covers business requirements for access control, user access management (registration, de-registration, provisioning, review), user responsibilities (password use), and system/application access control (information access restriction, secure log-on, password management system, control of privileged utilities).
+
+### **3. Password Complexity Requirements**
+
+All passwords for user accounts accessing MIC's IT systems must adhere to the following minimum complexity standards:
+
+*   **Minimum Length:** Passwords must be at least twelve (12) characters in length.
+*   **Character Types:** Passwords must contain characters from at least three (3) of the following four (4) categories:
+    *   Uppercase letters (A-Z)
+    *   Lowercase letters (a-z)
+    *   Numbers (0-9)
+    *   Special characters (e.g., !, @, #, $, %, ^, &, *, (, ))
+*   **Prohibited Characters/Patterns:**
+    *   Cannot contain the user's name, username, or company name.
+    *   Cannot contain common dictionary words or easily guessable sequences (e.g., ""password"", ""123456"", ""qwerty"").
+    *   Cannot contain repeating characters (e.g., ""aaaaa"") or simple character sequences (e.g., ""abcde"").
+    *   Cannot contain dates of birth, social security numbers, or other easily obtainable personal information.
+*   **Initial Passwords:** All new user accounts will be assigned a temporary, complex password that must be changed by the user upon first login.
+*   **Passphrases:** Users are strongly encouraged to use unique passphrases (e.g., ""MyDogLovesToCh@seSquirrels!"") instead of single words, as they are often easier to remember and significantly more secure.
+
+### **4. Password Expiration Policy**
+
+To minimize the risk of compromise from stolen or cracked credentials, all user passwords must be changed regularly.
+
+*   **Standard User Accounts:** Passwords for all standard user accounts (including those used for remote access) must be changed at least every ninety (90) days.
+*   **Privileged Accounts:** Passwords for privileged accounts (as defined in Section 8) may be subject to a shorter expiration period, as determined by the CISO, and managed by a Privileged Access Management (PAM) solution.
+*   **Immediate Change:** Users must change their password immediately if there is any suspicion of compromise or upon notification from the IT Department.
+*   **No Reuse:** Expired passwords cannot be reused, as enforced by the password history policy.
+
+### **5. Password History**
+
+To prevent the common practice of cycling through a small set of passwords, the following history requirements are enforced:
+
+*   Users are prohibited from reusing any of their last twelve (12) previously used passwords.
+*   The system will automatically enforce this history check during password changes.
+
+### **6. Account Lockout Policy**
+
+To prevent brute-force attacks and unauthorized access attempts, MIC implements an automatic account lockout policy:
+
+*   **Failed Attempts Threshold:** If an account experiences five (5) consecutive failed login attempts, the account will be automatically locked.
+*   **Lockout Duration:** Locked accounts will remain inaccessible for a period of thirty (30) minutes.
+*   **Administrator Override:** After the lockout duration, the user may attempt to log in again. Alternatively, authorized IT Support personnel can manually unlock an account after verifying the user's identity through a secure, out-of-band method.
+*   **Logging:** All account lockout events, including the originating IP address and timestamp, are logged and monitored by the Security Operations Center (SOC) for potential malicious activity.
+
+### **7. Multi-Factor Authentication (MFA) Requirements**
+
+Multi-Factor Authentication (MFA) provides an additional layer of security beyond passwords, significantly reducing the risk of unauthorized access due to compromised credentials. MFA is mandatory for the following categories:
+
+*   **7.1. Remote Access:**
+    *   All remote access to MIC's internal network, applications, and cloud services (e.g., VPN, remote desktop, SaaS applications, O365, internal web portals) by any user from any location outside the MIC corporate network must utilize MFA.
+    *   This is critical for securing our remote workforce, ensuring that even if a password is stolen, the attacker cannot gain access without the second factor.
+*   **7.2. Privileged Accounts:**
+    *   MFA is mandatory for all access to accounts designated as ""privileged"" (e.g., Domain Administrators, System Administrators, Network Administrators, Database Administrators, Application Administrators for critical systems).
+    *   This includes direct login, elevation of privilege, and access via PAM solutions.
+*   **7.3. Administrative Systems:**
+    *   MFA is mandatory for all access to administrative interfaces and management consoles of critical IT infrastructure, including but not limited to:
+        *   Active Directory / Identity Management Systems
+        *   Network device management interfaces (routers, firewalls, switches)
+        *   Server operating system consoles (Windows Server, Linux)
+        *   Virtualization platforms (VMware, Hyper-V)
+        *   Cloud provider management consoles (AWS, Azure, GCP)
+        *   Security tools (SIEM, EDR, Vulnerability Scanners)
+        *   Operational Technology (OT) system management interfaces accessible via the IT network.
+*   **7.4. Acceptable MFA Methods:**
+    *   MIC will deploy and support strong MFA methods, prioritizing phishing-resistant options where possible. Acceptable methods include:
+        *   Hardware security tokens (e.g., FIDO2/U2F keys).
+        *   Authenticator applications (e.g., Microsoft Authenticator, Google Authenticator) providing TOTP or push notifications.
+        *   Biometric authentication integrated with secure device hardware.
+    *   SMS-based MFA is generally discouraged due to known vulnerabilities but may be approved as a temporary or fallback method by the CISO under specific circumstances.
+
+### **8. Privileged Access Management (PAM) Procedures**
+
+Privileged accounts, due to their extensive capabilities, pose the highest risk if compromised. MIC implements stringent controls for their management:
+
+*   **8.1. Principle of Least Privilege:**
+    *   Access rights for privileged accounts must adhere strictly to the principle of least privilege. Users are granted only the minimum necessary access required to perform their specific job functions, and for the shortest possible duration.
+*   **8.2. Dedicated Accounts:**
+    *   Users performing privileged functions must use separate, dedicated privileged accounts that are distinct from their standard user accounts (e.g., ""Jane.Doe-Admin"" vs. ""Jane.Doe""). These accounts must not be used for routine tasks like email or web browsing.
+*   **8.3. Just-in-Time (JIT) / Just-Enough Access (JEA):**
+    *   Where technically feasible, privileged access will be granted on a ""just-in-time"" basis, meaning access is elevated only when explicitly requested and approved for a specific task and duration, then automatically revoked.
+*   **8.4. Session Monitoring and Recording:**
+    *   All sessions conducted using privileged accounts must be monitored and, where technically feasible and legally permissible, recorded for auditing and forensic purposes.
+*   **8.5. Credential Vaulting:**
+    *   A robust Privileged Access Management (PAM) solution will be utilized to securely store, rotate, and manage passwords for shared privileged accounts (e.g., service accounts, generic local admin accounts). Users will typically check out credentials from the vault rather than knowing them directly.
+*   **8.6. Regular Review:**
+    *   Access rights associated with privileged accounts will be reviewed quarterly by the IT Department and relevant department heads to ensure continued necessity and alignment with job responsibilities.
+*   **8.7. Strongest Authentication:**
+    *   MFA is mandatory for all privileged account access, as specified in Section 7.2.
+
+### **9. Password Storage and Transmission**
+
+The security of passwords depends not only on their strength but also on how they are stored and transmitted.
+
+*   **9.1. Password Storage:**
+    *   All passwords stored within MIC's systems (e.g., identity directories, databases) **MUST NOT** be stored in plain text.
+    *   Passwords must be stored using strong, one-way cryptographic hashing functions (e.g., Argon2, bcrypt, scrypt) combined with a unique salt for each password to prevent rainbow table attacks.
+    *   Access to systems containing password hashes must be strictly controlled, monitored, and limited to authorized personnel only.
+*   **9.2. Password Transmission:**
+    *   Passwords **MUST ONLY** be transmitted over secure, encrypted channels (e.g., TLS 1.2 or higher for HTTPS, SSH, secure VPN connections).
+    *   Passwords **MUST NEVER** be transmitted via unencrypted email, instant messaging, plain text files, or any other insecure method.
+    *   Users are prohibited from writing down or otherwise recording their passwords in an unsecured manner.
+
+### **10. Emergency Access Procedures**
+
+In the event of an emergency (e.g., critical system failure, key personnel unavailability, disaster recovery scenarios) requiring immediate access to critical systems, predefined emergency access procedures must be followed:
+
+*   **10.1. ""Break-Glass"" Accounts:**
+    *   Dedicated ""break-glass"" accounts with highly elevated privileges will be pre-configured for critical systems. These accounts will be distinct from regular user or privileged accounts and used exclusively for emergencies.
+*   **10.2. Secure Credential Storage:**
+    *   The credentials for break-glass accounts will be stored securely and redundantly, such as in an encrypted, hardware-protected vault (e.g., a tamper-evident safe with split knowledge of keys/passwords) or a specialized PAM solution.
+*   **10.3. Authorization Process:**
+    *   Emergency access must be authorized by at least two (2) senior managers (e.g., CISO, Head of IT, CEO) via an out-of-band communication channel.
+    *   The authorization request must include the justification, the systems to be accessed, and the expected duration.
+*   **10.4. Logging and Auditing:**
+    *   All emergency access attempts and successful accesses must be meticulously logged, including the timestamp, user accessing, system accessed, and justification.
+    *   A full audit and review of the activity will be conducted by the CISO within 24 hours of emergency access.
+*   **10.5. Post-Emergency Actions:**
+    *   Immediately following the use of a break-glass account, its password must be reset, and all logs thoroughly reviewed. The account's status should be returned to its secure, inactive state.
+*   **10.6. Regular Testing:**
+    *   Emergency access procedures will be reviewed and tested at least annually to ensure their effectiveness and readiness.
+
+### **11. Periodic Review Schedule**
+
+This Password and Authentication Management Policy, along with its associated procedures and controls, will be subject to regular review to ensure its continued relevance, effectiveness, and compliance with evolving threats and regulatory requirements.
+
+*   **Policy Review:** This policy document will be formally reviewed by the CISO Office, IT Management, HR, and Legal counsel on a **quarterly basis**. Any necessary updates will be made and approved by the CEO and Board of Directors.
+*   **Access Rights Review:**
+    *   User access rights, particularly for privileged accounts, will be reviewed quarterly as per Section 8.6.
+    *   Standard user access rights will be reviewed at least annually, or upon significant job role changes, project completion, or employee termination.
+*   **MFA Configuration Review:** MFA configurations and logs will be reviewed quarterly for effectiveness and potential issues.
+
+### **12. Roles and Responsibilities**
+
+Effective implementation and adherence to this policy require clear responsibilities across the organization:
+
+*   **12.1. Board of Directors / CEO:**
+    *   Overall accountability for the organization's information security posture.
+    *   Approve the Password and Authentication Management Policy.
+    *   Provide resources for policy implementation and enforcement.
+*   **12.2. Chief Information Security Officer (CISO):**
+    *   Owner of this policy; responsible for its development, maintenance, and oversight.
+    *   Ensures compliance with relevant standards (NCA ECC, ISO 27001).
+    *   Provides guidance and expertise on password and authentication best practices.
+    *   Monitors security incidents related to authentication.
+*   **12.3. IT Department / Security Operations:**
+    *   Implement and enforce the technical controls specified in this policy (e.g., system configurations for password complexity, lockout, MFA).
+    *   Manage and maintain authentication systems and PAM solutions.
+    *   Provide user support for password resets and MFA issues.
+    *   Monitor logs for suspicious authentication activities and account lockouts.
+    *   Conduct access rights reviews.
+    *   Respond to and investigate security incidents involving authentication.
+*   **12.4. All Employees, Contractors, and Third-Party Users:**
+    *   Adhere strictly to all provisions of this policy.
+    *   Create strong, unique passwords and passphrases.
+    *   Safeguard their credentials (passwords, MFA tokens) and not share them with anyone.
+    *   Report any suspicious activity, unauthorized access attempts, or compromise of their credentials immediately to the IT Department.
+    *   Comply with MFA requirements for all designated systems.
+*   **12.5. Department Heads / Managers:**
+    *   Ensure their team members understand and comply with this policy.
+    *   Approve and review access requests for their direct reports.
+    *   Notify the IT Department promptly of employee onboarding, offboarding, or job role changes to facilitate timely access provisioning and de-provisioning.
+*   **12.6. Human Resources (HR) Department:**
+    *   Integrate this policy into employee onboarding and training programs.
+    *   Collaborate with the CISO and IT Department on non-compliance investigations and disciplinary actions.
+
+### **13. Non-compliance Consequences**
+
+Failure to comply with this Password and Authentication Management Policy jeopardizes the security of MIC's critical assets, including proprietary manufacturing processes, customer data, and financial information. Non-compliance will be taken seriously and may result in:
+
+*   **Investigation:** All instances of suspected non-compliance will be thoroughly investigated by the IT Department and/or CISO Office.
+*   **Corrective Action:** Users found in non-compliance may be required to undergo mandatory retraining on security policies and procedures.
+*   **Access Suspension:** Temporary or permanent suspension of access to MIC IT systems and resources.
+*   **Disciplinary Action:** Depending on the severity and intent of the violation, disciplinary action may be taken, up to and including:
+    *   Formal warnings.
+    *   Performance improvement plans.
+    *   Suspension of employment without pay.
+    *   Termination of employment or contract.
+*   **Legal Action:** In cases where non-compliance leads to significant data breach, financial loss, or violation of legal/regulatory requirements, MIC may pursue civil or criminal legal action against the responsible parties.
+
+### **14. Definitions**
+
+*   **CISO:** Chief Information Security Officer.
+*   **Credentials:** Data used to authenticate a user (e.g., username, password, biometric data, MFA token).
+*   **IT Systems:** All hardware, software, networks, and data used by MIC for information processing and storage.
+*   **MFA (Multi-Factor Authentication):** An authentication method requiring two or more independent factors of verification.
+*   **NCA ECC (National Cybersecurity Authority Essential Cybersecurity Controls):** A cybersecurity framework providing controls for organizations to enhance their cybersecurity posture.
+*   **ISO 27001:** An international standard for information security management systems (ISMS).
+*   **Operational Technology (OT) Systems:** Hardware and software that monitor and control physical processes, devices, and infrastructure (e.g., SCADA, DCS, PLCs used in manufacturing).
+*   **PAM (Privileged Access Management):** Solutions and processes to secure, manage, and monitor privileged accounts.
+*   **Passphrase:** A sequence of words or characters used as a password.
+*   **Privileged Account:** An account with elevated access rights or special permissions that allow it to perform administrative or critical functions.
+*   **Remote Access:** Any connection to MIC's internal networks or systems from outside the corporate physical premises.
+*   **Salting:** The addition of a random string to a password before hashing, making rainbow table attacks ineffective.
+*   **TLS (Transport Layer Security):** A cryptographic protocol designed to provide communication security over a computer network.",Fully Compliant,1.0,[],0,"The Manufacturing Innovations Corp. (MIC) Password and Authentication Management Policy is exceptionally comprehensive and robust. It thoroughly addresses all specified gap categories, including strong password complexity, adequate expiration and history, a robust account lockout policy, mandatory multi-factor authentication for critical access, detailed privileged access management procedures (including emergency access), secure password storage (hashing with salt) and transmission (encrypted channels), a clear periodic review schedule, and well-defined roles and responsibilities. The policy explicitly references compliance with NCA ECC and ISO 27001 and provides detailed controls that align with these frameworks. No gaps were identified based on the provided criteria.",2-2 Identity and Access Management,"[""2-2-3-1: Single-factor authentication based on username and password"", ""2-2-3-2: Multi-factor authentication for remote access and privileged accounts"", ""2-2-3-3: User authorization based on Need-to-Know, Least Privilege, and Segregation of Duties"", ""2-2-3-4: Privileged access management"", ""2-2-3-5: Periodic review of identities and access rights""]","[""A.9.2.1: User registration and de-registration"", ""A.9.2.4: Management of secret authentication information"", ""A.9.3.1: Use of secret authentication information"", ""A.9.4.3: Password management system""]",2026-02-02T01:50:42.790837
+password_policy_ar_excellent_1_20260202015134,password_policy,ar,excellent,"## سياسة كلمات المرور والمصادقة
+
+**وثيقة رقم:** SEC-POL-001
+**الإصدار:** 1.0
+**تاريخ الإصدار:** 2023-10-27
+**تاريخ المراجعة التالي:** 2024-01-27
+**المُعتمد بواسطة:** [اسم أو منصب المسؤول الأمني الأول/مدير الأمن السيبراني]
+
+---
+
+### جدول المحتويات
+
+1.  الغرض والنطاق
+2.  متطلبات تعقيد كلمة المرور
+3.  سياسة انتهاء صلاحية كلمة المرور
+4.  سجل كلمات المرور
+5.  سياسة قفل الحساب
+6.  متطلبات المصادقة متعددة العوامل (MFA)
+7.  إجراءات إدارة الوصول المميز (PAM)
+8.  تخزين ونقل كلمات المرور
+9.  إجراءات الوصول الطارئ
+10. جدول المراجعة الدورية
+11. الأدوار والمسؤوليات
+12. عواقب عدم الامتثال
+
+---
+
+### 1. الغرض والنطاق
+
+**1.1. الغرض:**
+تحدد هذه السياسة المتطلبات والمعايير لإنشاء كلمات مرور قوية، وإدارة المصادقة، والتحكم في الوصول ضمن [اسم المؤسسة المالية]، وذلك بهدف حماية الأصول المعلوماتية الحساسة، وضمان خصوصية بيانات العملاء، والمحافظة على سلامة العمليات المالية، والامتثال للمتطلبات التنظيمية الصارمة. تهدف السياسة إلى تقليل مخاطر الوصول غير المصرح به، وهجمات القوة الغاشمة، والاختراقات الأمنية، خاصة في سياق عمل القوى العاملة عن بُعد المنتشرة إقليمياً، والتي تمثل نقطة ضعف محتملة تتطلب تدابير أمنية معززة.
+
+**1.2. النطاق:**
+تنطبق هذه السياسة على جميع الموظفين (بدوام كامل وجزئي)، والمتعاقدين، والاستشاريين، وموظفي الجهات الخارجية الذين يصلون إلى أنظمة [اسم المؤسسة المالية] وشبكاتها وبياناتها. كما تنطبق على جميع الأنظمة والتطبيقات والخدمات والأجهزة التي تتطلب مصادقة المستخدم داخل أو في بيئة [اسم المؤسسة المالية]، بما في ذلك الأنظمة المستضافة محلياً (On-premises) والأنظمة السحابية (Cloud-based)، وبغض النظر عن موقع الوصول (مكتبي أو عن بُعد).
+
+تتواءم هذه السياسة بشكل كامل مع ضوابط الهيئة الوطنية للأمن السيبراني (NCA) ECC 2-2 (إدارة الهوية والوصول) ومعيار ISO 27001 الملحق A.9 (التحكم في الوصول).
+
+### 2. متطلبات تعقيد كلمة المرور
+
+تُعد كلمات المرور القوية حجر الزاوية في حماية الوصول إلى أنظمة [اسم المؤسسة المالية]. يجب أن تستوفي جميع كلمات المرور المستخدمة للوصول إلى أنظمة المؤسسة المتطلبات التالية:
+
+*   **الحد الأدنى للطول:** 12 حرفاً على الأقل.
+*   **تنوع الأحرف:** يجب أن تحتوي كلمات المرور على مزيج من أربعة أنواع من الأحرف على الأقل:
+    *   أحرف كبيرة (A-Z)
+    *   أحرف صغيرة (a-z)
+    *   أرقام (0-9)
+    *   رموز خاصة (مثل !@#$%^&*-+_=، إلخ)
+*   **التفرد:**
+    *   لا يجوز أن تكون كلمة المرور اسم مستخدم المستخدم أو جزءاً منه.
+    *   لا يجوز أن تحتوي على اسم المؤسسة أو أي مصطلحات معروفة أو سهلة التخمين (مثل ""password""، ""123456"").
+    *   يجب ألا تستند إلى معلومات شخصية يسهل الحصول عليها (مثل تاريخ الميلاد، أسماء أفراد العائلة، أرقام الهواتف).
+    *   يجب ألا تكون كلمة المرور قابلة للمطابقة في قواميس الكلمات الشائعة أو القوائم السوداء لكلمات المرور المخترقة.
+*   **عدم المشاركة:** يحظر على الموظفين مشاركة كلمات المرور الخاصة بهم مع أي شخص تحت أي ظرف من الظروف.
+*   **التغيير الأولي:** يجب على المستخدمين تغيير كلمة المرور الأولية أو المؤقتة على الفور عند تسجيل الدخول الأول.
+
+### 3. سياسة انتهاء صلاحية كلمة المرور
+
+لضمان التحديث المستمر لآليات الحماية ومنع استغلال كلمات المرور القديمة، يجب تطبيق سياسة انتهاء الصلاحية التالية:
+
+*   **الحد الأقصى للصلاحية:** يجب تغيير كلمات المرور بحد أقصى كل 90 يوماً. سيتم إخطار المستخدمين قبل انتهاء صلاحية كلمة المرور بوقت كافٍ (على سبيل المثال، 7 أيام قبل الانتهاء).
+*   **التغيير الفوري:** في حالة الاشتباه في اختراق كلمة المرور أو الكشف عنها، يجب على المستخدم تغيير كلمة المرور الخاصة به على الفور وإبلاغ قسم أمن المعلومات.
+*   **التغيير بعد إعادة الضبط:** يجب على المستخدمين تغيير كلمة المرور عند إعادة تعيينها من قبل المسؤول.
+
+### 4. سجل كلمات المرور
+
+لمنع إعادة استخدام كلمات المرور القديمة التي قد تكون عرضة للاختراق، تُطبق القيود التالية:
+
+*   **تاريخ عدم الاستخدام:** لا يمكن للمستخدمين إعادة استخدام أي من آخر 12 كلمة مرور استخدموها. سيتم فرض هذا الشرط تلقائياً بواسطة أنظمة المصادقة.
+
+### 5. سياسة قفل الحساب
+
+لحماية الحسابات من هجمات القوة الغاشمة والتخمين، يتم تطبيق سياسة قفل الحساب التالية:
+
+*   **عدد المحاولات الفاشلة:** سيتم قفل الحساب تلقائياً بعد 5 محاولات فاشلة متتالية لتسجيل الدخول.
+*   **مدة القفل:** سيبقى الحساب مقفلاً لمدة 30 دقيقة. بعد انقضاء هذه المدة، سيتم إلغاء قفل الحساب تلقائياً.
+*   **إخطار المسؤول:** في حالة قفل الحسابات ذات الامتيازات العالية أو حسابات الأنظمة الإدارية، سيتم إرسال إشعار فوري إلى فريق أمن المعلومات لمراجعة الحالة والتحقق من عدم وجود نشاط مشبوه.
+*   **إجراءات استعادة الوصول:** يمكن للمستخدمين إعادة تعيين كلمات المرور الخاصة بهم عبر بوابة الخدمة الذاتية الآمنة للمؤسسة (إن وجدت) أو الاتصال بقسم الدعم الفني بعد التحقق من الهوية.
+
+### 6. متطلبات المصادقة متعددة العوامل (MFA)
+
+تعزيزاً لأمن الحسابات، خاصةً في بيئة عمل عن بُعد إقليمية تتعامل مع بيانات مالية حساسة، تُعد المصادقة متعددة العوامل (MFA) إلزامية في السيناريوهات التالية:
+
+*   **الوصول عن بُعد:** يجب على جميع الموظفين والمتعاقدين الذين يصلون إلى أنظمة وشبكات [اسم المؤسسة المالية] عن بُعد، بما في ذلك الوصول عبر الشبكات الخاصة الافتراضية (VPN)، والوصول إلى التطبيقات السحابية، استخدام المصادقة متعددة العوامل.
+*   **الحسابات ذات الصلاحيات العالية:** يجب أن تتطلب جميع الحسابات ذات الصلاحيات العالية، مثل مديري النطاق، ومديري قواعد البيانات، ومديري أنظمة الشبكة، وحسابات الوصول إلى بيانات العملاء الحساسة، المصادقة متعددة العوامل.
+*   **الأنظمة الإدارية:** يجب أن تتطلب جميع الأنظمة الإدارية التي تدعم عمليات الأعمال الحرجة أو تحتوي على بيانات حساسة (مثل أنظمة التخطيط لموارد المؤسسة (ERP)، وأنظمة إدارة علاقات العملاء (CRM)، وأنظمة إدارة الموارد البشرية، والأنظمة المالية الأساسية، وواجهات إدارة البنية التحتية السحابية) المصادقة متعددة العوامل للوصول.
+*   **طرق MFA المقبولة:** توصي المؤسسة باستخدام طرق MFA قوية مثل تطبيقات المصادقة (Authenticator Apps)، والمفاتيح الأمنية للأجهزة (Hardware Security Keys)، أو المصادقة البيومترية. يمكن استخدام المصادقة المستندة إلى الرسائل النصية القصيرة (SMS) كخيار احتياطي أو في حالات محددة بعد تقييم المخاطر.
+
+### 7. إجراءات إدارة الوصول المميز (PAM)
+
+يجب إدارة الوصول المميز (Privileged Access) بشكل صارم نظراً للمخاطر العالية المرتبطة به.
+
+*   **مبدأ الامتياز الأقل (Least Privilege):** يتم منح الوصول المميز فقط للمستخدمين الذين يحتاجون إليه لأداء واجباتهم، وللفترة الزمنية اللازمة فقط.
+*   **الفصل بين الحسابات:** يجب فصل حسابات المستخدمين العادية عن حسابات الامتياز (على سبيل المثال، لا يجوز استخدام حساب مدير النطاق لتصفح الويب أو البريد الإلكتروني).
+*   **كلمات مرور مميزة قوية:** يجب أن تتجاوز كلمات مرور الحسابات المميزة متطلبات التعقيد القياسية، مع طول أكبر وتنوع أحرف أعلى.
+*   **المصادقة متعددة العوامل (MFA) إلزامية:** يجب استخدام MFA لجميع عمليات الوصول المميزة.
+*   **المراقبة والتسجيل:** يجب تسجيل جميع أنشطة الوصول المميز ومراقبتها بشكل مستمر للبحث عن أي نشاط غير طبيعي أو مشبوه.
+*   **مراجعة منتظمة:** يتم مراجعة الوصول المميز وتحديثه بشكل منتظم (على الأقل ربع سنوي) لضمان توافقه مع أدوار المستخدمين ومسؤولياتهم.
+*   **محطات عمل آمنة:** يجب أن يتم تنفيذ المهام المميزة من محطات عمل مخصصة وآمنة ومحمية لا تُستخدم لأغراض عامة.
+*   **إدارة كلمات المرور المميزة:** يجب استخدام حلول إدارة الوصول المميز (PAM) لتخزين كلمات المرور المميزة وتدويرها بأمان، وتوفير الوصول إليها عند الحاجة فقط.
+
+### 8. تخزين ونقل كلمات المرور
+
+لضمان سرية كلمات المرور، يجب الالتزام بالمتطلبات التالية:
+
+*   **التخزين:**
+    *   لا يجوز تخزين كلمات المرور كنص عادي أبداً.
+    *   يجب تخزين جميع كلمات المرور في قواعد بيانات المؤسسة باستخدام وظائف تجزئة تشفير أحادية الاتجاه قوية (مثل SHA-256 أو أحدث) مع إضافة ""الملح"" (Salting) لزيادة المقاومة لهجمات القوة الغاشمة وجداول قوس قزح (Rainbow Tables).
+    *   يجب تشفير أي كلمات مرور يتم تخزينها مؤقتاً في الذاكرة.
+*   **النقل:**
+    *   يجب نقل كلمات المرور عبر الشبكات باستخدام قنوات اتصال مشفرة فقط (مثل TLS 1.2 أو أحدث للوصول عبر الويب، VPN للوصول عن بُعد، SSH للوصول إلى سطر الأوامر).
+    *   يحظر إرسال كلمات المرور عبر البريد الإلكتروني أو الرسائل الفورية أو أي قنوات غير آمنة أخرى.
+*   **حظر التخزين غير الآمن:** يُحظر تخزين كلمات المرور على أوراق مكتوبة، أو في ملفات نصية غير محمية، أو في متصفحات الويب غير الآمنة. يُنصح باستخدام مديري كلمات المرور المعتمدين من المؤسسة.
+
+### 9. إجراءات الوصول الطارئ
+
+في حالات الطوارئ التي قد تؤثر على توفر الأنظمة الحيوية أو قدرة المسؤولين على الوصول إلى وظائفهم (مثل فقدان بيانات الاعتماد، أو تعطل نظام المصادقة الأساسي)، يجب أن تكون هناك إجراءات واضحة وآمنة للوصول الطارئ:
+
+*   **حسابات ""Break-Glass"":**
+    *   يجب إنشاء حسابات وصول طارئ مخصصة (""Break-Glass"" accounts) مع الحد الأدنى من الامتيازات اللازمة لاستعادة الخدمة.
+    *   يجب أن تكون هذه الحسابات معزولة، ومصادقتها قوية، وكلمات مرورها معقدة للغاية، ومخزنة بأمان في بيئة مادية محكمة (على سبيل المثال، في خزانة مقاومة للحريق داخل قبو آمن مع مفاتيح متعددة يمتلكها كبار المسؤولين).
+    *   يجب أن تكون هذه الحسابات معفاة من سياسة انتهاء صلاحية كلمات المرور العادية ولكن يتم تغييرها بعد كل استخدام.
+*   **إجراءات الاستخدام:**
+    *   يجب أن يكون هناك إجراء موثق ومعتمد بوضوح لاستخدام حسابات الوصول الطارئ، يتضمن موافقة الإدارة العليا أو فريق الاستجابة للحوادث.
+    *   يجب تسجيل جميع حالات استخدام الوصول الطارئ وتوثيقها بدقة، مع تحديد سبب الاستخدام والمدة والأنشطة التي تم تنفيذها.
+*   **المراجعة بعد الاستخدام:** بعد كل استخدام للوصول الطارئ، يجب مراجعة السجلات الأمنية ذات الصلة، وتغيير كلمات المرور، وإعادة تأمين الحساب، والتأكد من عدم وجود نشاط مشبوه.
+
+### 10. جدول المراجعة الدورية
+
+لضمان استمرار فعالية وتوافق سياسة كلمات المرور والمصادقة، سيتم إجراء مراجعات دورية:
+
+*   **التردد:** سيتم مراجعة هذه السياسة ربع سنوياً (كل 3 أشهر) على الأقل.
+*   **المسؤول عن المراجعة:** فريق أمن المعلومات، بالتعاون مع قسم تكنولوجيا المعلومات وقسم الامتثال.
+*   **نطاق المراجعة:**
+    *   التوافق مع أحدث إصدارات ضوابط الهيئة الوطنية للأمن السيبراني (ECC 2-2) ومعيار ISO 27001 Annex A.9.
+    *   تقييم فعالية السياسة في مواجهة التهديدات الأمنية الناشئة، وخاصة تلك التي تستهدف القوى العاملة عن بُعد.
+    *   مراجعة التطورات التكنولوجية وأفضل الممارسات الصناعية في مجال إدارة الهوية والوصول والمصادقة.
+    *   التعليقات الواردة من الموظفين والإدارة.
+    *   نتائج التدقيق الداخلي والخارجي.
+    *   سجلات الحوادث الأمنية المتعلقة بالوصول والمصادقة.
+
+### 11. الأدوار والمسؤوليات
+
+لضمان التنفيذ الفعال لهذه السياسة، يتم تحديد الأدوار والمسؤوليات التالية:
+
+*   **مدير الأمن السيبراني (CISO) / رئيس أمن المعلومات:**
+    *   المسؤولية النهائية عن تطوير هذه السياسة ومراجعتها والموافقة عليها.
+    *   ضمان الامتثال لضوابط الهيئة الوطنية للأمن السيبراني ومعيار ISO 27001.
+    *   الإشراف على تنفيذ السياسة وتطبيقها.
+*   **إدارة تكنولوجيا المعلومات / المسؤولون عن الأنظمة:**
+    *   تنفيذ هذه السياسة وتطبيقها تقنياً عبر أنظمة المؤسسة (مثل خدمات الدليل النشط، أنظمة إدارة الهوية، أنظمة VPN).
+    *   تكوين الأنظمة لفرض متطلبات تعقيد كلمات المرور وانتهاء صلاحيتها وسجلها وسياسات قفل الحساب.
+    *   توفير الدعم الفني للمستخدمين في إعادة تعيين كلمات المرور وحل مشكلات المصادقة.
+    *   ضمان توفر حلول المصادقة متعددة العوامل ودعمها.
+*   **فريق أمن المعلومات:**
+    *   مراقبة تطبيق السياسة والكشف عن أي انتهاكات محتملة.
+    *   التحقيق في الحوادث الأمنية المتعلقة بكلمات المرور والمصادقة.
+    *   تقديم التوعية والتدريب للموظفين حول أفضل ممارسات أمن كلمات المرور.
+    *   المشاركة في المراجعة الدورية للسياسة.
+*   **إدارة الموارد البشرية (HR):**
+    *   ضمان دمج متطلبات سياسة كلمات المرور في عملية انضمام الموظفين الجدد (Onboarding) وفصل الموظفين (Offboarding).
+    *   تضمين السياسة في وثائق الموظفين والتدريب الأولي.
+*   **جميع الموظفين والمتعاقدين والجهات الخارجية:**
+    *   فهم هذه السياسة والالتزام بها بشكل كامل.
+    *   الإبلاغ عن أي حوادث أمنية أو اشتباه في اختراق كلمات المرور على الفور.
+    *   المشاركة في التدريبات التوعوية الدورية.
+*   **الإدارة العليا:**
+    *   توفير الموارد اللازمة لتنفيذ السياسة.
+    *   دعم ثقافة الأمن السيبراني في جميع أنحاء المؤسسة.
+
+### 12. عواقب عدم الامتثال
+
+يُعد الالتزام بسياسة كلمات المرور والمصادقة هذه أمراً بالغ الأهمية لأمن [اسم المؤسسة المالية] وسمعتها، خاصة بصفتها مؤسسة مالية إقليمية تتعامل مع بيانات حساسة للغاية. يمكن أن يؤدي عدم الامتثال إلى عواقب وخيمة:
+
+*   **إجراءات تأديبية:**
+    *   بالنسبة للموظفين: قد يؤدي عدم الامتثال إلى إجراءات تأديبية تتراوح من التوبيخ الشفوي أو الكتابي، إلى تعليق العمل، وصولاً إلى إنهاء الخدمة، وفقاً لسياسات الموارد البشرية الداخلية وقوانين العمل المعمول بها.
+    *   بالنسبة للمتعاقدين/الجهات الخارجية: قد يؤدي عدم الامتثال إلى إنهاء العقود.
+*   **العواقب القانونية والتنظيمية:**
+    *   بصفتها مؤسسة مالية، فإن [اسم المؤسسة المالية] تخضع لمتطلبات تنظيمية صارمة. قد يؤدي عدم الامتثال لهذه السياسة إلى انتهاكات تنظيمية، مما قد يترتب عليه غرامات مالية كبيرة وعقوبات تفرضها الهيئات التنظيمية المحلية والدولية.
+    *   قد يؤدي انتهاك هذه السياسة إلى مسائل قانونية، خاصة في حالة اختراق البيانات الناتج عن ضعف كلمات المرور أو عدم الالتزام بمتطلبات المصادقة.
+*   **التعرض الأمني وفقدان البيانات:**
+    *   يزيد عدم الامتثال بشكل كبير من مخاطر الوصول غير المصرح به إلى أنظمة وبيانات المؤسسة، مما قد يؤدي إلى اختراق البيانات، وسرقة المعلومات المالية للعملاء، والاحتيال.
+*   **الأضرار المالية والسمعة:**
+    *   يمكن أن تؤدي خروقات الأمن الناتجة عن عدم الامتثال إلى خسائر مالية فادحة للمؤسسة، بما في ذلك تكاليف الاستجابة للحوادث، والتعويضات، وتكاليف استعادة الثقة.
+    *   يمكن أن يؤثر فقدان الثقة لدى العملاء والشركاء بشكل كارثي على سمعة المؤسسة ومكانتها في السوق الإقليمي.
+    *   تعطيل العمليات التشغيلية وتوقف الخدمات، مما يؤثر على قدرة المؤسسة على تقديم الخدمات المالية الأساسية.
+
+تلتزم [اسم المؤسسة المالية] بتوفير بيئة عمل آمنة وموثوقة لجميع أصحاب المصلحة، ويجب على الجميع الاضطلاع بدورهم في تحقيق هذا الهدف.
+
+---
+**نهاية الوثيقة**",Fully Compliant,1.0,[],0,تُظهر سياسة كلمات المرور والمصادقة هذه توافقاً ممتازاً مع ضوابط الهيئة الوطنية للأمن السيبراني (ECC 2-2) ومعيار ISO 27001 الملحق A.9. تغطي السياسة جميع الجوانب الرئيسية لمتطلبات كلمات المرور والمصادقة بشكل شامل ومفصل، بما في ذلك متطلبات التعقيد القوية، وسياسة انتهاء الصلاحية وسجل كلمات المرور، وسياسة قفل الحساب، ومتطلبات المصادقة متعددة العوامل (MFA) الإلزامية للسيناريوهات الحرجة، وإجراءات إدارة الوصول المميز (PAM) المفصلة، ومتطلبات تخزين ونقل كلمات المرور الآمنة (التجزئة مع الملح والتشفير)، وجدول مراجعة دوري واضح، وتحديد دقيق للأدوار والمسؤوليات. لم يتم العثور على أي من الثغرات المحددة في قائمة التقييم.,2-2 Identity and Access Management,"[""2-2-3-1: Single-factor authentication based on username and password"", ""2-2-3-2: Multi-factor authentication for remote access and privileged accounts"", ""2-2-3-3: User authorization based on Need-to-Know, Least Privilege, and Segregation of Duties"", ""2-2-3-4: Privileged access management"", ""2-2-3-5: Periodic review of identities and access rights""]","[""A.9.2.1: User registration and de-registration"", ""A.9.2.4: Management of secret authentication information"", ""A.9.3.1: Use of secret authentication information"", ""A.9.4.3: Password management system""]",2026-02-02T01:51:34.001129
+password_policy_ar_excellent_2_20260202015221,password_policy,ar,excellent,"بالتأكيد، إليك سياسة كلمات مرور ومصادقة ممتازة وشاملة مصممة خصيصًا لمؤسسة تعليمية متوسطة الحجم (500-1000 موظف) تتعامل مع معلومات العملاء الحساسة، وتتوافق تمامًا مع ضوابط الهيئة الوطنية للأمن السيبراني ECC 2-2 ومعيار ISO 27001 الملحق A.9.
+
+---
+
+**[اسم المؤسسة التعليمية]**
+
+**سياسة كلمات المرور والمصادقة**
+
+**الوثيقة رقم:** [أدخل رقم الوثيقة]
+**الإصدار:** 1.0
+**تاريخ الإصدار:** 2023-10-27
+**المؤلف:** [اسم قسم أمن المعلومات]
+**المراجع:** [اسم قسم أمن المعلومات / رئيس قسم تقنية المعلومات]
+**الموافق عليها من قبل:** [اسم رئيس المؤسسة / المدير التنفيذي]
+**تاريخ المراجعة المخطط لها:** 2024-01-27 (ربع سنوية)
+
+---
+
+**1. الغرض والنطاق**
+
+**1.1 الغرض:**
+تحدد هذه السياسة المتطلبات والمعايير لإنشاء وإدارة وحماية كلمات المرور وآليات المصادقة الأخرى داخل [اسم المؤسسة التعليمية]. يهدف الغرض الأساسي من هذه السياسة إلى حماية أصول المؤسسة الرقمية، بما في ذلك البيانات الحساسة للمستخدمين (مثل سجلات الطلاب والمعلومات المالية والشخصية)، والبنية التحتية لتكنولوجيا المعلومات، والأنظمة، والتطبيقات من الوصول غير المصرح به. تضمن هذه السياسة الامتثال لضوابط الهيئة الوطنية للأمن السيبراني ECC 2-2 (إدارة الهوية والوصول) ومعيار ISO 27001 الملحق A.9 (التحكم في الوصول)، بالإضافة إلى أفضل ممارسات الأمن السيبراني.
+
+**1.2 النطاق:**
+تنطبق هذه السياسة على جميع الأفراد الذين يستخدمون أو يديرون أنظمة ومعلومات [اسم المؤسسة التعليمية]، بما في ذلك على سبيل المثال لا الحصر:
+*   جميع الموظفين (أعضاء هيئة التدريس، والموظفون الإداريون، والموظفون الفنيون، وغيرهم).
+*   المتعاقدون والمقاولون والاستشاريون والزوار والموظفون المؤقتون والمتطوعون.
+*   أي أطراف ثالثة لديها إمكانية الوصول إلى أنظمة أو بيانات المؤسسة.
+*   جميع الأنظمة والتطبيقات والخدمات والأجهزة التي تتطلب مصادقة للوصول، سواء كانت مملوكة للمؤسسة أو مدارة من قبلها، أو مستضافة خارجيًا ولكنها تعالج بيانات المؤسسة.
+*   على وجه الخصوص، تغطي هذه السياسة الوصول إلى أنظمة معلومات الطلاب (SIS)، أنظمة إدارة التعلم (LMS)، أنظمة الموارد البشرية (HR)، الأنظمة المالية، وأنظمة إدارة الشبكة والخوادم.
+
+**2. المبادئ العامة**
+
+تلتزم [اسم المؤسسة التعليمية] بالمبادئ التالية فيما يتعلق بإدارة كلمات المرور والمصادقة:
+*   **أمن البيانات:** حماية سرية وسلامة وتوافر معلومات المؤسسة، وخاصة بيانات الطلاب الحساسة.
+*   **الحد الأدنى من الامتيازات:** منح الحد الأدنى من حقوق الوصول المطلوبة لأداء المهام الوظيفية.
+*   **المساءلة:** ضمان إمكانية تتبع جميع الإجراءات المتخذة على الأنظمة للمستخدمين الفرديين.
+*   **الوعي الأمني:** تثقيف المستخدمين حول أهمية ممارسات كلمات المرور الآمنة.
+
+**3. متطلبات تعقيد كلمة المرور**
+
+يجب أن تفي كلمات المرور الخاصة بجميع حسابات المستخدمين بالحد الأدنى من متطلبات التعقيد التالية:
+*   **الحد الأدنى للطول:** يجب ألا تقل عن 12 حرفًا.
+*   **تنوع الأحرف:** يجب أن تحتوي على مزيج من أربعة أنواع من الأحرف على الأقل:
+    *   أحرف كبيرة (A-Z).
+    *   أحرف صغيرة (a-z).
+    *   أرقام (0-9).
+    *   رموز خاصة (مثل !@#$%^&*()_+-=[]{}|;':"",.<>?/`~).
+*   **عدم استخدام معلومات شخصية:** يجب ألا تحتوي كلمات المرور على معلومات شخصية يمكن تخمينها بسهولة مثل أسماء المستخدمين أو أجزاء منها، أسماء العائلة، أرقام الهواتف، تواريخ الميلاد، عناوين البريد الإلكتروني، أسماء الحيوانات الأليفة، أو الكلمات الشائعة والقواميس.
+*   **تجنب الأنماط المتسلسلة أو المتكررة:** يجب عدم استخدام تسلسلات (مثل ""123456"" أو ""abcde"") أو أحرف متكررة (مثل ""aaaaaa"").
+*   **العبارات المرورية:** يوصى بشدة باستخدام ""العبارات المرورية"" (Passphrases) التي تتكون من عدة كلمات غير مرتبطة لزيادة قوة كلمة المرور وسهولة تذكرها، شريطة أن تفي بمتطلبات الطول والتعقيد.
+
+**4. سياسة انتهاء صلاحية كلمة المرور**
+
+لضمان التحديث المستمر لكلمات المرور وتقليل مخاطر التسوية:
+*   **الحد الأقصى للصلاحية:** يجب على جميع المستخدمين تغيير كلمات المرور الخاصة بهم بحد أقصى كل 90 يومًا. سيقوم النظام بفرض هذا التغيير تلقائيًا.
+*   **تغيير كلمة المرور الأولية:** يجب على المستخدمين تغيير كلمة المرور الأولية أو المؤقتة التي يتم توفيرها لهم عند أول تسجيل دخول. لن يتم منحهم إمكانية الوصول الكامل إلى النظام قبل تغييرها.
+*   **التغيير الفوري:** في حالة الاشتباه في تعرض كلمة مرور للخطر أو تسريبها، يجب على المستخدم تغييرها فورًا وإبلاغ مكتب المساعدة الفني.
+
+**5. سجل كلمات المرور**
+
+لمنع إعادة استخدام كلمات المرور القديمة والمعرضة للخطر:
+*   **عدم إعادة الاستخدام:** يجب على المستخدمين عدم إعادة استخدام أي من آخر 12 كلمة مرور سابقة استخدموها لحساباتهم. سيقوم النظام بفرض هذا القيد تلقائيًا.
+
+**6. سياسة قفل الحساب**
+
+لحماية الحسابات من هجمات التخمين والقوة الغاشمة:
+*   **عدد المحاولات الفاشلة:** سيتم قفل حساب المستخدم تلقائيًا بعد 5 محاولات فاشلة متتالية لتسجيل الدخول.
+*   **مدة القفل:** سيبقى الحساب مقفلاً لمدة 30 دقيقة. بعد انقضاء هذه المدة، سيتم إلغاء قفل الحساب تلقائيًا ويمكن للمستخدم المحاولة مرة أخرى.
+*   **إلغاء القفل اليدوي:** يمكن لموظفي قسم تقنية المعلومات المخولين إلغاء قفل الحسابات يدويًا إذا تم التحقق من هوية المستخدم بشكل صحيح، ويتم تسجيل جميع عمليات إلغاء القفل اليدوية للمراجعة.
+
+**7. متطلبات المصادقة متعددة العوامل (MFA)**
+
+لتعزيز أمان الوصول إلى الأنظمة الحساسة:
+*   **الوصول عن بُعد:** تتطلب جميع عمليات الوصول عن بُعد إلى شبكة وأنظمة [اسم المؤسسة التعليمية] (مثل VPN، الوصول عن بُعد لسطح المكتب، والخدمات السحابية) المصادقة متعددة العوامل (MFA).
+*   **الحسابات ذات الصلاحيات العالية:** يجب تمكين المصادقة متعددة العوامل (MFA) لجميع الحسابات التي لديها صلاحيات عالية أو مميزة (مثل حسابات المسؤولين، حسابات مديري الأنظمة، حسابات إدارة قواعد البيانات، حسابات إدارة الموارد البشرية التي تتعامل مع بيانات حساسة للغاية، والحسابات المالية).
+*   **الأنظمة الإدارية:** تتطلب جميع عمليات الوصول إلى واجهات الإدارة للأنظمة الحيوية والمعلومات الحساسة (مثل لوحات تحكم أنظمة معلومات الطلاب (SIS)، واجهات إدارة أنظمة إدارة التعلم (LMS)، أنظمة تخطيط موارد المؤسسات (ERP)، أنظمة إدارة البنية التحتية، الخوادم، وأجهزة الشبكة) المصادقة متعددة العوامل (MFA).
+*   **طرق المصادقة:** سيتم دعم طرق MFA المعتمدة من قبل قسم تقنية المعلومات، والتي قد تشمل تطبيقات المصادقة (Authenticator Apps)، رموز OTP المستندة إلى الوقت (TOTP)، مفاتيح الأمان المادية (Security Keys)، أو المصادقة البيومترية.
+
+**8. إجراءات إدارة الوصول المميز**
+
+يتطلب الوصول المميز (Privileged Access) إلى الأنظمة الحيوية عناية خاصة:
+*   **مبدأ الحد الأدنى من الامتيازات:** يتم منح الوصول المميز فقط للأفراد الذين تتطلب مهامهم الوظيفية ذلك بشكل مطلق، ويتم منح أقل مستوى ممكن من الامتيازات لأداء المهمة.
+*   **حسابات مخصصة:** يجب على المستخدمين الذين لديهم وصول مميز استخدام حسابات منفصلة ومخصصة للمهام المميزة. يجب عليهم استخدام حساباتهم العادية غير المميزة للمهام اليومية والبريد الإلكتروني وتصفح الإنترنت.
+*   **المصادقة متعددة العوامل:** المصادقة متعددة العوامل إلزامية لجميع عمليات تسجيل الدخول إلى الحسابات المميزة.
+*   **التسجيل والمراقبة:** يتم تسجيل جميع أنشطة الوصول المميز ومراجعتها بانتظام (يوميًا/أسبوعيًا للأنظمة الحرجة).
+*   **المراجعة الدورية:** تتم مراجعة حقوق الوصول المميز بشكل ربع سنوي (كل ثلاثة أشهر) أو عند تغيير دور الموظف أو إنهاء الخدمة لضمان بقائها مناسبة ومطلوبة.
+*   **محطات العمل الآمنة:** يوصى بشدة باستخدام محطات عمل مخصصة وآمنة (Hardened Workstations) للمهام المميزة، حيث يتم تقليل مخاطر البرامج الضارة والوصول غير المصرح به.
+*   **أنظمة إدارة الوصول المميز (PAM):** سيتم استخدام حلول PAM لإدارة كلمات المرور الخاصة بالحسابات المميزة وتدويرها تلقائيًا، والتحكم في الوصول إلى الأنظمة الحساسة.
+
+**9. تخزين ونقل كلمات المرور**
+
+يجب حماية كلمات المرور في جميع مراحل دورة حياتها:
+*   **التخزين:** يجب تخزين كلمات المرور الخاصة بالمستخدمين في قواعد البيانات بطريقة مشفرة (مجزوءة مع استخدام الملح - Hashed with Salt) ولا يجب تخزينها أبدًا كنص عادي.
+*   **النقل:** يجب نقل كلمات المرور عبر الشبكات باستخدام بروتوكولات آمنة ومشفرة فقط (مثل HTTPS، SSH، VPN). لا يجوز أبدًا نقل كلمات المرور عبر قنوات غير مشفرة أو غير آمنة (مثل البريد الإلكتروني العادي أو الرسائل الفورية غير المشفرة).
+*   **عدم المشاركة:** يحظر منعًا باتًا مشاركة كلمات المرور مع أي شخص آخر، بما في ذلك الزملاء أو المشرفين أو موظفي قسم تقنية المعلومات. لن يطلب موظفو قسم تقنية المعلومات كلمة المرور الخاصة بك أبدًا.
+*   **عدم الكتابة:** يجب على المستخدمين عدم تدوين كلمات المرور الخاصة بهم في أماكن غير آمنة أو يمكن الوصول إليها بسهولة. يوصى باستخدام برامج إدارة كلمات المرور المعتمدة من قبل المؤسسة لتخزين كلمات المرور.
+
+**10. إجراءات الوصول الطارئ**
+
+لضمان استمرارية العمليات في حالات الطوارئ:
+*   **الغرض:** توفير آلية للوصول إلى الأنظمة والبيانات الحيوية في حالات الطوارئ القصوى (مثل فشل النظام الكلي، عدم توفر الموظفين الرئيسيين، الكوارث الطبيعية) عندما لا يمكن اتباع إجراءات الوصول العادية.
+*   **حساب ""كسر الزجاج"":** سيتم إنشاء حسابات وصول طارئة (تُعرف أيضًا باسم حسابات ""كسر الزجاج"" - Break-Glass Accounts) تكون مخصصة لهذا الغرض فقط، محمية بشدة، ونادرًا ما تستخدم.
+*   **الإجراءات الموثقة:** يجب أن تكون إجراءات الوصول الطارئ موثقة وموافق عليها مسبقًا، وتحدد بوضوح من يمكنه طلبها، ومن يمكنه الموافقة عليها، وكيفية تنفيذها.
+*   **الموافقة المتعددة:** يتطلب تفعيل الوصول الطارئ موافقة متعددة من الإدارة العليا وقسم أمن المعلومات.
+*   **المصادقة متعددة العوامل:** يجب أن تكون المصادقة متعددة العوامل إلزامية لجميع حسابات الوصول الطارئ.
+*   **التسجيل والمراجعة:** يتم تسجيل جميع استخدامات الوصول الطارئ بدقة ومراقبتها ومراجعتها بشكل فوري وشامل بعد كل استخدام لتقييم الحاجة والامتثال.
+*   **إعادة تعيين كلمة المرور:** يجب إعادة تعيين كلمة المرور الخاصة بحسابات الوصول الطارئ فورًا بعد كل استخدام.
+
+**11. جدول المراجعة الدورية**
+
+لضمان فعالية السياسة واستمرار ملاءمتها:
+*   **مراجعة السياسة:** تتم مراجعة سياسة كلمات المرور والمصادقة هذه بشكل ربع سنوي (كل ثلاثة أشهر) على الأقل، أو عند حدوث تغييرات كبيرة في التقنيات، أو المتطلبات التنظيمية، أو بيئة التهديدات.
+*   **مراجعة حقوق الوصول:**
+    *   **الحسابات المميزة:** تتم مراجعة حقوق الوصول للحسابات المميزة بشكل ربع سنوي على الأقل.
+    *   **الحسابات العادية:** تتم مراجعة حقوق الوصول للحسابات العادية بشكل نصف سنوي أو سنوي.
+*   **مراجعة سجلات التدقيق:** تتم مراجعة سجلات التدقيق المتعلقة بمحاولات تسجيل الدخول الفاشلة، وتفعيل MFA، واستخدام الوصول المميز، والوصول الطارئ بشكل منتظم (يوميًا/أسبوعيًا للأنظمة الحرجة، شهريًا للأنظمة الأخرى).
+
+**12. الأدوار والمسؤوليات**
+
+تتطلب إدارة كلمات المرور والمصادقة الفعالة مشاركة من مختلف الأطراف:
+*   **إدارة المؤسسة:** المسؤولية الشاملة عن توفير الموارد اللازمة لتنفيذ هذه السياسة وفرضها.
+*   **مدير أمن المعلومات (CISO):**
+    *   المسؤولية عن تطوير هذه السياسة ومراجعتها وتحديثها.
+    *   ضمان الامتثال للمعايير والضوابط التنظيمية (ECC 2-2، ISO 27001).
+    *   مراقبة فعالية ضوابط كلمات المرور والمصادقة.
+    *   التعامل مع الحوادث الأمنية المتعلقة بكلمات المرور.
+*   **إدارة تقنية المعلومات (IT Department):**
+    *   تنفيذ المتطلبات الفنية لهذه السياسة (مثل فرض التعقيد، انتهاء الصلاحية، سجل كلمات المرور، قفل الحساب، MFA).
+    *   توفير الدعم للمستخدمين فيما يتعلق بإدارة كلمات المرور واستكشاف الأخطاء وإصلاحها.
+    *   إدارة حسابات المستخدمين وحقوق الوصول المميزة.
+    *   مراقبة سجلات التدقيق والإبلاغ عن أي أنشطة مشبوهة.
+    *   توفير التدريب والتوعية للمستخدمين.
+*   **مديرو الأقسام:**
+    *   ضمان فهم موظفيهم لهذه السياسة والالتزام بها.
+    *   طلب حقوق الوصول المناسبة لموظفيهم بناءً على مبدأ الحد الأدنى من الامتيازات.
+    *   الإبلاغ الفوري عن أي تغييرات في أدوار الموظفين أو إنهاء خدماتهم لقسم تقنية المعلومات لتحديث أو إزالة حقوق الوصول.
+*   **جميع الموظفين والمستخدمين:**
+    *   قراءة هذه السياسة وفهمها والالتزام بجميع متطلباتها.
+    *   إنشاء كلمات مرور قوية وصيانتها.
+    *   حماية كلمات المرور الخاصة بهم وعدم مشاركتها.
+    *   الإبلاغ الفوري عن أي حوادث أمنية أو اشتباه في تعرض كلمة المرور للخطر.
+
+**13. عواقب عدم الامتثال**
+
+يتم التعامل مع أي انتهاك لهذه السياسة بجدية وقد يؤدي إلى عواقب وخيمة:
+*   **الإجراءات التأديبية:** قد يواجه الموظفون الذين ينتهكون هذه السياسة إجراءات تأديبية تتراوح من الإنذار الشفهي أو الخطي إلى الفصل من الخدمة، وذلك حسب خطورة الانتهاك وتأثيره.
+*   **العواقب القانونية:** في حالات انتهاك البيانات أو الإهمال الجسيم الذي يؤدي إلى أضرار للمؤسسة أو أطراف ثالثة (مثل الطلاب)، قد يتعرض الأفراد للمساءلة القانونية.
+*   **الأضرار التشغيلية:** قد يؤدي عدم الامتثال إلى تعريض أنظمة المؤسسة ومعلوماتها للخطر، مما يؤثر على سير العمليات التعليمية والإدارية.
+*   **الأضرار المالية والسمعة:** قد ينتج عن انتهاكات البيانات غرامات تنظيمية باهظة (بسبب التعامل مع بيانات حساسة) وتدهور في سمعة [اسم المؤسسة التعليمية] ككل.
+
+---
+
+**المراجع:**
+*   ضوابط الهيئة الوطنية للأمن السيبراني (ECC-1:2018) - الضابط 2-2: إدارة الهوية والوصول
+*   ISO/IEC 27001:2013 - Annex A.9: Access Control
+
+**المصطلحات والمختصرات:**
+*   **MFA:** المصادقة متعددة العوامل (Multi-Factor Authentication)
+*   **PAM:** إدارة الوصول المميز (Privileged Access Management)
+*   **VPN:** الشبكة الافتراضية الخاصة (Virtual Private Network)
+*   **SIS:** نظام معلومات الطلاب (Student Information System)
+*   **LMS:** نظام إدارة التعلم (Learning Management System)
+*   **ERP:** تخطيط موارد المؤسسة (Enterprise Resource Planning)
+*   **OTP:** كلمة المرور لمرة واحدة (One-Time Password)
+
+---",Fully Compliant,1.0,[],0,تعتبر وثيقة سياسة كلمات المرور والمصادقة شاملة وممتازة، وتتوافق بشكل كامل مع ضوابط الهيئة الوطنية للأمن السيبراني ECC 2-2 ومعيار ISO 27001 الملحق A.9. لقد تم تناول جميع الفئات الثمانية للثغرات المحتملة (GAP_PP_001 إلى GAP_PP_008) بشكل فعال ومفصل ضمن السياسة، مما يشير إلى عدم وجود أي ثغرات رئيسية في هذا الجانب. تغطي السياسة متطلبات تعقيد كلمات المرور، وانتهاء الصلاحية، وسجل كلمات المرور، وسياسة قفل الحساب، ومتطلبات المصادقة متعددة العوامل، وإدارة الوصول المميز، وتخزين ونقل كلمات المرور، وإجراءات الوصول الطارئ، وجدول المراجعة الدورية، والأدوار والمسؤوليات، وعواقب عدم الامتثال بشكل وافٍ.,2-2 Identity and Access Management,"[""2-2-3-1: Single-factor authentication based on username and password"", ""2-2-3-2: Multi-factor authentication for remote access and privileged accounts"", ""2-2-3-3: User authorization based on Need-to-Know, Least Privilege, and Segregation of Duties"", ""2-2-3-4: Privileged access management"", ""2-2-3-5: Periodic review of identities and access rights""]","[""A.9.2.1: User registration and de-registration"", ""A.9.2.4: Management of secret authentication information"", ""A.9.3.1: Use of secret authentication information"", ""A.9.4.3: Password management system""]",2026-02-02T01:52:21.227620
