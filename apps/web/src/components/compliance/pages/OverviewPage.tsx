@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useComplianceStore } from "../store";
 import { FRAMEWORK_COLORS, NCA_CONTROLS } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
@@ -6,6 +6,7 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 export default function OverviewPage() {
   const { assessments, policies, tasks } = useComplianceStore();
   const { t, locale } = useLanguage();
+  const navigate = useNavigate();
   const isRtl = locale === "ar";
   const c = t.compliance.overview;
   const cc = t.compliance.common;
@@ -44,18 +45,6 @@ export default function OverviewPage() {
   ]
     .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
     .slice(0, 5);
-  const coverage = [
-    {
-      name: isRtl ? "سياسة كلمات المرور" : "Password Policy",
-      scope: "ECC 2-2",
-      gaps: "GAP_PP_001-008",
-    },
-    {
-      name: isRtl ? "تقييم المخاطر" : "Risk Assessment",
-      scope: "ECC 1-5",
-      gaps: "GAP_RA_001-008",
-    },
-  ];
   const upcomingDomains = [
     { name: isRtl ? "أمن الشبكات" : "Network Security", ecc: "ECC 3-1" },
     { name: isRtl ? "حماية البيانات" : "Data Protection", ecc: "ECC 3-2" },
@@ -98,6 +87,7 @@ export default function OverviewPage() {
             title: c.overallCompliance,
             value: `${averageScore}%`,
             subtitle: c.acrossFrameworks,
+            link: "/dashboard/risk",
             color: averageScore >= 70 ? "text-gray-900 dark:text-white" : averageScore >= 40 ? "text-amber-600" : "text-red-600",
             code: "01",
           },
@@ -105,6 +95,7 @@ export default function OverviewPage() {
             title: c.assessments,
             value: String(assessments.length),
             subtitle: `${completedAssessments.length} ${c.xCompleted}`,
+            link: "/dashboard/assessments",
             color: "text-gray-900 dark:text-white",
             code: "02",
           },
@@ -112,6 +103,7 @@ export default function OverviewPage() {
             title: c.policiesAnalyzed,
             value: String(analyzedPolicies),
             subtitle: `${policies.length} ${c.totalUploaded}`,
+            link: "/dashboard/policies",
             color: "text-gray-900 dark:text-white",
             code: "03",
           },
@@ -119,11 +111,16 @@ export default function OverviewPage() {
             title: c.openTasks,
             value: String(openTasks),
             subtitle: `${policiesWithGaps} ${c.gapsIdentified}`,
+            link: "/dashboard/remediation",
             color: "text-orange-600",
             code: "04",
           },
         ].map((stat) => (
-          <div key={stat.title} className="rounded-[24px] border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div
+            key={stat.title}
+            onClick={() => stat.link && navigate(stat.link)}
+            className={`rounded-[24px] border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 transition-all ${stat.link ? "cursor-pointer hover:shadow-md hover:border-gray-300 dark:hover:border-gray-700" : ""}`}
+          >
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{stat.title}</p>
               <div className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-300 dark:text-gray-600">{stat.code}</div>
@@ -185,7 +182,7 @@ export default function OverviewPage() {
                     <p className="text-xs text-gray-400 mt-1">
                       {eccLatest ? eccLatest.name : c.noAssessmentYet}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{NCA_CONTROLS.ECC.length} controls · ML model backed</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{NCA_CONTROLS.ECC.length} {isRtl ? "ضوابط" : "controls"}</p>
                   </div>
                 </div>
               </div>
@@ -245,38 +242,8 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* Model Coverage & Coming Soon */}
+      {/* Coming Soon & Mapping */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Current ML coverage */}
-        <div className="rounded-[24px] border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-            {isRtl ? "تغطية نموذج الذكاء الاصطناعي" : "AI Model Coverage"}
-          </h3>
-          <div className="space-y-3">
-            {coverage.map((item, index) => (
-              <div key={item.name} className="rounded-2xl bg-gray-50 p-4 dark:bg-gray-800/70">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{item.scope} · {item.gaps}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="inline-flex rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-200">
-                      {isRtl ? "متاح" : "Active"}
-                    </span>
-                    <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-300 dark:text-gray-600">{String(index + 1).padStart(2, "0")}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-            {isRtl
-              ? "النموذج مدرّب باستخدام bert-base-multilingual-cased ويدعم العربية والإنجليزية."
-              : "Model: bert-base-multilingual-cased, supports Arabic & English."}
-          </p>
-        </div>
-
         {/* Coming soon */}
         <div className="rounded-[24px] border border-dashed border-gray-300 bg-gray-50/50 p-6 dark:border-gray-700 dark:bg-gray-800">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
@@ -295,16 +262,10 @@ export default function OverviewPage() {
               </div>
             ))}
           </div>
-          <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
-            {isRtl
-              ? "سيتم توسيع النموذج لتغطية مجالات ECC إضافية في التحديثات القادمة."
-              : "Model will be expanded to cover additional ECC domains in future updates."}
-          </p>
         </div>
-      </div>
 
       {/* NCA ECC ↔ ISO 27001 brief */}
-      <div className="mt-8 rounded-[24px] border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="rounded-[24px] border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-900 dark:text-white">
             {isRtl ? "ربط NCA ECC ↔ ISO 27001" : "NCA ECC ↔ ISO 27001 Mapping"}
@@ -334,6 +295,7 @@ export default function OverviewPage() {
             <div className="text-xl font-bold text-gray-900 dark:text-white">9</div>
             <div className="text-xs text-gray-500 dark:text-gray-400">{isRtl ? "مجالات" : "Domains"}</div>
           </div>
+        </div>
         </div>
       </div>
     </div>

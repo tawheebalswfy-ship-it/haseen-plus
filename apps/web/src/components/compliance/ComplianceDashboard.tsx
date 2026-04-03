@@ -68,7 +68,8 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
         <div className="flex h-full flex-col bg-white dark:bg-gray-950">
           {/* Logo */}
           <div className="flex h-20 items-center justify-between border-b border-gray-200 px-6 dark:border-gray-800">
-            <Link to="/dashboard" className="flex items-center gap-3 no-underline">
+            <Link to="/" className="flex items-center gap-2 no-underline">
+              <img src="/logo.png" alt="AICG" className="h-7 w-7" />
               <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
                 AICG
               </span>

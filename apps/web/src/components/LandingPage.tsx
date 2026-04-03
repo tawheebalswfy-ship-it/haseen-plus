@@ -55,22 +55,12 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.9fr)] lg:items-end">
             <div className="max-w-3xl">
-              <div className="mb-6 inline-flex items-center rounded-full border border-gray-300 bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
-              {isRtl ? "مشروع بحثي — جامعي" : "Research Project — University"}
-              </div>
-
               <h1 className="text-4xl font-semibold tracking-[-0.04em] text-gray-950 sm:text-5xl lg:text-6xl dark:text-white">
                 <span className="block">{isRtl ? "فحص امتثال السياسات" : "Policy Compliance"}</span>
                 <span className="mt-2 block text-gray-700 dark:text-gray-400">
                 {isRtl ? "لمعايير ISO 27001 و NCA ECC" : "ISO 27001 & NCA ECC"}
                 </span>
               </h1>
-
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-                {isRtl
-                  ? "منصة بحثية لتحليل سياسات الأمن السيبراني واكتشاف فجوات الامتثال وربط ضوابط NCA ECC بمرجعيات ISO 27001:2022 ضمن تجربة واضحة ومباشرة."
-                  : "A research platform for analyzing cybersecurity policies, surfacing compliance gaps, and mapping NCA ECC controls to ISO 27001:2022 in a clear, decision-oriented workflow."}
-              </p>
 
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <Link
@@ -108,7 +98,7 @@ export default function LandingPage() {
                     {isRtl ? "التغطية الحالية" : "Current Coverage"}
                   </p>
                   <h2 className="mt-2 text-xl font-semibold text-gray-950 dark:text-white">
-                    {isRtl ? "تحليل مدعوم بالنموذج" : "Model-backed Analysis"}
+                    {isRtl ? "أنواع السياسات المدعومة" : "Supported Policy Types"}
                   </h2>
                 </div>
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-200">
@@ -132,17 +122,6 @@ export default function LandingPage() {
                     <p className="mt-3 text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">{policy.refs.join("  •  ")}</p>
                   </div>
                 ))}
-              </div>
-
-              <div className="border-t border-gray-100 pt-5 dark:border-gray-800">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-400 dark:text-gray-500">
-                  {isRtl ? "المحرك" : "Engine"}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                  {isRtl
-                    ? "bert-base-multilingual-cased مع دعم كامل للعربية والإنجليزية وتقرير ربط مباشر بضوابط ECC ومرجعيات ISO."
-                    : "bert-base-multilingual-cased with Arabic and English support, paired with direct ECC and ISO mapping outputs."}
-                </p>
               </div>
             </div>
           </div>
@@ -243,8 +222,8 @@ export default function LandingPage() {
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-base text-gray-500 dark:text-gray-400">
               {isRtl
-                ? "نموذج الذكاء الاصطناعي مدرّب حالياً على نوعين من السياسات، مع خطط لتوسيع التغطية."
-                : "The AI model is currently trained on two policy types, with plans to expand coverage."}
+                ? "النظام يدعم حالياً نوعين من السياسات، مع خطط لتوسيع التغطية."
+                : "The system currently supports two policy types, with plans to expand coverage."}
             </p>
           </div>
 
@@ -341,21 +320,6 @@ export default function LandingPage() {
                 <h3 className="mt-5 text-base font-semibold text-gray-900 dark:text-white">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{item.desc}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {isRtl ? "التقنيات المستخدمة" : "Built With"}
-            </h2>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-            {["bert-base-multilingual-cased", "PyTorch", "FastAPI", "Google Cloud Run", "React", "TypeScript", "Supabase", "Tailwind CSS"].map((tech) => (
-              <span key={tech} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400">{tech}</span>
             ))}
           </div>
         </div>

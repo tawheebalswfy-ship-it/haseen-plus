@@ -10,7 +10,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 export default function PoliciesPage() {
   const { policies, addPolicy, updatePolicy, deletePolicy } = useComplianceStore();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const c = t.compliance.policies;
   const cc = t.compliance.common;
 
@@ -22,6 +22,7 @@ export default function PoliciesPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStep, setUploadStep] = useState<"idle" | "extracting" | "uploading" | "analyzing" | "done" | "error">("idle");
   const [expandedPolicy, setExpandedPolicy] = useState<string | null>(null);
+  const [textViewPolicy, setTextViewPolicy] = useState<{ title: string; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = policies.filter((p) => filterStatus === "all" || p.status === filterStatus);
@@ -305,32 +306,26 @@ export default function PoliciesPage() {
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span className="text-gray-500 dark:text-gray-400">{c.complianceLabel}:</span>
-                          <span className={`font-semibold text-${getComplianceColor(details.overall_compliance as string || "")}-600 dark:text-${getComplianceColor(details.overall_compliance as string || "")}-400`}>
-                            {getComplianceLabel(details.overall_compliance as string || "")}
-                          </span>
+                          {(() => {
+                            const color = getComplianceColor(String(details.overall_compliance ?? ""));
+                            const label = getComplianceLabel(String(details.overall_compliance ?? ""));
+                            const colorMap: Record<string, string> = {
+                              green: "text-green-600 dark:text-green-400",
+                              amber: "text-amber-600 dark:text-amber-400",
+                              red: "text-red-600 dark:text-red-400",
+                              gray: "text-gray-600 dark:text-gray-400",
+                            };
+                            return (
+                              <span className={`font-semibold ${colorMap[color] || "text-gray-600 dark:text-gray-400"}`}>
+                                {label}
+                              </span>
+                            );
+                          })()}
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 dark:text-gray-400">Score:</span>
                           <span className="font-semibold text-gray-900 dark:text-white">{Math.round((details.overall_score as number) * 100)}%</span>
                         </div>
-                        {details.text_length != null && (
-                          <div className="flex justify-between">
-                            <span className="text-gray-500 dark:text-gray-400">Extracted text:</span>
-                            <span className="text-gray-900 dark:text-white">{(details.text_length as number).toLocaleString()} chars</span>
-                          </div>
-                        )}
-                        {details.num_chunks != null && (
-                          <div className="flex justify-between">
-                            <span className="text-gray-500 dark:text-gray-400">Chunks analyzed:</span>
-                            <span className="text-gray-900 dark:text-white">{details.num_chunks as number}</span>
-                          </div>
-                        )}
-                        {details.inference_time_ms != null && (
-                          <div className="flex justify-between">
-                            <span className="text-gray-500 dark:text-gray-400">Inference:</span>
-                            <span className="text-gray-900 dark:text-white">{(details.inference_time_ms as number).toFixed(0)}ms</span>
-                          </div>
-                        )}
                         {Array.isArray(details.domains_detected) && (details.domains_detected as string[]).length > 0 && (
                           <div className="flex justify-between">
                             <span className="text-gray-500 dark:text-gray-400">Domains:</span>
@@ -451,6 +446,14 @@ export default function PoliciesPage() {
               <div className="flex items-center justify-between text-xs text-gray-400 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
                 <span>{new Date(policy.created_date).toLocaleDateString()}</span>
                 <div className="flex gap-3">
+                  {typeof (details as Record<string, unknown> | undefined)?.extracted_text === "string" && (
+                    <button
+                      onClick={() => setTextViewPolicy({ title: policy.title, text: (details as Record<string, unknown>).extracted_text as string })}
+                      className="text-gray-500 hover:text-gray-700 cursor-pointer border-0 bg-transparent dark:text-gray-400"
+                    >
+                      {locale === "ar" ? "عرض النص" : "View Text"}
+                    </button>
+                  )}
                   {policy.status !== "analyzing" && (
                     <button
                       onClick={() => handleReanalyze(policy.id, policy.title)}
@@ -476,6 +479,53 @@ export default function PoliciesPage() {
         <div className="rounded-[24px] border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <div className="mx-auto mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-gray-300 dark:text-gray-600">POLICIES</div>
           <p className="text-gray-500 dark:text-gray-400">{c.noPolicy}</p>
+        </div>
+      )}
+
+      {/* ── Policy Text Viewer Dialog ── */}
+      {textViewPolicy && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setTextViewPolicy(null)}>
+          <div
+            className="bg-white rounded-xl w-full max-w-3xl shadow-xl dark:bg-gray-900 max-h-[85vh] flex flex-col mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{textViewPolicy.title}</h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {locale === "ar" ? `${textViewPolicy.text.length.toLocaleString()} حرف` : `${textViewPolicy.text.length.toLocaleString()} characters`}
+                </p>
+              </div>
+              <button
+                onClick={() => setTextViewPolicy(null)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer border-0 bg-transparent p-1"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                {textViewPolicy.text}
+              </div>
+            </div>
+            {/* Footer */}
+            <div className="flex justify-end gap-3 px-6 py-3 border-t border-gray-200 dark:border-gray-800">
+              <button
+                onClick={() => { navigator.clipboard.writeText(textViewPolicy.text); }}
+                className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer border border-gray-200 bg-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700"
+              >
+                {locale === "ar" ? "نسخ النص" : "Copy Text"}
+              </button>
+              <button
+                onClick={() => setTextViewPolicy(null)}
+                className="px-4 py-2 text-sm font-semibold text-white dark:text-gray-900 bg-gray-900 dark:bg-white rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer border-0"
+              >
+                {locale === "ar" ? "إغلاق" : "Close"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

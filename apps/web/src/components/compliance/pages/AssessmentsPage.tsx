@@ -10,7 +10,7 @@ import { uploadEvidenceFile, getEvidenceFileUrl, deleteEvidenceFile, downloadEvi
 export default function AssessmentsPage() {
   const { assessments, policies, addAssessment, updateAssessment, deleteAssessment, addTask } = useComplianceStore();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const c = t.compliance.assessments;
   const cc = t.compliance.common;
   const [showNew, setShowNew] = useState(false);
@@ -18,6 +18,7 @@ export default function AssessmentsPage() {
   const [assessmentName, setAssessmentName] = useState("");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"controls" | "evidence" | "comments" | "audit">("controls");
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [commentText, setCommentText] = useState("");
   const [genMsg, setGenMsg] = useState("");
   const evidenceRef = useRef<HTMLInputElement>(null);
@@ -318,7 +319,11 @@ export default function AssessmentsPage() {
   };
 
   if (detail) {
-    const grouped = (detail.results || []).reduce<Record<string, ControlResult[]>>((acc, r) => {
+    const filteredResults = statusFilter
+      ? (detail.results || []).filter((r) => r.status === statusFilter)
+      : (detail.results || []);
+
+    const grouped = filteredResults.reduce<Record<string, ControlResult[]>>((acc, r) => {
       const d = r.domain || "General";
       (acc[d] = acc[d] || []).push(r);
       return acc;
@@ -333,7 +338,7 @@ export default function AssessmentsPage() {
 
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <button onClick={() => { setDetailId(null); setActiveTab("controls"); }} className="text-sm text-gray-500 hover:text-gray-700 mb-6 cursor-pointer bg-transparent border-0 dark:text-gray-400 dark:hover:text-gray-200">
+        <button onClick={() => { setDetailId(null); setActiveTab("controls"); setStatusFilter(null); }} className="text-sm text-gray-500 hover:text-gray-700 mb-6 cursor-pointer bg-transparent border-0 dark:text-gray-400 dark:hover:text-gray-200">
           {c.backToList}
         </button>
 
@@ -378,38 +383,25 @@ export default function AssessmentsPage() {
         {/* Summary Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           {[
-            { label: cc.compliant, count: detail.results?.filter((r) => r.status === "compliant").length || 0, color: "gray" },
-            { label: cc.partial, count: detail.results?.filter((r) => r.status === "partial").length || 0, color: "amber" },
-            { label: cc.nonCompliant, count: detail.results?.filter((r) => r.status === "non_compliant").length || 0, color: "red" },
-            { label: cc.notAssessed, count: detail.results?.filter((r) => r.status === "not_assessed").length || 0, color: "gray" },
+            { label: cc.compliant, count: detail.results?.filter((r) => r.status === "compliant").length || 0, color: "gray", filterKey: "compliant" },
+            { label: cc.partial, count: detail.results?.filter((r) => r.status === "partial").length || 0, color: "amber", filterKey: "partial" },
+            { label: cc.nonCompliant, count: detail.results?.filter((r) => r.status === "non_compliant").length || 0, color: "red", filterKey: "non_compliant" },
+            { label: cc.notAssessed, count: detail.results?.filter((r) => r.status === "not_assessed").length || 0, color: "gray", filterKey: "not_assessed" },
           ].map((s) => (
-            <div key={s.label} className="rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div
+              key={s.label}
+              onClick={() => setStatusFilter(statusFilter === s.filterKey ? null : s.filterKey)}
+              className={`rounded-xl border bg-white p-4 text-center shadow-sm dark:bg-gray-900 cursor-pointer transition-all ${
+                statusFilter === s.filterKey
+                  ? "border-gray-500 dark:border-gray-400 ring-1 ring-gray-500/20"
+                  : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700"
+              }`}
+            >
               <div className={`text-2xl font-bold text-${s.color}-600 dark:text-${s.color}-400`}>{s.count}</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
-
-        {/* ML Coverage Info */}
-        {(() => {
-          const total = detail.results?.length || 0;
-          const assessed = detail.results?.filter((r) => r.status !== "not_assessed").length || 0;
-          const notCovered = total - assessed;
-          if (notCovered > 0) {
-            return (
-              <div className="mb-4 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div className="flex items-start gap-3">
-                  <div className="pt-0.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">ML</div>
-                  <div className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>{assessed}/{total}</strong> {c.controlsCoveredByML}
-                    <span className="text-gray-500 dark:text-gray-400"> · {c.mlCoverageNote}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })()}
 
         {/* Tabs */}
         <div className="flex gap-1 border-b border-gray-200 dark:border-gray-800 mb-6">
@@ -435,6 +427,19 @@ export default function AssessmentsPage() {
         {/* Controls Tab */}
         {activeTab === "controls" && (
           <>
+            {statusFilter && (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {locale === "ar" ? `تصفية: ${statusFilter === "compliant" ? cc.compliant : statusFilter === "partial" ? cc.partial : statusFilter === "non_compliant" ? cc.nonCompliant : cc.notAssessed}` : `Filtering: ${statusFilter.replace("_", " ")}`}
+                </span>
+                <button
+                  onClick={() => setStatusFilter(null)}
+                  className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 cursor-pointer border-0 bg-transparent underline"
+                >
+                  {locale === "ar" ? "مسح الفلتر" : "Clear filter"}
+                </button>
+              </div>
+            )}
             <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">{c.editStatus}</p>
             {Object.entries(grouped).map(([domain, controls]) => (
               <div key={domain} className="mb-6">
