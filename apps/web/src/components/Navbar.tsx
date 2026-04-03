@@ -10,6 +10,8 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur-xl dark:border-gray-800 dark:bg-gray-950/90">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
+
+        
         <Link to="/" className="flex items-center gap-2 no-underline">
           <img src="/logo.png" alt="AICG" className="h-7 w-7" />
           <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
