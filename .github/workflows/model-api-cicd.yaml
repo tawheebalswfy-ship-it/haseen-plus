@@ -12,11 +12,13 @@ on:
       - main
     paths:
       - 'apps/model-api/**'
+      - '.github/workflows/model-api-cicd.yaml'
   pull_request:
     branches:
       - main
     paths:
       - 'apps/model-api/**'
+      - '.github/workflows/model-api-cicd.yaml'
 
 jobs:
   dockerize-and-deploy:
