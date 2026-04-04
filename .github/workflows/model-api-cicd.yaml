@@ -1,0 +1,60 @@
+name: Deploy to Cloud Run
+
+env:
+  SERVICE_NAME: ecc-model-host
+  PROJECT_ID: ecc-model
+  REGION: me-central1
+  DOCKER_IMAGE_URL: me-central1-docker.pkg.dev/ecc-model/ecc-model/ecc-model
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/model-api/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/model-api/**'
+
+jobs:
+  dockerize-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker me-central1-docker.pkg.dev
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_URL }}:latest -f apps/model-api/Dockerfile apps/model-api
+          docker push ${{ env.DOCKER_IMAGE_URL }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          echo SERVICE_NAME $SERVICE_NAME
+          gcloud run deploy $SERVICE_NAME \
+            --image ${{ env.DOCKER_IMAGE_URL }}:latest \
+            --platform managed \
+            --region me-central1 \
+            --allow-unauthenticated \
+            --memory 2Gi \
+            --cpu 2 \
+            --timeout 300 \
+            --cpu-boost \
+            --max-instances 3 \
+            --set-env-vars GCS_BUCKET_NAME=model-files33,GCS_MODEL_PREFIX=checkpoint-505/
