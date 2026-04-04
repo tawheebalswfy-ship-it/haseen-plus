@@ -177,3 +177,91 @@ export const GAP_CONTROL_MAP: Record<string, string> = {
   GAP_RA_007: "ECC-1-2-1",  // Missing periodic review → Risk Management Program
   GAP_RA_008: "ECC-1-2-1",  // Missing project integration → Risk Management Program
 };
+
+/**
+ * Arabic descriptions for the 16 gap IDs detected by the model.
+ */
+export const GAP_NAMES_AR: Record<string, string> = {
+  GAP_PP_001: "ضعف تعقيد كلمة المرور",
+  GAP_PP_002: "عدم كفاية سياسة انتهاء صلاحية كلمة المرور",
+  GAP_PP_003: "ضعف آلية قفل الحساب",
+  GAP_PP_004: "غياب المصادقة متعددة العوامل (MFA)",
+  GAP_PP_005: "غياب إدارة الوصول المميز (PAM)",
+  GAP_PP_006: "غياب تشفير كلمات المرور",
+  GAP_PP_007: "غياب جدول مراجعة السياسة",
+  GAP_PP_008: "غياب تحديد الأدوار والمسؤوليات",
+  GAP_RA_001: "غياب منهجية إدارة المخاطر",
+  GAP_RA_002: "غياب تحديد المخاطر",
+  GAP_RA_003: "غياب مقاييس التأثير والاحتمالية",
+  GAP_RA_004: "غياب خيارات معالجة المخاطر",
+  GAP_RA_005: "غياب محفزات التقييم",
+  GAP_RA_006: "غياب سجل المخاطر",
+  GAP_RA_007: "غياب المراجعة الدورية",
+  GAP_RA_008: "غياب التكامل مع المشاريع",
+};
+
+/**
+ * Arabic names for ECC controls used in remediation guidance.
+ */
+export const NCA_CONTROL_NAMES_AR: Record<string, string> = {
+  "ECC-1-1-1": "استراتيجية الأمن السيبراني",
+  "ECC-1-1-2": "سياسات الأمن السيبراني",
+  "ECC-1-1-3": "أدوار ومسؤوليات الأمن السيبراني",
+  "ECC-1-2-1": "برنامج إدارة المخاطر",
+  "ECC-1-2-2": "تقييم المخاطر",
+  "ECC-2-1-1": "جرد الأصول",
+  "ECC-2-1-2": "تصنيف الأصول",
+  "ECC-2-2-1": "إدارة الهوية",
+  "ECC-2-2-2": "التحكم في الوصول",
+  "ECC-2-2-3": "إدارة الوصول المميز",
+  "ECC-3-1-1": "بنية أمن الشبكات",
+  "ECC-3-1-2": "تجزئة الشبكات",
+  "ECC-3-2-1": "تصنيف البيانات",
+  "ECC-3-2-2": "تشفير البيانات",
+  "ECC-4-1-1": "المراقبة الأمنية",
+  "ECC-4-1-2": "اكتشاف الحوادث",
+  "ECC-4-2-1": "خطة الاستجابة للحوادث",
+  "ECC-4-2-2": "إجراءات التعامل مع الحوادث",
+  "ECC-5-1-1": "خطة استمرارية الأعمال",
+  "ECC-5-1-2": "التعافي من الكوارث",
+};
+
+/**
+ * Arabic domain names for ECC control domains.
+ */
+export const DOMAIN_NAMES_AR: Record<string, string> = {
+  "Governance": "الحوكمة",
+  "Risk Management": "إدارة المخاطر",
+  "Asset Management": "إدارة الأصول",
+  "Identity & Access Management": "إدارة الهوية والوصول",
+  "Network Security": "أمن الشبكات",
+  "Data Protection": "حماية البيانات",
+  "Security Operations": "العمليات الأمنية",
+  "Incident Management": "إدارة الحوادث",
+  "Business Continuity": "استمرارية الأعمال",
+};
+
+/**
+ * Arabic names for ISO 27001 controls used in framework comparison.
+ */
+export const ISO_CONTROL_NAMES_AR: Record<string, string> = {
+  "Policy": "السياسة",
+  "Information Security Policy": "سياسة أمن المعلومات",
+  "Organizational Roles": "الأدوار التنظيمية",
+  "Risk Assessment": "تقييم المخاطر",
+  "Information Security Risk Assessment": "تقييم مخاطر أمن المعلومات",
+  "Operational Planning": "التخطيط التشغيلي",
+  "Classification of Information": "تصنيف المعلومات",
+  "User Access Management": "إدارة وصول المستخدمين",
+  "Access Control Policy": "سياسة التحكم في الوصول",
+  "Privileged Access Rights": "صلاحيات الوصول المميز",
+  "Networks Security": "أمن الشبكات",
+  "Segregation in Networks": "الفصل في الشبكات",
+  "Use of Cryptography": "استخدام التشفير",
+  "Monitoring, Measurement, Analysis": "المراقبة والقياس والتحليل",
+  "Nonconformity & Corrective Action": "عدم المطابقة والإجراء التصحيحي",
+  "Incident Management": "إدارة الحوادث",
+  "Incident Response": "الاستجابة للحوادث",
+  "ICT Readiness for Business Continuity": "جاهزية تقنية المعلومات لاستمرارية الأعمال",
+  "Redundancies": "النسخ الاحتياطي والتكرار",
+};

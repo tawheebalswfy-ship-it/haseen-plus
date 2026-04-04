@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useComplianceStore } from "../store";
-import { NCA_CONTROLS } from "../types";
+import { NCA_CONTROLS, GAP_NAMES_AR, NCA_CONTROL_NAMES_AR, DOMAIN_NAMES_AR } from "../types";
 import type { RemediationTask, Comment } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
 
@@ -9,7 +9,7 @@ const STATUSES: RemediationTask["status"][] = ["open", "in_progress", "completed
 
 export default function RemediationPage() {
   const { tasks, addTask, updateTask, deleteTask, deleteAllTasks, assessments } = useComplianceStore();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const c = t.compliance.remediation;
   const cc = t.compliance.common;
   const [showCreate, setShowCreate] = useState(false);
@@ -24,6 +24,60 @@ export default function RemediationPage() {
   const [autoGenAssessment, setAutoGenAssessment] = useState("");
   const [genMsg, setGenMsg] = useState("");
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
+
+  /** Translate a findings string like "Gaps: GAP_PP_005: Missing PAM (84%)" to Arabic */
+  const translateFindings = (findings: string): string => {
+    if (locale !== "ar") return findings;
+    return findings.replace(/GAP_(?:PP|RA)_\d{3}(?::\s*[^(;]+)?/g, (match) => {
+      const gapId = match.match(/GAP_(?:PP|RA)_\d{3}/)?.[0];
+      if (gapId && GAP_NAMES_AR[gapId]) return `${gapId}: ${GAP_NAMES_AR[gapId]}`;
+      return match;
+    }).replace(/^Gaps:\s*/, "الفجوات: ").replace(/^Partial gaps:\s*/, "فجوات جزئية: ");
+  };
+
+  /** Translate task title like "Remediate: Identity Management" to Arabic */
+  const translateTitle = (title: string): string => {
+    if (locale !== "ar") return title;
+    const match = title.match(/^Remediate:\s*(.+)$/);
+    if (match) {
+      const ctrlName = match[1].trim();
+      const arName = Object.values(NCA_CONTROLS).flat().find(c => c.name === ctrlName);
+      return `معالجة: ${arName ? NCA_CONTROL_NAMES_AR[arName.id] || ctrlName : ctrlName}`;
+    }
+    return title;
+  };
+
+  /** Translate task description to Arabic */
+  const translateDesc = (desc: string): string => {
+    if (locale !== "ar") return desc;
+    return desc
+      .replace(/^Control (ECC-[\d-]+) was found non-compliant in assessment "([^"]+)"\./, (_, ctrlId, name) => {
+        const arCtrl = NCA_CONTROL_NAMES_AR[ctrlId] || ctrlId;
+        return `الضابط ${ctrlId} (${arCtrl}) غير متوافق في تقييم "${name}".`;
+      })
+      .replace(/Requires remediation\./, "يتطلب معالجة.")
+      .replace(/Gap:\s*/, "الفجوة: ")
+      .replace(/GAP_(?:PP|RA)_\d{3}(?::\s*[^(;]+)?/g, (match) => {
+        const gapId = match.match(/GAP_(?:PP|RA)_\d{3}/)?.[0];
+        if (gapId && GAP_NAMES_AR[gapId]) return `${gapId}: ${GAP_NAMES_AR[gapId]}`;
+        return match;
+      })
+      .replace(/^Gaps:\s*/, "الفجوات: ");
+  };
+
+  /** Translate priority label */
+  const translatePriority = (p: string): string => {
+    if (locale !== "ar") return p;
+    const m: Record<string, string> = { critical: cc.critical, high: cc.high, medium: cc.medium, low: cc.low };
+    return m[p] || p;
+  };
+
+  /** Translate status label */
+  const translateStatus = (s: string): string => {
+    if (locale !== "ar") return s.replace("_", " ");
+    const m: Record<string, string> = { open: cc.open, in_progress: cc.inProgress, completed: cc.completed, deferred: cc.deferred };
+    return m[s] || s;
+  };
 
   const filtered = tasks
     .filter((t) => filterStatus === "all" || t.status === filterStatus)
@@ -261,17 +315,17 @@ export default function RemediationPage() {
               </button>
               <div className="flex-1 min-w-0">
                 <h3 className={`font-medium ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-900 dark:text-white"}`}>
-                  {task.title}
+                  {translateTitle(task.title)}
                 </h3>
                 {task.description && (
-                  <p className="text-xs text-gray-500 mt-0.5 truncate dark:text-gray-400">{task.description}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 truncate dark:text-gray-400">{translateDesc(task.description)}</p>
                 )}
               </div>
               <span className={`text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0 ${priorityColor(task.priority)}`}>
-                {task.priority}
+                {translatePriority(task.priority)}
               </span>
               <span className={`text-xs font-medium px-2 py-1 rounded-full flex-shrink-0 hidden sm:inline-block ${statusColor(task.status)}`}>
-                {task.status.replace("_", " ")}
+                {translateStatus(task.status)}
               </span>
               {task.due_date && (
                 <span className="text-xs text-gray-400 flex-shrink-0 hidden md:inline-block">{new Date(task.due_date).toLocaleDateString()}</span>
@@ -289,20 +343,66 @@ export default function RemediationPage() {
                       <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
                       </svg>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{c.aiGuidance}</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{c.guidance}</span>
                     </div>
                     <div className="bg-gray-50 rounded-lg p-4 dark:bg-gray-800">
-                      <ol className="list-decimal list-inside space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
-                        {task.ai_guidance.steps.map((step, i) => (
-                          <li key={i}>{step}</li>
-                        ))}
+                      <ol className="list-decimal space-y-2.5 text-sm text-gray-700 dark:text-gray-300 ps-5">
+                        {task.ai_guidance.steps.map((step, i) => {
+                          const translatedStep = locale === "ar" ? (() => {
+                            if (step.startsWith("Review ")) {
+                              const ctrlMatch = step.match(/^Review (ECC-[\d-]+) requirements: (.+)$/);
+                              if (ctrlMatch) {
+                                const arName = NCA_CONTROL_NAMES_AR[ctrlMatch[1]];
+                                return c.stepReview.replace("{controlId}", ctrlMatch[1]).replace("{description}", arName || ctrlMatch[2]);
+                              }
+                            }
+                            if (step === "Assess current implementation against the specific control requirements") return c.stepAssess;
+                            if (step.startsWith("Address identified gap:")) return c.stepAddress.replace("{findings}", translateFindings(step.replace("Address identified gap: ", "")));
+                            if (step === "Identify specific gaps in current implementation") return c.stepIdentify;
+                            if (step === "Implement required changes and collect supporting evidence") return c.stepImplement;
+                            if (step === "Conduct a follow-up assessment to verify remediation") return c.stepVerify;
+                            return step;
+                          })() : step;
+
+                          // If the step contains multiple gaps (separated by ;), render as sub-list
+                          const isGapStep = step.startsWith("Address identified gap:");
+                          const gapItems = isGapStep
+                            ? (locale === "ar"
+                                ? translatedStep.replace(/^[^:]+:\s*/, "").replace(/^[^:]+:\s*/, "")
+                                : step.replace("Address identified gap: ", "")
+                              ).split(/;\s*/).filter(Boolean)
+                            : [];
+
+                          if (isGapStep && gapItems.length > 1) {
+                            return (
+                              <li key={i} className="leading-relaxed">
+                                <span>{locale === "ar" ? c.stepAddress.split("{findings}")[0] : "Address identified gaps:"}</span>
+                                <ul className="list-disc ps-5 mt-1.5 space-y-1">
+                                  {gapItems.map((gap, j) => (
+                                    <li key={j} className="text-gray-600 dark:text-gray-400">{locale === "ar" ? translateFindings(gap.trim()) : gap.trim()}</li>
+                                  ))}
+                                </ul>
+                              </li>
+                            );
+                          }
+
+                          return (
+                            <li key={i} className="leading-relaxed">{translatedStep}</li>
+                          );
+                        })}
                       </ol>
-                      <div className="flex gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex flex-wrap gap-4 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
                         {task.ai_guidance.estimated_effort && (
-                          <span>{c.estEffort}: <span className="font-medium">{task.ai_guidance.estimated_effort}</span></span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            {c.estEffort}: <span className="font-medium text-gray-700 dark:text-gray-300">{task.ai_guidance.estimated_effort}</span>
+                          </span>
                         )}
                         {task.ai_guidance.tools_needed && (
-                          <span>{c.tools}: {task.ai_guidance.tools_needed.join(", ")}</span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.654-3.265A2.25 2.25 0 014.5 9.868V5.25A2.25 2.25 0 016.75 3h10.5a2.25 2.25 0 012.25 2.25v4.618a2.25 2.25 0 01-1.266 2.037l-5.654 3.265a2.25 2.25 0 01-2.16 0z" /></svg>
+                            {c.tools}: <span className="font-medium text-gray-700 dark:text-gray-300">{task.ai_guidance.tools_needed.join(", ")}</span>
+                          </span>
                         )}
                       </div>
                     </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { useComplianceStore } from "../store";
+import { NCA_CONTROL_NAMES_AR, DOMAIN_NAMES_AR, ISO_CONTROL_NAMES_AR } from "../types";
 
 // ── NCA ECC ↔ ISO 27001:2022 Mapping Data ──
 interface MappingEntry {
@@ -55,6 +56,7 @@ export default function FrameworkComparisonPage() {
   const { t, locale } = useLanguage();
   const { assessments } = useComplianceStore();
   const c = t.compliance.frameworkComparison;
+  const cc = t.compliance.common;
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDomain, setFilterDomain] = useState("all");
   const [filterRelation, setFilterRelation] = useState("all");
@@ -93,9 +95,9 @@ export default function FrameworkComparisonPage() {
   }
   const complianceStatusStyle = (status: string) => {
     const m: Record<string, { bg: string; text: string; label: string }> = {
-      compliant: { bg: "bg-gray-100 dark:bg-gray-800", text: "text-gray-700 dark:text-gray-400", label: "Compliant" },
-      partial: { bg: "bg-amber-100 dark:bg-amber-900/30", text: "text-amber-700 dark:text-amber-400", label: "Partial" },
-      non_compliant: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-700 dark:text-red-400", label: "Non-Compliant" },
+      compliant: { bg: "bg-gray-100 dark:bg-gray-800", text: "text-gray-700 dark:text-gray-400", label: locale === "ar" ? cc.compliant : "Compliant" },
+      partial: { bg: "bg-amber-100 dark:bg-amber-900/30", text: "text-amber-700 dark:text-amber-400", label: locale === "ar" ? cc.partial : "Partial" },
+      non_compliant: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-700 dark:text-red-400", label: locale === "ar" ? cc.nonCompliant : "Non-Compliant" },
       not_assessed: { bg: "bg-gray-100 dark:bg-gray-800", text: "text-gray-500 dark:text-gray-400", label: "—" },
     };
     return m[status] || m.not_assessed;
@@ -140,7 +142,7 @@ export default function FrameworkComparisonPage() {
             return (
               <div key={domain}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{domain}</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{locale === "ar" ? (DOMAIN_NAMES_AR[domain] || domain) : domain}</span>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">{domainDirect}/{domainTotal} ({pct}%)</span>
                 </div>
                 <div className="h-3 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-800">
@@ -171,7 +173,7 @@ export default function FrameworkComparisonPage() {
         >
           <option value="all">{c.allDomains}</option>
           {domains.map((d) => (
-            <option key={d} value={d}>{d}</option>
+            <option key={d} value={d}>{locale === "ar" ? (DOMAIN_NAMES_AR[d] || d) : d}</option>
           ))}
         </select>
         <select
@@ -212,18 +214,18 @@ export default function FrameworkComparisonPage() {
                 return (
                   <tr key={m.eccId} className="border-b border-gray-50 last:border-0 dark:border-gray-800/50 hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
                     <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900 dark:text-white">{m.eccName}</div>
+                      <div className="font-medium text-gray-900 dark:text-white">{locale === "ar" ? (NCA_CONTROL_NAMES_AR[m.eccId] || m.eccName) : m.eccName}</div>
                       <div className="text-xs text-gray-400 mt-0.5">{m.eccId}</div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">{m.eccDomain}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">{locale === "ar" ? (DOMAIN_NAMES_AR[m.eccDomain] || m.eccDomain) : m.eccDomain}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${style.bg} ${style.text}`}>
                         {m.relationship === "direct" ? "↔" : m.relationship === "partial" ? "~" : "→"}
-                        {" "}{style.label}
+                        {" "}{locale === "ar" ? (m.relationship === "direct" ? c.direct : m.relationship === "partial" ? c.partial : c.related) : style.label}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900 dark:text-white">{m.isoControl}</div>
+                      <div className="font-medium text-gray-900 dark:text-white">{locale === "ar" ? (ISO_CONTROL_NAMES_AR[m.isoControl] || m.isoControl) : m.isoControl}</div>
                       <div className="text-xs text-gray-400 mt-0.5">{m.isoAnnex}</div>
                     </td>
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs hidden md:table-cell">

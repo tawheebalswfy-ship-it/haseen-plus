@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useComplianceStore } from "../store";
-import { NCA_CONTROLS, FRAMEWORK_COLORS, DOMAIN_CONTROL_MAP, GAP_CONTROL_MAP } from "../types";
+import { NCA_CONTROLS, FRAMEWORK_COLORS, DOMAIN_CONTROL_MAP, GAP_CONTROL_MAP, GAP_NAMES_AR, NCA_CONTROL_NAMES_AR, DOMAIN_NAMES_AR } from "../types";
 import type { ComplianceAssessment, ControlResult, Comment, EvidenceFile } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import type { GapDetail } from "../../../lib/api";
@@ -28,6 +28,19 @@ export default function AssessmentsPage() {
   const [previewLoading, setPreviewLoading] = useState(false);
 
   const detail = assessments.find((a) => a.id === detailId);
+
+  const translateFindings = (findings: string | undefined): string => {
+    if (!findings) return "—";
+    if (locale !== "ar") return findings;
+    return findings.replace(/GAP_(?:PP|RA)_\d{3}(?::\s*[^(;]+)?/g, (match) => {
+      const gapId = match.match(/GAP_(?:PP|RA)_\d{3}/)?.[0];
+      if (gapId && GAP_NAMES_AR[gapId]) return `${gapId}: ${GAP_NAMES_AR[gapId]}`;
+      return match;
+    }).replace(/^Gaps:\s*/, "الفجوات: ")
+      .replace(/^Partial gaps:\s*/, "فجوات جزئية: ")
+      .replace(/^No compliance gaps detected.*/, "لم يتم اكتشاف فجوات امتثال لهذا الضابط.")
+      .replace(/^No analyzed policies.*/, "لا توجد سياسات محللة. ارفع وحلل السياسات أولاً.");
+  };
 
   const runAssessment = async () => {
     if (!assessmentName.trim() || running) return;
@@ -443,7 +456,7 @@ export default function AssessmentsPage() {
             <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">{c.editStatus}</p>
             {Object.entries(grouped).map(([domain, controls]) => (
               <div key={domain} className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">{domain}</h3>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">{locale === "ar" ? (DOMAIN_NAMES_AR[domain] || domain) : domain}</h3>
                 <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm dark:border-gray-800 dark:bg-gray-900">
                   <table className="w-full text-sm">
                     <thead>
@@ -459,7 +472,7 @@ export default function AssessmentsPage() {
                         <tr key={ctrl.control_id} className="border-b border-gray-50 last:border-0 dark:border-gray-800/50">
                           <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
                             <span className="text-xs text-gray-400 mr-2">{ctrl.control_id}</span>
-                            {ctrl.control_name}
+                            {locale === "ar" ? (NCA_CONTROL_NAMES_AR[ctrl.control_id] || ctrl.control_name) : ctrl.control_name}
                           </td>
                           <td className="px-4 py-3">
                             <button
@@ -467,11 +480,13 @@ export default function AssessmentsPage() {
                               className={`text-xs font-semibold px-2 py-1 rounded-full cursor-pointer border-0 ${statusColor(ctrl.status)}`}
                               title={c.editStatus}
                             >
-                              {ctrl.status.replace("_", " ")}
+                              {locale === "ar"
+                                ? (ctrl.status === "compliant" ? cc.compliant : ctrl.status === "partial" ? cc.partial : ctrl.status === "non_compliant" ? cc.nonCompliant : cc.notAssessed)
+                                : ctrl.status.replace("_", " ")}
                             </button>
                           </td>
                           <td className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">{ctrl.score}%</td>
-                          <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden sm:table-cell">{ctrl.findings || "—"}</td>
+                          <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden sm:table-cell">{translateFindings(ctrl.findings) || "—"}</td>
                         </tr>
                       ))}
                     </tbody>

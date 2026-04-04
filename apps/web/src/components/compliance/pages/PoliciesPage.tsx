@@ -505,9 +505,32 @@ export default function PoliciesPage() {
               </button>
             </div>
             {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 py-4">
-              <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-                {textViewPolicy.text}
+            <div className="flex-1 overflow-y-auto px-6 py-4 bg-gray-50 dark:bg-gray-950/40">
+              <div
+                dir="auto"
+                className="text-sm text-gray-700 dark:text-gray-300 leading-7 max-w-none"
+              >
+                {textViewPolicy.text.split(/\n{2,}|\s{2,}(?=[A-Z0-9\u0600-\u06FF]+[\.\)])/).map((para, i) => {
+                  const parts = para.split(/(?=[•▪■●])/g);
+                  if (parts.length > 1) {
+                    return (
+                      <div key={i} className="mb-4">
+                        {parts[0] && <p className="mb-2">{parts[0].trim()}</p>}
+                        <ul className="list-disc list-inside space-y-1 ps-2">
+                          {parts.slice(parts[0].trim() ? 1 : 0).map((b, j) => (
+                            <li key={j} className="text-gray-600 dark:text-gray-400">{b.replace(/^[•▪■●]\s*/, '').trim()}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+                  const isHeading = /^\d+(\.\d+)*\s/.test(para.trim());
+                  return (
+                    <p key={i} className={`mb-3 ${isHeading ? 'font-semibold text-gray-900 dark:text-white mt-5' : ''}`}>
+                      {para.trim()}
+                    </p>
+                  );
+                })}
               </div>
             </div>
             {/* Footer */}
