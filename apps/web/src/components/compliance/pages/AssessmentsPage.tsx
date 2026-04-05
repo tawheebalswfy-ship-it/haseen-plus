@@ -514,7 +514,7 @@ export default function AssessmentsPage() {
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <span className="text-xs text-gray-400 mr-2">{ctrl.control_id}</span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">{ctrl.control_name}</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">{locale === "ar" ? (NCA_CONTROL_NAMES_AR[ctrl.control_id] || ctrl.control_name) : ctrl.control_name}</span>
                   </div>
                   <button
                     onClick={() => { setEvidenceControl(ctrl.control_id); evidenceRef.current?.click(); }}
@@ -543,13 +543,13 @@ export default function AssessmentsPage() {
                             disabled={previewLoading}
                             className="text-xs text-gray-600 hover:text-gray-700 cursor-pointer bg-transparent border-0 dark:text-gray-400 disabled:opacity-50"
                           >
-                            View
+                            {c.viewEvidence}
                           </button>
                           <button
                             onClick={() => downloadEvidence(ev.url, ev.name)}
                             className="text-xs text-gray-600 hover:text-gray-700 cursor-pointer bg-transparent border-0 dark:text-gray-400"
                           >
-                            Download
+                            {c.downloadEvidence}
                           </button>
                           <button
                             onClick={() => clearEvidence(ctrl.control_id, ev.id)}
@@ -613,13 +613,13 @@ export default function AssessmentsPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
                 <div className="w-2 h-2 rounded-full bg-gray-500" />
-                <span className="text-gray-700 dark:text-gray-300">Assessment created</span>
+                <span className="text-gray-700 dark:text-gray-300">{c.assessmentCreated}</span>
                 <span className="text-gray-400 text-xs">{new Date(detail.created_date).toLocaleString()}</span>
               </div>
               {(detail.comments || []).map((cm) => (
                 <div key={cm.id} className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 rounded-full bg-gray-500" />
-                  <span className="text-gray-700 dark:text-gray-300">Comment by {cm.author}</span>
+                  <span className="text-gray-700 dark:text-gray-300">{c.commentBy} {cm.author}</span>
                   <span className="text-gray-400 text-xs">{new Date(cm.created_date).toLocaleString()}</span>
                 </div>
               ))}

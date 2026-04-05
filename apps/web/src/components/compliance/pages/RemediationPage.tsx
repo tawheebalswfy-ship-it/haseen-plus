@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useComplianceStore } from "../store";
-import { NCA_CONTROLS, GAP_NAMES_AR, NCA_CONTROL_NAMES_AR, DOMAIN_NAMES_AR } from "../types";
+import { NCA_CONTROLS, GAP_NAMES_AR, NCA_CONTROL_NAMES_AR } from "../types";
 import type { RemediationTask, Comment } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
 
