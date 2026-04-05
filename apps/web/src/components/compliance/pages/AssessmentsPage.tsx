@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useComplianceStore } from "../store";
 import { NCA_CONTROLS, FRAMEWORK_COLORS, DOMAIN_CONTROL_MAP, GAP_CONTROL_MAP, GAP_NAMES_AR, NCA_CONTROL_NAMES_AR, DOMAIN_NAMES_AR } from "../types";
 import type { ComplianceAssessment, ControlResult, Comment, EvidenceFile } from "../types";
@@ -13,8 +14,16 @@ export default function AssessmentsPage() {
   const { t, locale } = useLanguage();
   const c = t.compliance.assessments;
   const cc = t.compliance.common;
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showNew, setShowNew] = useState(false);
   const selectedFramework = "ECC";
+
+  useEffect(() => {
+    if (searchParams.get("open") === "true") {
+      setShowNew(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, []);
   const [assessmentName, setAssessmentName] = useState("");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"controls" | "evidence" | "comments" | "audit">("controls");

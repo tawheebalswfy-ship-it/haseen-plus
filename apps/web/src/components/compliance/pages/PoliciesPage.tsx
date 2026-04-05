@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useComplianceStore } from "../store";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { policyClassifierAPI, getComplianceLabel, getComplianceColor } from "../../../lib/api";
@@ -14,8 +15,16 @@ export default function PoliciesPage() {
   const c = t.compliance.policies;
   const cc = t.compliance.common;
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showUploader, setShowUploader] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
+
+  useEffect(() => {
+    if (searchParams.get("open") === "true") {
+      setShowUploader(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, []);
   const [newTitle, setNewTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [pastedText, setPastedText] = useState("");

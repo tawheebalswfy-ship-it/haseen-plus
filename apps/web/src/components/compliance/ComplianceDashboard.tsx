@@ -143,11 +143,6 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{activeItem.name}</h1>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="inline-flex items-center rounded-full border border-gray-300 bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-              NCA ECC · ISO 27001
-            </div>
-          </div>
         </header>
 
         {/* Page content */}
