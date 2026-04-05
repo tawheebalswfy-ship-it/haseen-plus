@@ -40,27 +40,28 @@ FIGURE_ASSETS = {
     "Figure 3.2: ML Pipeline Workflow": os.path.join(REPORT_ASSET_DIR, "fig_3_2_ml_pipeline.png"),
     "Figure 3.3: Model Classification Head Architecture": os.path.join(REPORT_ASSET_DIR, "fig_3_3_model_classification_head.png"),
     "Figure 3.4: Document Chunking & Aggregation Pipeline": os.path.join(REPORT_ASSET_DIR, "fig_3_4_chunking_aggregation_pipeline.png"),
-    "Figure 3.5: Sequence Diagram — Policy Classification": os.path.join(REPORT_ASSET_DIR, "fig_3_5_sequence_policy_classification.png"),
-    "Figure 3.6: Class Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_6_class_diagram.png"),
-    "Figure 3.7: DFD — Level 0 (Context Diagram)": os.path.join(REPORT_ASSET_DIR, "fig_3_7_dfd_level_0.png"),
-    "Figure 3.8: DFD — Level 1": os.path.join(REPORT_ASSET_DIR, "fig_3_8_dfd_level_1.png"),
-    "Figure 3.9: Activity Diagram — Policy Assessment": os.path.join(REPORT_ASSET_DIR, "fig_3_9_activity_policy_assessment.png"),
-    "Figure 3.10: Deployment Architecture (Google Cloud Run)": os.path.join(REPORT_ASSET_DIR, "fig_3_10_deployment_architecture.png"),
-    "Figure 3.11: Database Entity-Relationship Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_11_database_erd.png"),
-    "Figure 3.12: Use Case Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_12_use_case_diagram.png"),
-    "Figure 3.13: Landing Page": os.path.join(REPORT_ASSET_DIR, "fig_3_13_landing_page.png"),
-    "Figure 3.14: Sign In / Sign Up": os.path.join(REPORT_ASSET_DIR, "fig_3_14_sign_in.png"),
-    "Figure 3.15: Dashboard Overview": os.path.join(REPORT_ASSET_DIR, "fig_3_15_dashboard_overview.png"),
-    "Figure 3.16: Policy Upload & Analysis": os.path.join(REPORT_ASSET_DIR, "fig_3_16_policy_upload_analysis.png"),
-    "Figure 3.17: Analysis Result — Compliant Document": os.path.join(REPORT_ASSET_DIR, "fig_3_17_analysis_compliant.png"),
-    "Figure 3.18: Analysis Result — Non-Compliant Document": os.path.join(REPORT_ASSET_DIR, "fig_3_18_analysis_non_compliant.png"),
-    "Figure 3.19: Assessments Page": os.path.join(REPORT_ASSET_DIR, "fig_3_19_assessments.png"),
-    "Figure 3.20: Remediation Tasks": os.path.join(REPORT_ASSET_DIR, "fig_3_20_remediation.png"),
-    "Figure 3.21: Framework Comparison": os.path.join(REPORT_ASSET_DIR, "fig_3_21_framework.png"),
-    "Figure 3.22: Risk Dashboard": os.path.join(REPORT_ASSET_DIR, "fig_3_22_risk.png"),
-    "Figure 3.23: Arabic RTL Interface": os.path.join(REPORT_ASSET_DIR, "fig_3_23_arabic_rtl.png"),
-    "Figure 4.1: Analysis Result — Compliant Document (High Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_17_analysis_compliant.png"),
-    "Figure 4.2: Analysis Result — Non-Compliant Document (Low Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_18_analysis_non_compliant.png"),
+    "Figure 3.5: Sequence Diagram \u2014 Policy Classification": os.path.join(REPORT_ASSET_DIR, "fig_3_5_sequence_policy_classification.png"),
+    "Figure 3.6: Sequence Diagram \u2014 Authentication": os.path.join(REPORT_ASSET_DIR, "fig_3_5b_sequence_authentication.png"),
+    "Figure 3.7: Sequence Diagram \u2014 Assessment & Gap Analysis": os.path.join(REPORT_ASSET_DIR, "fig_3_5c_sequence_assessment_gap.png"),
+    "Figure 3.8: Class / Component Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_6_class_diagram.png"),
+    "Figure 3.9: Data Flow Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_7_dfd.png"),
+    "Figure 3.10: Activity & State Diagrams": os.path.join(REPORT_ASSET_DIR, "fig_3_9_activity_policy_assessment.png"),
+    "Figure 3.11: Deployment Architecture (Google Cloud Run)": os.path.join(REPORT_ASSET_DIR, "fig_3_10_deployment_architecture.png"),
+    "Figure 3.12: Database Entity-Relationship Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_11_database_erd.png"),
+    "Figure 3.13: Use Case Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_12_use_case_diagram.png"),
+    "Figure 3.14: Landing Page": os.path.join(REPORT_ASSET_DIR, "fig_3_13_landing_page.png"),
+    "Figure 3.15: Sign In / Sign Up": os.path.join(REPORT_ASSET_DIR, "fig_3_14_sign_in.png"),
+    "Figure 3.16: Dashboard Overview": os.path.join(REPORT_ASSET_DIR, "fig_3_15_dashboard_overview.png"),
+    "Figure 3.17: Policy Upload & Analysis": os.path.join(REPORT_ASSET_DIR, "fig_3_16_policy_upload_analysis.png"),
+    "Figure 3.18: Analysis Result \u2014 Compliant Document": os.path.join(REPORT_ASSET_DIR, "fig_3_17_analysis_compliant.png"),
+    "Figure 3.19: Analysis Result \u2014 Non-Compliant Document": os.path.join(REPORT_ASSET_DIR, "fig_3_18_analysis_non_compliant.png"),
+    "Figure 3.20: Assessments Page": os.path.join(REPORT_ASSET_DIR, "fig_3_19_assessments.png"),
+    "Figure 3.21: Remediation Tasks": os.path.join(REPORT_ASSET_DIR, "fig_3_20_remediation.png"),
+    "Figure 3.22: Framework Comparison": os.path.join(REPORT_ASSET_DIR, "fig_3_21_framework.png"),
+    "Figure 3.23: Risk Dashboard": os.path.join(REPORT_ASSET_DIR, "fig_3_22_risk.png"),
+    "Figure 3.24: Arabic RTL Interface": os.path.join(REPORT_ASSET_DIR, "fig_3_23_arabic_rtl.png"),
+    "Figure 4.1: Analysis Result \u2014 Compliant Document (High Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_17_analysis_compliant.png"),
+    "Figure 4.2: Analysis Result \u2014 Non-Compliant Document (Low Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_18_analysis_non_compliant.png"),
 }
 
 # ── helpers ──────────────────────────────────────────────────────────
@@ -298,24 +299,25 @@ def build():
         ("3.3","Model Classification Head"),
         ("3.4","Document Chunking & Aggregation Pipeline"),
         ("3.5","Sequence Diagram \u2014 Policy Classification"),
-        ("3.6","Class Diagram"),
-        ("3.7","Data Flow Diagram \u2014 Level 0"),
-        ("3.8","Data Flow Diagram \u2014 Level 1"),
-        ("3.9","Activity Diagram \u2014 Policy Assessment"),
-        ("3.10","Deployment Architecture"),
-        ("3.11","Database Entity-Relationship Diagram"),
-        ("3.12","Use Case Diagram"),
-        ("3.13","Prototype \u2014 Landing Page"),
-        ("3.14","Prototype \u2014 Sign In / Sign Up"),
-        ("3.15","Prototype \u2014 Dashboard Overview"),
-        ("3.16","Prototype \u2014 Policy Upload & Analysis"),
-        ("3.17","Prototype \u2014 Analysis Result (Compliant)"),
-        ("3.18","Prototype \u2014 Analysis Result (Non-Compliant)"),
-        ("3.19","Prototype \u2014 Assessments Page"),
-        ("3.20","Prototype \u2014 Remediation Tasks"),
-        ("3.21","Prototype \u2014 Framework Comparison"),
-        ("3.22","Prototype \u2014 Risk Dashboard"),
-        ("3.23","Prototype \u2014 Arabic RTL Interface"),
+        ("3.6","Sequence Diagram \u2014 Authentication"),
+        ("3.7","Sequence Diagram \u2014 Assessment & Gap Analysis"),
+        ("3.8","Class / Component Diagram"),
+        ("3.9","Data Flow Diagram"),
+        ("3.10","Activity & State Diagrams"),
+        ("3.11","Deployment Architecture"),
+        ("3.12","Database Entity-Relationship Diagram"),
+        ("3.13","Use Case Diagram"),
+        ("3.14","Prototype \u2014 Landing Page"),
+        ("3.15","Prototype \u2014 Sign In / Sign Up"),
+        ("3.16","Prototype \u2014 Dashboard Overview"),
+        ("3.17","Prototype \u2014 Policy Upload & Analysis"),
+        ("3.18","Prototype \u2014 Analysis Result (Compliant)"),
+        ("3.19","Prototype \u2014 Analysis Result (Non-Compliant)"),
+        ("3.20","Prototype \u2014 Assessments Page"),
+        ("3.21","Prototype \u2014 Remediation Tasks"),
+        ("3.22","Prototype \u2014 Framework Comparison"),
+        ("3.23","Prototype \u2014 Risk Dashboard"),
+        ("3.24","Prototype \u2014 Arabic RTL Interface"),
     ]
     for n, t in lof: _p(doc, f"Figure {n}: {t}")
     _pb(doc)
@@ -610,7 +612,7 @@ def build():
     _b(doc, "Region: me-central1 (Doha, Middle East)")
     _b(doc, "Memory: 2 GB, CPU: 2 cores, Port: 8080")
     _b(doc, "Health check: GET /health every 30 seconds")
-    _fig(doc, "Figure 3.10: Deployment Architecture (Google Cloud Run)")
+    _fig(doc, "Figure 3.11: Deployment Architecture (Google Cloud Run)")
 
     # ── 3.2.5 Frontend ──
     _h(doc, "3.2.5  Frontend Web Application", 3)
@@ -665,36 +667,70 @@ def build():
     _p(doc, "Storage Buckets:")
     _b(doc, "policy-files \u2014 Uploaded policy documents (PDF, TXT, DOCX; max 10 MB)")
     _b(doc, "evidence-files \u2014 Assessment evidence files (PDF, images; max 10 MB)")
-    _fig(doc, "Figure 3.11: Database Entity-Relationship Diagram")
+    _fig(doc, "Figure 3.12: Database Entity-Relationship Diagram")
     _pb(doc)
 
     # ── 3.3 System Modeling Diagrams ──
     _h(doc, "3.3  System Modeling Diagrams", 2)
 
-    _h(doc, "3.3.1  Sequence Diagram", 3)
+    _h(doc, "3.3.1  Sequence Diagram \u2014 Policy Classification", 3)
+    _p(doc,
+        "The following sequence diagram illustrates the end-to-end flow when a user "
+        "uploads a policy document for AI-powered compliance analysis. It shows the "
+        "interaction between 7 lifelines: User, Browser, Supabase Auth, React Frontend, "
+        "FastAPI Backend, mBERT Model, and Supabase DB.")
     _fig(doc, "Figure 3.5: Sequence Diagram \u2014 Policy Classification")
 
-    _h(doc, "3.3.2  Class Diagram", 3)
-    _fig(doc, "Figure 3.6: Class Diagram")
+    _h(doc, "3.3.2  Sequence Diagram \u2014 Authentication", 3)
+    _p(doc,
+        "This diagram covers the Sign Up and Sign In workflows using Supabase Auth. "
+        "The Sign Up flow includes email/password registration, email verification, "
+        "and automatic profile creation via a database trigger. The Sign In flow shows "
+        "JWT token exchange and session establishment.")
+    _fig(doc, "Figure 3.6: Sequence Diagram \u2014 Authentication")
 
-    _h(doc, "3.3.3  Data Flow Diagram (DFD) Level 0", 3)
-    _fig(doc, "Figure 3.7: DFD \u2014 Level 0 (Context Diagram)")
+    _h(doc, "3.3.3  Sequence Diagram \u2014 Assessment & Gap Analysis", 3)
+    _p(doc,
+        "This sequence diagram models the assessment creation workflow where a user "
+        "initiates an NCA ECC assessment, the system loads framework controls, performs "
+        "per-control gap analysis using the AI model, calculates scores, generates "
+        "remediation tasks, and persists results to the database.")
+    _fig(doc, "Figure 3.7: Sequence Diagram \u2014 Assessment & Gap Analysis")
 
-    _h(doc, "3.3.4  Data Flow Diagram (DFD) Level 1", 3)
-    _fig(doc, "Figure 3.8: DFD \u2014 Level 1")
+    _h(doc, "3.3.4  Class / Component Diagram", 3)
+    _p(doc,
+        "The class diagram shows the frontend package structure (contexts, pages, "
+        "services, types) and backend package (GapDetectionModel, FastAPI endpoints) "
+        "with their relationships and key attributes.")
+    _fig(doc, "Figure 3.8: Class / Component Diagram")
+
+    _h(doc, "3.3.5  Data Flow Diagram", 3)
+    _p(doc,
+        "The data flow diagram shows how data moves through the system: from user "
+        "interactions through authentication, policy upload, text extraction, AI "
+        "classification, compliance scoring, assessment management, and task generation. "
+        "It identifies 6 core processes and 8 data stores including Supabase tables "
+        "and Cloud Storage.")
+    _fig(doc, "Figure 3.9: Data Flow Diagram")
 
     # ── 3.4 Operational Logic ──
     _h(doc, "3.4  Operational Logic & Scenarios", 2)
-    _h(doc, "3.4.1  Activity Diagram", 3)
-    _b(doc, "User Login: Authenticate using Supabase credentials.")
-    _b(doc, "Upload Document: SME employee uploads a policy document.")
-    _b(doc, "Pre-processing: System extracts text from PDF/DOCX/TXT.")
-    _b(doc, "AI Analysis: mBERT model classifies gaps against NCA ECC controls.")
-    _b(doc, 'Output: Display compliance score with gap details and remediation guidance.')
-    _fig(doc, "Figure 3.9: Activity Diagram \u2014 Policy Assessment")
+    _h(doc, "3.4.1  Activity & State Diagrams", 3)
+    _p(doc,
+        "The activity diagram uses swimlanes to show the parallel responsibilities of "
+        "User, Frontend, Backend/ML, and Database during the policy assessment workflow. "
+        "Three state machine diagrams show the lifecycle states for Policy documents "
+        "(Draft \u2192 Uploaded \u2192 Analyzing \u2192 Analyzed), Assessments (Created \u2192 In Progress "
+        "\u2192 Completed), and Remediation Tasks (Open \u2192 In Progress \u2192 Completed/Deferred).")
+    _fig(doc, "Figure 3.10: Activity & State Diagrams")
 
     _h(doc, "3.4.2  Use Case Diagram", 3)
-    _fig(doc, "Figure 3.12: Use Case Diagram")
+    _p(doc,
+        "The use case diagram shows three actors (SME Compliance Officer, System "
+        "Administrator, AI/ML Engine) interacting with 16 use cases organized into "
+        "subsystems: Authentication, Policy Management, Assessment, Remediation, "
+        "and Administration.")
+    _fig(doc, "Figure 3.13: Use Case Diagram")
     _pb(doc)
 
     # ── 3.5 Prototype Design (SCREENSHOTS) ──
@@ -704,37 +740,37 @@ def build():
         "showcasing the key features and user workflows.")
 
     screens = [
-        ("3.13","Landing Page",
+        ("3.14","Landing Page",
          "The landing page displays the platform overview, supported policy domains, "
          "NCA ECC \u2194 ISO 27001 mapping logic, workflow steps, and technology stack."),
-        ("3.14","Sign In / Sign Up",
+        ("3.15","Sign In / Sign Up",
          "Users authenticate via email and password. The page includes form validation "
          "and success confirmation messages."),
-        ("3.15","Dashboard Overview",
+        ("3.16","Dashboard Overview",
          "The main dashboard shows KPI cards (compliance score, policies analyzed, open "
          "tasks, assessments), a compliance gauge, recent activity, and quick start actions."),
-        ("3.16","Policy Upload & Analysis",
+        ("3.17","Policy Upload & Analysis",
          "Users upload policy documents (PDF, DOCX, TXT) via drag-and-drop. The system "
          "triggers AI analysis and displays results."),
-        ("3.17","Analysis Result \u2014 Compliant Document",
+        ("3.18","Analysis Result \u2014 Compliant Document",
          "When a well-structured policy is analyzed, the system shows a high compliance "
          "score with few or no gaps detected, along with confidence levels per domain."),
-        ("3.18","Analysis Result \u2014 Non-Compliant Document",
+        ("3.19","Analysis Result \u2014 Non-Compliant Document",
          "When a weak policy is analyzed, the system displays a low compliance score with "
          "multiple gaps identified, each showing gap ID, description, and confidence."),
-        ("3.19","Assessments Page",
+        ("3.20","Assessments Page",
          "Users create and manage NCA ECC and ISO 27001 assessments with control-by-control "
          "evaluation, evidence upload, and comment threads."),
-        ("3.20","Remediation Tasks",
+        ("3.21","Remediation Tasks",
          "Tracks remediation tasks generated from detected gaps with priority levels, "
          "status tracking, AI guidance, and comment threads."),
-        ("3.21","Framework Comparison",
+        ("3.22","Framework Comparison",
          "Displays the ECC \u2194 ISO 27001 control mapping, showing how NCA ECC domains "
          "map to ISO 27001 clauses and Annex A controls."),
-        ("3.22","Risk Dashboard",
+        ("3.23","Risk Dashboard",
          "Visualizes risk metrics including risk scores, assessment status, and compliance "
          "posture across different domains."),
-        ("3.23","Arabic RTL Interface",
+        ("3.24","Arabic RTL Interface",
          "The same interface in Arabic with proper right-to-left layout, translated "
          "navigation, labels, and compliance terminology."),
     ]

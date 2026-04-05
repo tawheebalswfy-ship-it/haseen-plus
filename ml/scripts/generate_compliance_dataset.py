@@ -837,22 +837,54 @@ Respond in JSON only — no extra text:
 # ============================================================
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Gap-Level Compliance Dataset Generator (resume-safe)"
+    )
+    parser.add_argument(
+        "--samples-per-profile", type=int, default=10,
+        help="Number of variations per profile per language (default: 10). "
+             "Increase to generate more samples — existing ones are skipped automatically."
+    )
+    parser.add_argument(
+        "--output-dir", type=str, default=None,
+        help="Output directory (default: ml/datasets/processed relative to script)"
+    )
+    parser.add_argument(
+        "--languages", nargs="+", default=["en", "ar"],
+        help="Languages to generate (default: en ar)"
+    )
+    parser.add_argument(
+        "--sleep", type=int, default=None,
+        help="Seconds between API calls (default: 5)"
+    )
+    args = parser.parse_args()
+
+    # Resolve output directory to ml/datasets/processed by default
+    if args.output_dir:
+        output_dir = args.output_dir
+    else:
+        script_dir = Path(__file__).resolve().parent
+        output_dir = str(script_dir.parent / "datasets" / "processed")
+
+    total_expected = len(SAMPLE_PROFILES) * len(args.languages) * args.samples_per_profile
     print("🚀 Gap-Level Compliance Dataset Generator")
     print("=" * 50)
+    print(f"Target: {len(SAMPLE_PROFILES)} profiles × {len(args.languages)} langs × {args.samples_per_profile} variations = {total_expected} samples")
+    print(f"Output: {output_dir}")
 
-    generator = ComplianceDatasetGenerator()
+    generator = ComplianceDatasetGenerator(sleep_time=args.sleep)
 
-    # Generate dataset: 10 variations per profile per language
-    # Total: 13 profiles × 2 languages × 10 variations = 260 samples
     # Resume-safe: skips already-generated samples automatically
     # Each sample requires 2 API calls (generate + verify)
     dataset = generator.generate_dataset(
-        samples_per_profile=10,
-        languages=["en", "ar"],
-        output_dir="dataset"
+        samples_per_profile=args.samples_per_profile,
+        languages=args.languages,
+        output_dir=output_dir,
     )
 
-    # Save final dataset
+    # Save final dataset (JSON + CSV + statistics)
     generator.save_dataset()
 
     print("\n✅ Done!")

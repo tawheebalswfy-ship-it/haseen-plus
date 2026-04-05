@@ -1,142 +1,190 @@
-<mxfile host="draw.io">
-  <diagram name="Class / Component Diagram" id="class-comp">
-    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1300" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
+<mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
 
-        <mxCell id="t1" value="&lt;b&gt;PolicyShield – Class / Component Diagram&lt;/b&gt;" style="text;html=1;align=center;fontSize=18;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="400" y="10" width="400" height="35" as="geometry"/>
-        </mxCell>
+    <!-- Title -->
+    <mxCell id="title" value="AICG — Class / Component Diagram" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="350" y="10" width="600" height="40" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== FRONTEND: iso-security-app ===== -->
-        <mxCell id="pkg1" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;iso-security-app&lt;/b&gt; (React + TypeScript)" style="shape=folder;fontStyle=0;tabWidth=180;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="20" y="60" width="700" height="520" as="geometry"/>
-        </mxCell>
+    <!-- Frontend Package -->
+    <mxCell id="pkg_fe" value="apps/web (React Frontend)" style="shape=folder;tabWidth=180;tabHeight=20;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+      <mxGeometry x="20" y="60" width="740" height="900" as="geometry"/>
+    </mxCell>
 
-        <!-- Pages -->
-        <mxCell id="p1" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;LandingPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ hero section&lt;br&gt;+ feature cards&lt;br&gt;+ CTA buttons" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="40" y="110" width="140" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="p2" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;AuthPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ emailInput&lt;br&gt;+ otpInput&lt;br&gt;+ handleSignIn()&lt;br&gt;+ handleSignUp()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="200" y="110" width="140" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="p3" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;DashboardPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ policyTextInput&lt;br&gt;+ categorySelect&lt;br&gt;+ classifyPolicy()&lt;br&gt;+ historyTable&lt;br&gt;+ resultDisplay" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="360" y="110" width="150" height="130" as="geometry"/>
-        </mxCell>
-        <mxCell id="p4" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;AccountPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ profileForm&lt;br&gt;+ updateProfile()&lt;br&gt;+ signOut()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="530" y="110" width="140" height="100" as="geometry"/>
-        </mxCell>
+    <!-- Contexts -->
+    <mxCell id="cls_auth" value="AuthContext" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="110" width="220" height="140" as="geometry"/>
+    </mxCell>
+    <mxCell id="auth_attrs" value="+ user: User | null&#xa;+ loading: boolean&#xa;─────────────&#xa;+ signIn(email, password)&#xa;+ signUp(email, password, name)&#xa;+ signOut()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_auth">
+      <mxGeometry x="5" y="30" width="210" height="100" as="geometry"/>
+    </mxCell>
 
-        <!-- Shared Components -->
-        <mxCell id="c1" value="&lt;&lt;component&gt;&gt;&lt;br&gt;&lt;b&gt;Navbar&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ navigation links&lt;br&gt;+ language toggle&lt;br&gt;+ auth state display" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="40" y="260" width="150" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="c2" value="&lt;&lt;component&gt;&gt;&lt;br&gt;&lt;b&gt;Footer&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ copyright&lt;br&gt;+ social links" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="210" y="260" width="140" height="90" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_lang" value="LanguageContext" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="280" y="110" width="220" height="140" as="geometry"/>
+    </mxCell>
+    <mxCell id="lang_attrs" value="+ locale: &quot;en&quot; | &quot;ar&quot;&#xa;+ dir: &quot;ltr&quot; | &quot;rtl&quot;&#xa;+ t: Translations&#xa;─────────────&#xa;+ toggleLanguage()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_lang">
+      <mxGeometry x="5" y="30" width="210" height="100" as="geometry"/>
+    </mxCell>
 
-        <!-- Contexts -->
-        <mxCell id="ctx1" value="&lt;&lt;context&gt;&gt;&lt;br&gt;&lt;b&gt;AuthContext&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ user: User | null&lt;br&gt;+ isAuthenticated: bool&lt;br&gt;+ signIn(email)&lt;br&gt;+ verifyOTP(code)&lt;br&gt;+ signOut()" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="40" y="400" width="160" height="140" as="geometry"/>
-        </mxCell>
-        <mxCell id="ctx2" value="&lt;&lt;context&gt;&gt;&lt;br&gt;&lt;b&gt;LanguageContext&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ language: 'ar' | 'en'&lt;br&gt;+ direction: 'rtl' | 'ltr'&lt;br&gt;+ t(key): string&lt;br&gt;+ setLanguage(lang)" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="220" y="400" width="170" height="130" as="geometry"/>
-        </mxCell>
+    <!-- Compliance Store -->
+    <mxCell id="cls_store" value="useComplianceStore()" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="520" y="110" width="220" height="220" as="geometry"/>
+    </mxCell>
+    <mxCell id="store_attrs" value="+ policies: Policy[]&#xa;+ assessments: Assessment[]&#xa;+ tasks: RemediationTask[]&#xa;+ reports: ComplianceReport[]&#xa;─────────────&#xa;+ addPolicy(data): string&#xa;+ updatePolicy(id, data)&#xa;+ deletePolicy(id)&#xa;+ addAssessment(data): string&#xa;+ updateAssessment(id, data)&#xa;+ deleteAssessment(id)&#xa;+ addTask(data) / updateTask()&#xa;+ addReport() / deleteReport()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_store">
+      <mxGeometry x="5" y="30" width="210" height="180" as="geometry"/>
+    </mxCell>
 
-        <!-- Lib / API layer -->
-        <mxCell id="lib1" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;api.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ analyzePolicy(text)&lt;br&gt;+ healthCheck()&lt;br&gt;+ getComplianceColor()" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="410" y="280" width="150" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="lib2" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;auth.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ neonClient&lt;br&gt;+ createOTP(email)&lt;br&gt;+ verifyOTP(email, code)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="410" y="410" width="150" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="lib3" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;extract.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ extractPDF(file)&lt;br&gt;+ extractText(file)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="580" y="280" width="130" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="lib4" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;i18n.ts&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ translations: Map&lt;br&gt;+ getTranslation(key)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="580" y="400" width="130" height="100" as="geometry"/>
-        </mxCell>
+    <!-- Pages -->
+    <mxCell id="cls_overview" value="OverviewPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="290" width="160" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="ov_a" value="KPI cards&#xa;Quick-start guide&#xa;Recent activity" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_overview">
+      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== BACKEND: model-deployment ===== -->
-        <mxCell id="pkg2" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;model-deployment&lt;/b&gt; (FastAPI + Python)" style="shape=folder;fontStyle=0;tabWidth=220;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="760" y="60" width="480" height="420" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_policies" value="PoliciesPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="220" y="290" width="160" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="pol_a" value="Upload dialog&#xa;Text extraction&#xa;ML analysis trigger&#xa;Policy cards + filters" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_policies">
+      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+    </mxCell>
 
-        <mxCell id="b1" value="&lt;&lt;class&gt;&gt;&lt;br&gt;&lt;b&gt;FastAPI App (app.py)&lt;/b&gt;&lt;br&gt;────────────────&lt;br&gt;- model: GapDetectionModel&lt;br&gt;- tokenizer: AutoTokenizer&lt;br&gt;- GAP_LABELS: list[str] (16)&lt;br&gt;- device: str (cpu)&lt;br&gt;────────────────&lt;br&gt;+ load_model(): void&lt;br&gt;+ GET /health&lt;br&gt;+ POST /analyze(text, threshold)&lt;br&gt;+ chunk_document(text)&lt;br&gt;+ detect_domains(text)" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="780" y="110" width="240" height="210" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_assess" value="AssessmentsPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="400" y="290" width="160" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="ass_a" value="New assessment dialog&#xa;Control-by-control table&#xa;Evidence + Comments tabs&#xa;Generate tasks" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_assess">
+      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+    </mxCell>
 
-        <mxCell id="b2" value="&lt;&lt;model&gt;&gt;&lt;br&gt;&lt;b&gt;GapDetectionModel&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;base: bert-base-multilingual-cased&lt;br&gt;num_labels: 16 (multi-label)&lt;br&gt;classifier: Linear(768→256→16)&lt;br&gt;activation: Sigmoid&lt;br&gt;weights: SafeTensors (~681 MB)&lt;br&gt;max_length: 512" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="110" width="200" height="150" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_remed" value="RemediationPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="580" y="290" width="160" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="rem_a" value="Task cards&#xa;AI guidance steps&#xa;Priority / status badges&#xa;Gap sub-lists" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_remed">
+      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+    </mxCell>
 
-        <!-- DTO classes -->
-        <mxCell id="dto1" value="&lt;&lt;DTO&gt;&gt;&lt;br&gt;&lt;b&gt;AnalyzeRequest&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ text: str (1–50K chars)&lt;br&gt;+ threshold: float (0.6)" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#999;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="280" width="200" height="80" as="geometry"/>
-        </mxCell>
-        <mxCell id="dto2" value="&lt;&lt;DTO&gt;&gt;&lt;br&gt;&lt;b&gt;AnalyzeResponse&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ overall_compliance: str&lt;br&gt;+ overall_score: float&lt;br&gt;+ gap_count: int&lt;br&gt;+ domains_detected: list&lt;br&gt;+ password_policy: DomainResult&lt;br&gt;+ risk_assessment: DomainResult&lt;br&gt;+ all_gap_probabilities: dict" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#999;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="370" width="200" height="160" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_fwcomp" value="FrameworkComparisonPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="410" width="175" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="fw_a" value="ECC ↔ ISO mapping table&#xa;Domain coverage chart&#xa;Search + filter" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_fwcomp">
+      <mxGeometry x="5" y="24" width="165" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== FRONTEND: AIcomplainec ===== -->
-        <mxCell id="pkg3" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;AIcomplainec&lt;/b&gt; (React + Vite)" style="shape=folder;fontStyle=0;tabWidth=200;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="20" y="610" width="700" height="340" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_risk" value="RiskDashboardPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="235" y="410" width="175" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="risk_a" value="Risk posture viz&#xa;Compliance trends&#xa;Gap heatmap" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_risk">
+      <mxGeometry x="5" y="24" width="165" height="50" as="geometry"/>
+    </mxCell>
 
-        <mxCell id="ai1" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;PoliciesPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ listPolicies()&lt;br&gt;+ createPolicy()&lt;br&gt;+ analyzePolicy()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="40" y="670" width="130" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="ai2" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;AssessmentsPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ runAssessment()&lt;br&gt;+ viewResults()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="190" y="670" width="130" height="90" as="geometry"/>
-        </mxCell>
-        <mxCell id="ai3" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;TasksPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ listTasks()&lt;br&gt;+ updateStatus()&lt;br&gt;+ assignTask()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="340" y="670" width="130" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="ai4" value="&lt;&lt;page&gt;&gt;&lt;br&gt;&lt;b&gt;ReportsPage&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ generateReport()&lt;br&gt;+ exportPDF()" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="490" y="670" width="130" height="90" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_reports" value="ReportsPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="430" y="410" width="175" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="rep_a" value="Generate reports&#xa;Executive / Detailed&#xa;Share via token" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_reports">
+      <mxGeometry x="5" y="24" width="165" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- API modules for AIcomplainec -->
-        <mxCell id="ai5" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;localStorageAPI&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ getItem(key)&lt;br&gt;+ setItem(key, val)&lt;br&gt;+ deleteItem(key)&lt;br&gt;prefix: compliance_guard_" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="40" y="810" width="170" height="120" as="geometry"/>
-        </mxCell>
-        <mxCell id="ai6" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;gapDetector&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ detectGaps(policy, ctrl)&lt;br&gt;+ calcScore(results)&lt;br&gt;+ suggestRemediation()" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="230" y="810" width="170" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="ai7" value="&lt;&lt;module&gt;&gt;&lt;br&gt;&lt;b&gt;reportGenerator&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ createReport(assessment)&lt;br&gt;+ formatPDF()&lt;br&gt;+ formatCSV()" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="420" y="810" width="170" height="110" as="geometry"/>
-        </mxCell>
+    <!-- Service Classes -->
+    <mxCell id="cls_api" value="PolicyClassifierAPI" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="530" width="220" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="api_a" value="- baseUrl: string&#xa;- apiKey: string&#xa;─────────────&#xa;+ checkHealth(): HealthResponse&#xa;+ analyzeDocument(text, threshold?)&#xa;  → AnalyzeResponse" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_api">
+      <mxGeometry x="5" y="24" width="210" height="70" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== DATA GENERATION PACKAGE ===== -->
-        <mxCell id="pkg4" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Dataset Generation&lt;/b&gt; (Python)" style="shape=folder;fontStyle=0;tabWidth=210;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=top;spacingTop=5;shadow=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="760" y="550" width="480" height="200" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_extract" value="extractTextFromFile()" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="280" y="530" width="220" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="ext_a" value="PDF → pdfjs-dist (CDN worker)&#xa;DOCX → XML &lt;w:t&gt; parsing&#xa;TXT/CSV/MD → FileReader&#xa;─────────────&#xa;Returns: extracted text string" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_extract">
+      <mxGeometry x="5" y="24" width="210" height="70" as="geometry"/>
+    </mxCell>
 
-        <mxCell id="dg1" value="&lt;&lt;script&gt;&gt;&lt;br&gt;&lt;b&gt;generate_compliance_dataset.py&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ generate_samples(category, lang)&lt;br&gt;+ call_gemini_api(prompt)&lt;br&gt;+ save_incremental(sample)" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="780" y="600" width="220" height="110" as="geometry"/>
-        </mxCell>
-        <mxCell id="dg2" value="&lt;&lt;utility&gt;&gt;&lt;br&gt;&lt;b&gt;dataset_utils.py&lt;/b&gt;&lt;br&gt;──────&lt;br&gt;+ load_dataset(path)&lt;br&gt;+ compute_statistics()&lt;br&gt;+ validate_samples()" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="600" width="190" height="110" as="geometry"/>
-        </mxCell>
+    <mxCell id="cls_storage" value="StorageService" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="520" y="530" width="220" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="sto_a" value="+ uploadEvidenceFile(uid, aid, file)&#xa;+ getEvidenceFileUrl(path)&#xa;+ deleteEvidenceFile(path)&#xa;+ downloadEvidenceFile(path, name)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_storage">
+      <mxGeometry x="5" y="24" width="210" height="70" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== DEPENDENCY ARROWS ===== -->
-        <!-- DashboardPage uses api.ts -->
-        <mxCell id="dep1" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="p3" target="lib1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- AuthPage uses auth.ts -->
-        <mxCell id="dep2" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="p2" target="lib2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- DashboardPage uses extract.ts -->
-        <mxCell id="dep3" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="p3" target="lib3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- api.ts calls FastAPI -->
-        <mxCell id="dep4" value="HTTP/REST" style="endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=2;fontSize=9;fontStyle=1;" edge="1" source="lib1" target="b1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- FastAPI uses mBERT -->
-        <mxCell id="dep5" value="loads" style="endArrow=open;endFill=0;dashed=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="b1" target="b2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- Pages use localStorage -->
-        <mxCell id="dep6" value="persists" style="endArrow=open;endFill=0;dashed=1;strokeColor=#9673a6;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="ai1" target="ai5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- AssessmentPage uses gapDetector -->
-        <mxCell id="dep7" value="uses" style="endArrow=open;endFill=0;dashed=1;strokeColor=#9673a6;strokeWidth=1.5;fontSize=9;fontStyle=2;" edge="1" source="ai2" target="ai6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <!-- Type interfaces -->
+    <mxCell id="cls_types" value="Core Types (types.ts)" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="670" width="700" height="120" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_pol" value="Policy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="10" y="30" width="90" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_assess" value="ComplianceAssessment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="110" y="30" width="140" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_ctrl" value="ControlResult" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="260" y="30" width="100" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_task" value="RemediationTask" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="370" y="30" width="110" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_guide" value="AIGuidance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="490" y="30" width="90" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_report" value="ComplianceReport" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="590" y="30" width="100" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_ev" value="EvidenceFile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="10" y="68" width="90" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_comment" value="Comment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="110" y="68" width="90" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_nca" value="NCAControl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+      <mxGeometry x="210" y="68" width="90" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="t_maps" value="NCA_CONTROLS | GAP_CONTROL_MAP | DOMAIN_CONTROL_MAP&#xa;GAP_NAMES_AR | NCA_CONTROL_NAMES_AR | DOMAIN_NAMES_AR | ISO_CONTROL_NAMES_AR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;" vertex="1" parent="cls_types">
+      <mxGeometry x="310" y="63" width="380" height="40" as="geometry"/>
+    </mxCell>
 
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    <!-- Backend Package -->
+    <mxCell id="pkg_be" value="apps/model-api (Python Backend)" style="shape=folder;tabWidth=200;tabHeight=20;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+      <mxGeometry x="820" y="60" width="400" height="420" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cls_gap_model" value="GapDetectionModel (nn.Module)" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="840" y="110" width="360" height="140" as="geometry"/>
+    </mxCell>
+    <mxCell id="gm_a" value="- bert: BertModel (110M params, 768 hidden)&#xa;- classifier: Sequential(&#xa;    Linear(768→256), ReLU, Dropout(0.3),&#xa;    Linear(256→16))&#xa;─────────────&#xa;+ forward(input_ids, attention_mask)&#xa;  → logits: Tensor[batch, 16]" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_gap_model">
+      <mxGeometry x="5" y="24" width="350" height="110" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cls_app" value="FastAPI App (app.py)" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="840" y="270" width="360" height="190" as="geometry"/>
+    </mxCell>
+    <mxCell id="app_a" value="Endpoints:&#xa;  GET /        → meta info&#xa;  GET /health  → readiness + model status&#xa;  POST /analyze → full gap analysis&#xa;─────────────&#xa;Lifespan: download model from GCS → load&#xa;Domain detection: keyword heuristic (EN+AR)&#xa;Chunking: heading/paragraph, ~350 words, 50 overlap&#xa;Inference: tokenize → forward → sigmoid → max-pool&#xa;Scoring: severity-weighted penalty&#xa;Auth: X-API-Key header (optional)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_app">
+      <mxGeometry x="5" y="24" width="350" height="160" as="geometry"/>
+    </mxCell>
+
+    <!-- Dependencies: Pages → Store -->
+    <mxCell id="dep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.3;entryY=1;" edge="1" source="cls_overview" target="cls_store" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="dep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" source="cls_policies" target="cls_store" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="dep3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.7;entryY=1;" edge="1" source="cls_assess" target="cls_store" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- PoliciesPage → API + Extract -->
+    <mxCell id="dep4" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;" edge="1" source="cls_policies" target="cls_api" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="dep5" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;" edge="1" source="cls_policies" target="cls_extract" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- API → Backend -->
+    <mxCell id="dep6" value="HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" source="cls_api" target="cls_app" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

@@ -1,148 +1,133 @@
-<mxfile host="draw.io">
-  <diagram name="Sequence – Authentication" id="seq-auth">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="750" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
+<mxGraphModel dx="1422" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="650" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
 
-        <!-- Title -->
-        <mxCell id="t1" value="&lt;b&gt;Sequence Diagram: Email OTP Authentication Flow&lt;/b&gt;" style="text;html=1;align=center;fontSize=16;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="200" y="10" width="500" height="30" as="geometry"/>
-        </mxCell>
+    <mxCell id="title" value="Sequence — Authentication (Sign Up &amp; Sign In)" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="200" y="10" width="600" height="35" as="geometry"/>
+    </mxCell>
 
-        <!-- Lifeline headers -->
-        <mxCell id="h1" value="&lt;b&gt;User&lt;/b&gt;" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="50" width="80" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="h2" value="&lt;b&gt;Auth Page&lt;/b&gt;&lt;br&gt;(React)" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="190" y="50" width="100" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="h3" value="&lt;b&gt;AuthContext&lt;/b&gt;&lt;br&gt;(Provider)" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="50" width="100" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="h4" value="&lt;b&gt;Neon Auth&lt;/b&gt;&lt;br&gt;(OTP Service)" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="560" y="50" width="110" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="h5" value="&lt;b&gt;Email&lt;/b&gt;&lt;br&gt;(Inbox)" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="750" y="50" width="80" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="h6" value="&lt;b&gt;Neon DB&lt;/b&gt;&lt;br&gt;(Postgres)" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="920" y="50" width="100" height="40" as="geometry"/>
-        </mxCell>
+    <mxCell id="ll_user" value="User" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;participant=umlActor;fillColor=#DAE8FC;strokeColor=#6C8EBF;size=40;" vertex="1" parent="1">
+      <mxGeometry x="60" y="60" width="20" height="560" as="geometry"/>
+    </mxCell>
+    <mxCell id="ll_auth_page" value=":AuthPage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;size=40;" vertex="1" parent="1">
+      <mxGeometry x="200" y="60" width="100" height="560" as="geometry"/>
+    </mxCell>
+    <mxCell id="ll_auth_ctx" value=":AuthContext" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#D5E8D4;strokeColor=#82B366;size=40;" vertex="1" parent="1">
+      <mxGeometry x="400" y="60" width="110" height="560" as="geometry"/>
+    </mxCell>
+    <mxCell id="ll_sb_auth" value=":Supabase Auth" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#E1D5E7;strokeColor=#9673A6;size=40;" vertex="1" parent="1">
+      <mxGeometry x="620" y="60" width="110" height="560" as="geometry"/>
+    </mxCell>
+    <mxCell id="ll_pg" value=":PostgreSQL" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;size=40;" vertex="1" parent="1">
+      <mxGeometry x="840" y="60" width="100" height="560" as="geometry"/>
+    </mxCell>
 
-        <!-- Lifelines -->
-        <mxCell id="ll1" style="endArrow=none;dashed=1;strokeColor=#999;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="70" y="90" as="sourcePoint"/><mxPoint x="70" y="720" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="ll2" style="endArrow=none;dashed=1;strokeColor=#999;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="240" y="90" as="sourcePoint"/><mxPoint x="240" y="720" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="ll3" style="endArrow=none;dashed=1;strokeColor=#999;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="430" y="90" as="sourcePoint"/><mxPoint x="430" y="720" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="ll4" style="endArrow=none;dashed=1;strokeColor=#999;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="615" y="90" as="sourcePoint"/><mxPoint x="615" y="720" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="ll5" style="endArrow=none;dashed=1;strokeColor=#999;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="90" as="sourcePoint"/><mxPoint x="790" y="720" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="ll6" style="endArrow=none;dashed=1;strokeColor=#999;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="970" y="90" as="sourcePoint"/><mxPoint x="970" y="720" as="targetPoint"/></mxGeometry></mxCell>
+    <mxCell id="sep1" value="Sign Up Flow" style="shape=umlFrame;whiteSpace=wrap;html=1;width=100;height=20;fillColor=#F8CECC;strokeColor=#B85450;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="30" y="120" width="940" height="260" as="geometry"/>
+    </mxCell>
 
-        <!-- Combined fragment: Sign Up / Sign In -->
-        <mxCell id="frag1" value="alt [New User – Sign Up]" style="shape=umlFrame;whiteSpace=wrap;html=1;width=200;height=20;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=1;opacity=30;" vertex="1" parent="1">
-          <mxGeometry x="20" y="110" width="1020" height="280" as="geometry"/>
-        </mxCell>
+    <mxCell id="m1" value="1. enter email, password, name" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="70" y="155" as="sourcePoint"/>
+        <mxPoint x="250" y="155" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- MESSAGES -->
-        <!-- 1. Navigate to /auth -->
-        <mxCell id="m1" value="1. Navigate to /auth" style="endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="130" as="sourcePoint"/><mxPoint x="235" y="130" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m2" value="2. signUp(email, password)" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="250" y="185" as="sourcePoint"/>
+        <mxPoint x="455" y="185" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 2. Enter email -->
-        <mxCell id="m2" value="2. Enter email address" style="endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="160" as="sourcePoint"/><mxPoint x="235" y="160" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m3" value="3. supabase.auth.signUp({email, password, name})" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="455" y="215" as="sourcePoint"/>
+        <mxPoint x="675" y="215" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 3. Request OTP -->
-        <mxCell id="m3" value="3. requestOTP(email)" style="endArrow=block;endFill=1;strokeColor=#82b366;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="245" y="185" as="sourcePoint"/><mxPoint x="425" y="185" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m4" value="4. handle_new_user() trigger → INSERT INTO profiles" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="675" y="245" as="sourcePoint"/>
+        <mxPoint x="890" y="245" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 4. Send OTP request to Neon -->
-        <mxCell id="m4" value="4. neonClient.auth.createOTP(email)" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="435" y="210" as="sourcePoint"/><mxPoint x="610" y="210" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m4r" value="profile created" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="890" y="270" as="sourcePoint"/>
+        <mxPoint x="675" y="270" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 5. Generate OTP & send email -->
-        <mxCell id="m5" value="5. Generate 6-digit OTP" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1;dashed=1;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="620" y="235" as="sourcePoint"/><mxPoint x="670" y="235" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m5" value="5. onAuthStateChange → session" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="675" y="300" as="sourcePoint"/>
+        <mxPoint x="455" y="300" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 6. Send OTP email -->
-        <mxCell id="m6" value="6. Send OTP email" style="endArrow=block;endFill=1;strokeColor=#b85450;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="620" y="255" as="sourcePoint"/><mxPoint x="785" y="255" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m6" value="6. navigate('/dashboard')" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="455" y="330" as="sourcePoint"/>
+        <mxPoint x="250" y="330" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 7. OTP sent confirmation -->
-        <mxCell id="m7" value="7. {ok: true}" style="endArrow=open;endFill=0;dashed=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="610" y="280" as="sourcePoint"/><mxPoint x="435" y="280" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="m6b" value="redirect to dashboard" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="250" y="355" as="sourcePoint"/>
+        <mxPoint x="70" y="355" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 8. Show OTP input form -->
-        <mxCell id="m8" value="8. Show OTP input form" style="endArrow=open;endFill=0;dashed=1;strokeColor=#82b366;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="425" y="300" as="sourcePoint"/><mxPoint x="245" y="300" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="sep2" value="Sign In Flow" style="shape=umlFrame;whiteSpace=wrap;html=1;width=100;height=20;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="30" y="400" width="720" height="200" as="geometry"/>
+    </mxCell>
 
-        <!-- 9. Show OTP form to user -->
-        <mxCell id="m9" value="9. Display &quot;Enter OTP&quot; form" style="endArrow=open;endFill=0;dashed=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="235" y="320" as="sourcePoint"/><mxPoint x="75" y="320" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="s1" value="1. enter email, password" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="70" y="435" as="sourcePoint"/>
+        <mxPoint x="250" y="435" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- Divider -->
-        <mxCell id="div1" value="" style="endArrow=none;strokeColor=#666666;strokeWidth=1;dashed=1;dashPattern=12 4;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="30" y="390" as="sourcePoint"/><mxPoint x="1030" y="390" as="targetPoint"/></mxGeometry>
-        </mxCell>
-        <mxCell id="div1l" value="User checks email, copies OTP" style="text;html=1;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;fontColor=#999;" vertex="1" parent="1">
-          <mxGeometry x="400" y="395" width="200" height="18" as="geometry"/>
-        </mxCell>
+    <mxCell id="s2" value="2. signIn(email, password)" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="250" y="465" as="sourcePoint"/>
+        <mxPoint x="455" y="465" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 10. User enters OTP -->
-        <mxCell id="m10" value="10. Enter 6-digit OTP code" style="endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="430" as="sourcePoint"/><mxPoint x="235" y="430" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="s3" value="3. supabase.auth.signInWithPassword({email, password})" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="455" y="495" as="sourcePoint"/>
+        <mxPoint x="675" y="495" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 11. Verify OTP -->
-        <mxCell id="m11" value="11. verifyOTP(email, code)" style="endArrow=block;endFill=1;strokeColor=#82b366;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="245" y="455" as="sourcePoint"/><mxPoint x="425" y="455" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="s3r" value="JWT session token" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="675" y="525" as="sourcePoint"/>
+        <mxPoint x="455" y="525" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 12. Validate with Neon -->
-        <mxCell id="m12" value="12. neonClient.auth.verifyOTP(email, code)" style="endArrow=block;endFill=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="435" y="480" as="sourcePoint"/><mxPoint x="610" y="480" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="s4" value="4. navigate('/dashboard')" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="455" y="555" as="sourcePoint"/>
+        <mxPoint x="250" y="555" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 13. Verify and return session -->
-        <mxCell id="m13" value="13. {session_token, user}" style="endArrow=open;endFill=0;dashed=1;strokeColor=#d6b656;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="610" y="510" as="sourcePoint"/><mxPoint x="435" y="510" as="targetPoint"/></mxGeometry>
-        </mxCell>
+    <mxCell id="s4b" value="redirect to dashboard" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="250" y="580" as="sourcePoint"/>
+        <mxPoint x="70" y="580" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- 14. Upsert user in DB -->
-        <mxCell id="m14" value="14. UPSERT user profile" style="endArrow=block;endFill=1;strokeColor=#9673a6;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="435" y="540" as="sourcePoint"/><mxPoint x="965" y="540" as="targetPoint"/></mxGeometry>
-        </mxCell>
-
-        <!-- 15. Confirm -->
-        <mxCell id="m15" value="15. {ok}" style="endArrow=open;endFill=0;dashed=1;strokeColor=#9673a6;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="965" y="565" as="sourcePoint"/><mxPoint x="435" y="565" as="targetPoint"/></mxGeometry>
-        </mxCell>
-
-        <!-- 16. Set auth state -->
-        <mxCell id="m16" value="16. setUser(user), store session" style="endArrow=open;endFill=0;dashed=1;strokeColor=#82b366;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="425" y="590" as="sourcePoint"/><mxPoint x="245" y="590" as="targetPoint"/></mxGeometry>
-        </mxCell>
-
-        <!-- 17. Redirect to dashboard -->
-        <mxCell id="m17" value="17. Navigate to /dashboard (protected route)" style="endArrow=open;endFill=0;dashed=1;strokeColor=#6c8ebf;strokeWidth=1.5;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry"><mxPoint x="235" y="620" as="sourcePoint"/><mxPoint x="75" y="620" as="targetPoint"/></mxGeometry>
-        </mxCell>
-
-        <!-- Notes -->
-        <mxCell id="n1" value="&lt;b&gt;Security Notes:&lt;/b&gt;&lt;br&gt;• OTP expires after 5 min&lt;br&gt;• Session stored client-side&lt;br&gt;• Protected routes check auth state&lt;br&gt;• No password stored anywhere" style="shape=note;size=15;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
-          <mxGeometry x="820" y="620" width="210" height="90" as="geometry"/>
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+  </root>
+</mxGraphModel>

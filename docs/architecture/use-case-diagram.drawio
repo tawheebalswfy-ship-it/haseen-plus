@@ -1,192 +1,132 @@
-<mxfile host="draw.io">
-  <diagram name="Use Case Diagram" id="use-case">
-    <mxGraphModel dx="1600" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
+<mxGraphModel dx="1422" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="700" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
 
-        <!-- Title -->
-        <mxCell id="t1" value="&lt;b&gt;PolicyShield – Use Case Diagram&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;fillColor=none;strokeColor=none;" vertex="1" parent="1">
-          <mxGeometry x="400" y="10" width="400" height="40" as="geometry"/>
-        </mxCell>
+    <mxCell id="title" value="AICG — Use Case Diagram" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="320" y="10" width="400" height="35" as="geometry"/>
+    </mxCell>
 
-        <!-- System boundary -->
-        <mxCell id="sys" value="PolicyShield System" style="shape=mxgraph.sysml.package;html=1;overflow=fill;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;labelPosition=center;verticalLabelPosition=top;" vertex="1" parent="1">
-          <mxGeometry x="250" y="60" width="700" height="1280" as="geometry"/>
-        </mxCell>
+    <!-- System boundary -->
+    <mxCell id="sys" value="AICG Compliance Platform" style="shape=rectangle;whiteSpace=wrap;html=1;verticalAlign=top;align=center;spacingTop=5;fontSize=14;fontStyle=1;fillColor=none;strokeColor=#6C8EBF;strokeWidth=2;dashed=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="220" y="55" width="740" height="620" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== ACTORS ===== -->
-        <!-- Security Analyst -->
-        <mxCell id="a1" value="Security&lt;br&gt;Analyst" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="200" width="40" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Actor: Compliance Officer -->
+    <mxCell id="actor_co" value="Compliance&#xa;Officer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="60" y="300" width="40" height="60" as="geometry"/>
+    </mxCell>
 
-        <!-- Compliance Officer -->
-        <mxCell id="a2" value="Compliance&lt;br&gt;Officer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="600" width="40" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Actor: ML API -->
+    <mxCell id="actor_ml" value="ML API&#xa;(Cloud Run)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1080" y="140" width="40" height="60" as="geometry"/>
+    </mxCell>
 
-        <!-- IT Auditor -->
-        <mxCell id="a3" value="IT&lt;br&gt;Auditor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="1000" width="40" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Actor: Supabase -->
+    <mxCell id="actor_sb" value="Supabase&#xa;(BaaS)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1080" y="380" width="40" height="60" as="geometry"/>
+    </mxCell>
 
-        <!-- System Actor (ML Model) -->
-        <mxCell id="a4" value="ML Model&lt;br&gt;(mBERT)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="300" width="40" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Use Cases -->
+    <!-- Auth -->
+    <mxCell id="uc1" value="Sign Up / Sign In" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="70" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="uc2" value="Manage Profile" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="440" y="70" width="140" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- External: Neon Auth -->
-        <mxCell id="a5" value="Supabase Auth&lt;br&gt;(Provider)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="600" width="40" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Policies -->
+    <mxCell id="uc3" value="Upload Policy&#xa;Document" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="150" width="150" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="uc4" value="Extract Text&#xa;(PDF/DOCX/TXT)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="460" y="150" width="150" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="uc5" value="Classify Policy&#xa;Gaps (ML)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="680" y="140" width="150" height="55" as="geometry"/>
+    </mxCell>
 
-        <!-- External: Gemini API -->
-        <mxCell id="a6" value="Gemini 2.5&lt;br&gt;Flash API" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="950" width="40" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Assessments -->
+    <mxCell id="uc6" value="Create&#xa;Assessment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="240" width="140" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="uc7" value="Evaluate Controls&#xa;(NCA ECC / ISO 27001)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="440" y="240" width="180" height="55" as="geometry"/>
+    </mxCell>
+    <mxCell id="uc8" value="Upload Evidence&#xa;Files" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="670" y="240" width="140" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== USE CASES — Authentication ===== -->
-        <mxCell id="uc1" value="Sign Up&lt;br&gt;(Email OTP)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="80" width="150" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc2" value="Sign In&lt;br&gt;(Email OTP)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="500" y="80" width="150" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc3" value="Manage&lt;br&gt;Account / Profile" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="80" width="150" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Remediation -->
+    <mxCell id="uc9" value="View Remediation&#xa;Tasks" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="330" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="uc10" value="Follow AI Guidance&#xa;Steps" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="460" y="330" width="150" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== USE CASES — Policy Classification ===== -->
-        <mxCell id="uc4" value="Submit Policy&lt;br&gt;Text for Classification" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="200" width="170" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc5" value="Upload Policy&lt;br&gt;Document (PDF/TXT)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="520" y="200" width="170" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc6" value="View Classification&lt;br&gt;Results &amp; Confidence" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="320" width="170" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc7" value="Batch Classify&lt;br&gt;Multiple Policies" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="520" y="320" width="170" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc8" value="View Classification&lt;br&gt;History" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="730" y="260" width="170" height="70" as="geometry"/>
-        </mxCell>
+    <!-- Framework comparison -->
+    <mxCell id="uc11" value="View NCA ↔ ISO&#xa;Mapping" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="420" width="150" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== USE CASES — Compliance Management ===== -->
-        <mxCell id="uc9" value="Manage Policies&lt;br&gt;(CRUD)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="460" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc10" value="Run Compliance&lt;br&gt;Assessment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="500" y="460" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc11" value="Perform Gap&lt;br&gt;Analysis" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="460" width="160" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Reports -->
+    <mxCell id="uc12" value="Generate&#xa;Reports" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="500" width="140" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== USE CASES — Remediation & Reporting ===== -->
-        <mxCell id="uc12" value="Create/Manage&lt;br&gt;Remediation Tasks" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="590" width="170" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc13" value="Generate&lt;br&gt;Compliance Report" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="520" y="590" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc14" value="Schedule&lt;br&gt;Automated Analysis" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="720" y="590" width="160" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Risk -->
+    <mxCell id="uc13" value="View Risk&#xa;Dashboard" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="260" y="580" width="140" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== USE CASES — Team & Audit ===== -->
-        <mxCell id="uc15" value="Manage Teams&lt;br&gt;&amp; Members" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="720" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc16" value="View Audit&lt;br&gt;Log" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="500" y="720" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc17" value="Add Comments&lt;br&gt;&amp; Annotations" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="720" width="160" height="60" as="geometry"/>
-        </mxCell>
+    <!-- i18n -->
+    <mxCell id="uc14" value="Toggle Language&#xa;(EN ↔ AR)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="450" y="500" width="140" height="50" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== USE CASES — ML / Data ===== -->
-        <mxCell id="uc18" value="Classify Policy&lt;br&gt;(ML Inference)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="500" y="850" width="170" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc19" value="Map NCA ECC&lt;br&gt;Controls" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="850" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc20" value="Generate Training&lt;br&gt;Dataset" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="850" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc21" value="Switch Language&lt;br&gt;(AR / EN)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="400" y="980" width="150" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc22" value="View Dashboard&lt;br&gt;&amp; Analytics" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="600" y="980" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="uc23" value="View Notifications" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="500" y="1110" width="160" height="60" as="geometry"/>
-        </mxCell>
+    <!-- Store to Supabase Storage -->
+    <mxCell id="uc15" value="Store Files&#xa;(policy-files / evidence-files)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="680" y="330" width="180" height="55" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== ASSOCIATIONS: Security Analyst ===== -->
-        <mxCell id="l1" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l2" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l3" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l4" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l5" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l6" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l7" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l8" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" source="a1" target="uc8" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <!-- Persist data -->
+    <mxCell id="uc16" value="Persist Data&#xa;(PostgreSQL + RLS)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="680" y="430" width="170" height="55" as="geometry"/>
+    </mxCell>
 
-        <!-- ===== ASSOCIATIONS: Compliance Officer ===== -->
-        <mxCell id="l9" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc9" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l10" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l11" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l12" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc12" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l13" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l14" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc14" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l15" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc15" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l16" style="endArrow=none;strokeColor=#82b366;strokeWidth=1.5;" edge="1" source="a2" target="uc16" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <!-- Associations: Officer → Use Cases -->
+    <mxCell id="e1" style="endArrow=none;" edge="1" source="actor_co" target="uc1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e2" style="endArrow=none;" edge="1" source="actor_co" target="uc3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e3" style="endArrow=none;" edge="1" source="actor_co" target="uc6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e4" style="endArrow=none;" edge="1" source="actor_co" target="uc9" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e5" style="endArrow=none;" edge="1" source="actor_co" target="uc11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e6" style="endArrow=none;" edge="1" source="actor_co" target="uc12" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e7" style="endArrow=none;" edge="1" source="actor_co" target="uc13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <!-- ===== ASSOCIATIONS: IT Auditor ===== -->
-        <mxCell id="l17" style="endArrow=none;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" source="a3" target="uc16" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l18" style="endArrow=none;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" source="a3" target="uc13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l19" style="endArrow=none;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" source="a3" target="uc17" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l20" style="endArrow=none;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" source="a3" target="uc22" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l21" style="endArrow=none;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" source="a3" target="uc23" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l21b" style="endArrow=none;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" source="a3" target="uc11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <!-- Include/extend -->
+    <mxCell id="inc1" value="«include»" style="endArrow=open;dashed=1;endSize=12;fontSize=9;" edge="1" source="uc3" target="uc4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="inc2" value="«include»" style="endArrow=open;dashed=1;endSize=12;fontSize=9;" edge="1" source="uc3" target="uc5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="inc3" value="«include»" style="endArrow=open;dashed=1;endSize=12;fontSize=9;" edge="1" source="uc6" target="uc7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ext1" value="«extend»" style="endArrow=open;dashed=1;endSize=12;fontSize=9;" edge="1" source="uc8" target="uc7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="inc4" value="«include»" style="endArrow=open;dashed=1;endSize=12;fontSize=9;" edge="1" source="uc9" target="uc10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <!-- ===== ASSOCIATIONS: ML Model ===== -->
-        <mxCell id="l22" style="endArrow=none;strokeColor=#b85450;strokeWidth=1.5;" edge="1" source="a4" target="uc18" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l23" style="endArrow=none;strokeColor=#b85450;strokeWidth=1.5;" edge="1" source="a4" target="uc19" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l24" style="endArrow=none;strokeColor=#b85450;strokeWidth=1.5;" edge="1" source="a4" target="uc8" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <!-- External actors -->
+    <mxCell id="ea1" style="endArrow=none;" edge="1" source="uc5" target="actor_ml" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ea2" style="endArrow=none;" edge="1" source="uc15" target="actor_sb" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ea3" style="endArrow=none;" edge="1" source="uc16" target="actor_sb" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ea4" style="endArrow=none;" edge="1" source="uc1" target="actor_sb" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="900" y="95"/>
+          <mxPoint x="1100" y="300"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
 
-        <!-- ===== ASSOCIATIONS: Neon Auth ===== -->
-        <mxCell id="l25" style="endArrow=none;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" source="a5" target="uc1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l26" style="endArrow=none;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" source="a5" target="uc2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <!-- Upload evidence → Storage -->
+    <mxCell id="inc5" value="«include»" style="endArrow=open;dashed=1;endSize=12;fontSize=9;" edge="1" source="uc8" target="uc15" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <!-- ===== ASSOCIATIONS: Gemini API ===== -->
-        <mxCell id="l27" style="endArrow=none;strokeColor=#d6b656;strokeWidth=1.5;" edge="1" source="a6" target="uc20" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- ===== INCLUDE / EXTEND RELATIONSHIPS ===== -->
-        <!-- Submit Policy includes ML Inference -->
-        <mxCell id="inc1" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;labelBackgroundColor=#FFFFFF;" edge="1" source="uc4" target="uc18" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- Batch classify includes ML Inference -->
-        <mxCell id="inc2" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;labelBackgroundColor=#FFFFFF;" edge="1" source="uc7" target="uc18" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- Run Assessment includes Gap Analysis -->
-        <mxCell id="inc3" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#9673a6;strokeWidth=1.5;fontSize=9;fontStyle=2;labelBackgroundColor=#FFFFFF;" edge="1" source="uc10" target="uc11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- Gap Analysis extends Generate Report -->
-        <mxCell id="ext1" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#82b366;strokeWidth=1.5;fontSize=9;fontStyle=2;labelBackgroundColor=#FFFFFF;" edge="1" source="uc13" target="uc10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- Upload extends Submit text -->
-        <mxCell id="ext2" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#82b366;strokeWidth=1.5;fontSize=9;fontStyle=2;labelBackgroundColor=#FFFFFF;" edge="1" source="uc5" target="uc4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <!-- Classify includes NCA controls mapping -->
-        <mxCell id="inc4" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;dashPattern=8 4;strokeColor=#b85450;strokeWidth=1.5;fontSize=9;fontStyle=2;labelBackgroundColor=#FFFFFF;" edge="1" source="uc18" target="uc19" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-        <!-- All actors use language switch and dashboard -->
-        <mxCell id="l30" style="endArrow=none;strokeColor=#6c8ebf;strokeWidth=1;dashed=1;" edge="1" source="a1" target="uc21" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l31" style="endArrow=none;strokeColor=#82b366;strokeWidth=1;dashed=1;" edge="1" source="a2" target="uc22" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="l32" style="endArrow=none;strokeColor=#82b366;strokeWidth=1;dashed=1;" edge="1" source="a2" target="uc23" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+  </root>
+</mxGraphModel>
