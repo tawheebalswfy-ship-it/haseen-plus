@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 const icons = {
   menu: (
@@ -26,6 +27,8 @@ interface ComplianceDashboardProps {
 
 export default function ComplianceDashboard({ children }: ComplianceDashboardProps) {
   const { toggleLanguage, locale, t, dir } = useLanguage();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -121,6 +124,18 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
             >
               {ct.sidebar.backToHome}
             </Link>
+            <button
+              onClick={async () => {
+                await signOut();
+                navigate("/", { replace: true });
+              }}
+              className="flex w-full items-center rounded-xl px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30 cursor-pointer border-0 bg-transparent"
+            >
+              <svg className="me-2 h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              </svg>
+              {ct.sidebar.signOut}
+            </button>
           </div>
         </div>
       </aside>

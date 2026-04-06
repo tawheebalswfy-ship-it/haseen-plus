@@ -3,6 +3,7 @@ import { Account } from './pages/account';
 import { Auth } from './pages/auth';
 import { Dashboard } from './pages/dashboard';
 import { Home } from './pages/home';
+import { NotFound } from './pages/not-found';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/auth/:pathname?" element={<Auth />} />
       <Route path="/account/:pathname?" element={<Account />} />
       <Route path="/dashboard/*" element={<Dashboard />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

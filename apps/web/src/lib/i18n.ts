@@ -12,6 +12,7 @@ export const translations = {
         frameworkComparison: "NCA ↔ ISO Mapping",
         riskDashboard: "Risk Dashboard",
         backToHome: "Back to Home",
+        signOut: "Sign Out",
         breadcrumb: "Dashboard",
       },
       common: {
@@ -386,6 +387,14 @@ export const translations = {
       saving: "Saving...",
       saved: "Saved!",
       signInRequired: "Please sign in to view your account.",
+      orContinueWith: "or continue with",
+      termsNotice: "By continuing, you agree to our Terms of Service and Privacy Policy.",
+    },
+    notFound: {
+      title: "Page Not Found",
+      description: "The page you're looking for doesn't exist or has been moved.",
+      backHome: "Back to Home",
+      goToDashboard: "Go to Dashboard",
     },
   },
   ar: {
@@ -399,6 +408,7 @@ export const translations = {
         frameworkComparison: "ربط ضوابط NCA ↔ ISO",
         riskDashboard: "لوحة المخاطر",
         backToHome: "العودة للرئيسية",
+        signOut: "تسجيل الخروج",
         breadcrumb: "لوحة المعلومات",
       },
       common: {
@@ -773,6 +783,14 @@ export const translations = {
       saving: "جارٍ الحفظ...",
       saved: "تم الحفظ!",
       signInRequired: "يرجى تسجيل الدخول لعرض حسابك.",
+      orContinueWith: "أو تابع باستخدام",
+      termsNotice: "بالمتابعة، فإنك توافق على شروط الخدمة وسياسة الخصوصية.",
+    },
+    notFound: {
+      title: "الصفحة غير موجودة",
+      description: "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+      backHome: "العودة للرئيسية",
+      goToDashboard: "الذهاب للوحة المعلومات",
     },
   },
 } as const;
