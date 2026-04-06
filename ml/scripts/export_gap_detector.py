@@ -25,7 +25,9 @@ from transformers import BertModel, BertTokenizer
 
 MODEL_NAME = "bert-base-multilingual-cased"
 NUM_GAPS = 16
-DROPOUT_RATE = 0.3
+# These defaults are overridden at runtime from the saved config.json
+DROPOUT_RATE = 0.4
+FREEZE_LAYERS = 8
 SCRIPT_DIR = Path(__file__).resolve().parent
 ML_ROOT = SCRIPT_DIR.parent
 EXPORT_DIR = Path(
@@ -39,12 +41,26 @@ class GapDetectionModel(nn.Module):
         model_name: str = MODEL_NAME,
         num_gaps: int = NUM_GAPS,
         dropout_rate: float = DROPOUT_RATE,
+        freeze_layers: int = FREEZE_LAYERS,
     ):
         super().__init__()
         self.bert = BertModel.from_pretrained(model_name)
         hidden_size = self.bert.config.hidden_size
+
+        # Freeze embeddings + lower encoder layers
+        for param in self.bert.embeddings.parameters():
+            param.requires_grad = False
+        for i in range(freeze_layers):
+            for param in self.bert.encoder.layer[i].parameters():
+                param.requires_grad = False
+
+        # Wider classifier head: 768→512→256→num_gaps
         self.classifier = nn.Sequential(
-            nn.Linear(hidden_size, 256),
+            nn.Linear(hidden_size, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+            nn.Linear(512, 256),
             nn.ReLU(),
             nn.Dropout(dropout_rate),
             nn.Linear(256, num_gaps),
@@ -83,10 +99,26 @@ def main() -> None:
             "Set GAP_CHECKPOINT_PATH or run the training notebook export step first."
         )
 
+    # Try to load config from the notebook's save directory
+    saved_config_path = checkpoint_path.parent / "config.json"
+    dropout_rate = DROPOUT_RATE
+    freeze_layers = FREEZE_LAYERS
+    saved_config = {}
+    if saved_config_path.exists():
+        with open(saved_config_path, "r", encoding="utf-8") as f:
+            saved_config = json.load(f)
+        dropout_rate = saved_config.get("dropout_rate", DROPOUT_RATE)
+        freeze_layers = saved_config.get("freeze_layers", FREEZE_LAYERS)
+        print(f"Loaded config from {saved_config_path}")
+        print(f"  dropout_rate={dropout_rate}, freeze_layers={freeze_layers}")
+
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
 
     tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
-    model = GapDetectionModel()
+    model = GapDetectionModel(
+        dropout_rate=dropout_rate,
+        freeze_layers=freeze_layers,
+    )
 
     state_dict = torch.load(checkpoint_path, map_location="cpu")
     model.load_state_dict(state_dict)
@@ -100,9 +132,17 @@ def main() -> None:
     config = {
         "model_name": MODEL_NAME,
         "num_gaps": NUM_GAPS,
-        "dropout_rate": DROPOUT_RATE,
+        "dropout_rate": dropout_rate,
+        "freeze_layers": freeze_layers,
+        "hidden_dims": [512, 256],
         "model_type": "gap_detection_multilabel",
     }
+    # Merge in training info from saved config
+    if saved_config:
+        config["optimal_thresholds"] = saved_config.get("optimal_thresholds", {})
+        config["threshold"] = saved_config.get("threshold", 0.5)
+        config["training_info"] = saved_config.get("training_info", {})
+
     with open(EXPORT_DIR / "config.json", "w", encoding="utf-8") as file:
         json.dump(config, file, ensure_ascii=False, indent=2)
 

@@ -134,23 +134,36 @@ model_config: dict | None = None
 # ---------------------------------------------------------------------------
 class GapDetectionModel(nn.Module):
     """
-    Multi-label gap detection model.
-    mBERT backbone + classification head with 16 sigmoid outputs.
+    Multi-label gap detection model (Enhanced).
+    mBERT backbone (partially frozen) + wider classification head.
     """
 
     def __init__(
         self,
         model_source: str = "bert-base-multilingual-cased",
         num_gaps: int = 16,
-        dropout_rate: float = 0.3,
+        dropout_rate: float = 0.4,
+        freeze_layers: int = 8,
     ):
         super().__init__()
         bert_config = BertConfig.from_pretrained(model_source)
         self.bert = BertModel(bert_config)
         hidden_size = self.bert.config.hidden_size  # 768
 
+        # Freeze embeddings + lower encoder layers
+        for param in self.bert.embeddings.parameters():
+            param.requires_grad = False
+        for i in range(freeze_layers):
+            for param in self.bert.encoder.layer[i].parameters():
+                param.requires_grad = False
+
+        # Wider classifier head: 768→512→256→num_gaps
         self.classifier = nn.Sequential(
-            nn.Linear(hidden_size, 256),
+            nn.Linear(hidden_size, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+            nn.Linear(512, 256),
             nn.ReLU(),
             nn.Dropout(dropout_rate),
             nn.Linear(256, num_gaps),
@@ -293,22 +306,27 @@ def normalize_state_dict_keys(state_dict: dict[str, torch.Tensor]) -> dict[str, 
 
 def validate_gap_checkpoint(state_dict: dict[str, torch.Tensor]) -> None:
     """Fail fast with a useful error if the uploaded artifact is not the gap detector."""
+    # Enhanced model head: 768→512→256→16
     expected_head = {
-        "classifier.0.weight": (256, 768),
-        "classifier.0.bias": (256,),
-        "classifier.3.weight": (len(GAP_LABELS), 256),
-        "classifier.3.bias": (len(GAP_LABELS),),
+        "classifier.0.weight": (512, 768),
+        "classifier.0.bias": (512,),
+        "classifier.1.weight": (512,),        # BatchNorm1d
+        "classifier.1.bias": (512,),           # BatchNorm1d
+        "classifier.4.weight": (256, 512),
+        "classifier.4.bias": (256,),
+        "classifier.7.weight": (len(GAP_LABELS), 256),
+        "classifier.7.bias": (len(GAP_LABELS),),
     }
 
     missing = [key for key in expected_head if key not in state_dict]
     if missing:
         old_classifier_shape = tuple(state_dict["classifier.weight"].shape) if "classifier.weight" in state_dict else None
         raise ValueError(
-            "Uploaded model artifact does not match GapDetectionModel. "
+            "Uploaded model artifact does not match GapDetectionModel (Enhanced). "
             f"Missing expected keys: {missing}. "
             f"Detected legacy classifier.weight shape: {old_classifier_shape}. "
-            "This usually means GCS contains the old 3-class BertForSequenceClassification checkpoint instead of the new 16-gap model. "
-            "Upload the exported policy_gap_detector/ folder from the notebook (model.pt, config.json, tokenizer.json, tokenizer_config.json, vocab files)."
+            "Upload the exported policy_gap_detector/ folder from the enhanced notebook "
+            "(model.pt, config.json, tokenizer.json, tokenizer_config.json, vocab files)."
         )
 
     for key, expected_shape in expected_head.items():
@@ -317,7 +335,7 @@ def validate_gap_checkpoint(state_dict: dict[str, torch.Tensor]) -> None:
             raise ValueError(
                 "Uploaded model artifact has incompatible head dimensions for GapDetectionModel. "
                 f"Key {key} has shape {actual_shape}, expected {expected_shape}. "
-                "Upload the exported policy_gap_detector/ folder from the gap-detection notebook."
+                "Upload the exported policy_gap_detector/ folder from the enhanced gap-detection notebook."
             )
 
 
@@ -472,7 +490,15 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     2. Run per-chunk gap prediction (16 sigmoid outputs)
     3. Aggregate via max-pooling across chunks
     4. Derive compliance level and domain-level reports
+
+    Uses per-label optimized thresholds from model config when available,
+    falling back to the provided threshold parameter.
     """
+    # Load per-label thresholds from model config if available
+    per_label_thresholds = {}
+    if model_config and "optimal_thresholds" in model_config:
+        per_label_thresholds = model_config["optimal_thresholds"]
+
     # 1. Chunk
     chunks = chunk_document(text)
 
@@ -483,9 +509,10 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     aggregated = {}
     for gap_id in GAP_LABELS:
         max_prob = max(cr[gap_id] for cr in chunk_results)
+        gap_threshold = per_label_thresholds.get(gap_id, threshold)
         aggregated[gap_id] = {
             "probability": round(max_prob, 4),
-            "detected": max_prob >= threshold,
+            "detected": max_prob >= gap_threshold,
         }
 
     # 4. Detect applicable domains and build report only for those domains
