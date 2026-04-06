@@ -27,7 +27,7 @@ interface ComplianceDashboardProps {
 
 export default function ComplianceDashboard({ children }: ComplianceDashboardProps) {
   const { toggleLanguage, locale, t, dir } = useLanguage();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -119,6 +119,16 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
               {locale === "en" ? "العربية" : "English"}
             </button>
             <Link
+              to="/account"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center rounded-xl px-4 py-3 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 no-underline"
+            >
+              <svg className="me-2 h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275" />
+              </svg>
+              {t.auth.account}
+            </Link>
+            <Link
               to="/"
               className="flex items-center rounded-xl px-4 py-3 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 no-underline"
             >
@@ -158,6 +168,15 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{activeItem.name}</h1>
             </div>
           </div>
+          <Link
+            to="/account"
+            className="inline-flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 no-underline transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+          >
+            <span className="hidden sm:block">{t.auth.account}</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0b1d2c] text-sm font-semibold text-white dark:bg-white dark:text-[#0b1d2c]">
+              {(user?.user_metadata?.full_name ?? user?.email ?? "U").charAt(0).toUpperCase()}
+            </span>
+          </Link>
         </header>
 
         {/* Page content */}
