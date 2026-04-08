@@ -45,7 +45,8 @@ FIGURE_ASSETS = {
     "Figure 3.6: Sequence Diagram \u2014 Authentication": os.path.join(REPORT_ASSET_DIR, "fig_3_5b_sequence_authentication.png"),
     "Figure 3.7: Sequence Diagram \u2014 Assessment & Gap Analysis": os.path.join(REPORT_ASSET_DIR, "fig_3_5c_sequence_assessment_gap.png"),
     "Figure 3.8: Class / Component Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_6_class_diagram.png"),
-    "Figure 3.9: Data Flow Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_7_dfd.png"),
+    "Figure 3.9: Data Flow Diagram (Context)": os.path.join(REPORT_ASSET_DIR, "fig_3_7_dfd.png"),
+    "Figure 3.9b: Data Flow Diagram (Level 1)": os.path.join(REPORT_ASSET_DIR, "fig_3_8_dfd_level_1.png"),
     "Figure 3.10: Activity & State Diagrams": os.path.join(REPORT_ASSET_DIR, "fig_3_9_activity_policy_assessment.png"),
     "Figure 3.11: Deployment Architecture (Google Cloud Run)": os.path.join(REPORT_ASSET_DIR, "fig_3_10_deployment_architecture.png"),
     "Figure 3.12: Database Entity-Relationship Diagram": os.path.join(REPORT_ASSET_DIR, "fig_3_11_database_erd.png"),
@@ -252,7 +253,7 @@ def build():
         f"{SHORT} platform \u2014 an AI-powered cybersecurity compliance system for Saudi "
         "SMEs. The implemented system comprises: (1) a custom bilingual compliance dataset "
         "of 891 samples generated via Google Gemini 2.5 Flash with automated quality "
-        "verification; (2) a fine-tuned XLM-RoBERTa-base model with layer-wise learning rates "
+        "verification; (2) a fine-tuned mDeBERTa-v3-base model with layer-wise learning rates "
         "and per-label threshold optimization for 16-label multi-label gap detection across "
         "Password Policy (ECC 2-2) and Risk Assessment (ECC 1-5) domains, achieving a test "
         "Macro F1 of 0.6037; (3) a FastAPI backend deployed on Google Cloud Run with document "
@@ -264,7 +265,7 @@ def build():
         "actionable remediation guidance. The system achieves sub-second inference time and "
         "reduces manual audit effort from weeks to minutes.")
     _p(doc,
-        "Keywords\u2014 NCA ECC, ISO 27001, Compliance Automation, NLP, XLM-RoBERTa, "
+        "Keywords\u2014 NCA ECC, ISO 27001, Compliance Automation, NLP, mDeBERTa-v3, "
         "Multi-label Classification, Gap Detection, Saudi Arabia, Vision 2030.")
     _pb(doc)
 
@@ -379,7 +380,7 @@ def build():
 
     _h(doc, "1.3  Project Contribution", 2)
     _p(doc, f"The main contributions delivered in GP2 for {SHORT} are:")
-    _b(doc, "AI-driven 16-label multi-label gap detection using fine-tuned XLM-RoBERTa (evolved from mBERT baseline)")
+    _b(doc, "AI-driven 16-label multi-label gap detection using fine-tuned mDeBERTa-v3 (evolved from mBERT baseline)")
     _b(doc, "Custom bilingual (Arabic/English) compliance dataset of 260 samples")
     _b(doc, "Automated ECC\u2013ISO 27001 cross-framework mapping")
     _b(doc, "Full-stack web platform with real-time compliance scoring")
@@ -468,7 +469,7 @@ def build():
     _p(doc, "The system architecture consists of several interconnected modules:")
     _b(doc, "Data Collection Module: Regulatory documents (NCA ECC, ISO 27001) and organizational policies.")
     _b(doc, "Preprocessing and Feature Extraction Engine: Cleaning, tokenization, language detection, Arabic normalization.")
-    _b(doc, "AI Model: Supervised classification engine built on XLM-RoBERTa for 16-label gap detection.")
+    _b(doc, "AI Model: Supervised classification engine built on mDeBERTa-v3 for 16-label gap detection.")
     _b(doc, "Compliance Scoring Module: Severity-weighted scoring with per-domain breakdown.")
     _b(doc, "User Interface: Interactive dashboard with real-time compliance metrics.")
     _b(doc, "Real-time Monitoring: Continuous visibility over compliance status.")
@@ -485,7 +486,7 @@ def build():
             ["Backend Framework", "FastAPI", "0.115.0"],
             ["ML Framework", "PyTorch (CPU-only)", "\u2014"],
             ["NLP Library", "HuggingFace Transformers", "4.40.0"],
-            ["Pre-trained Model", "bert-base-multilingual-cased", "119,547 vocab"],
+            ["Pre-trained Model", "microsoft/mdeberta-v3-base", "~86M params"],
             ["Database", "Supabase (PostgreSQL)", "Managed"],
             ["Authentication", "Supabase Auth (JWT)", "\u2014"],
             ["Cloud Platform", "Google Cloud Run", "me-central1 (Doha)"],
@@ -557,28 +558,28 @@ def build():
     _h(doc, "3.2.3  AI Model Development", 3)
     _p(doc,
         f"The core analytical component of {SHORT} is a GapDetectionModel built on "
-        "xlm-roberta-base (XLM-RoBERTa). The model was initially developed using "
+        "microsoft/mdeberta-v3-base (mDeBERTa-v3). The model was initially developed using "
         "bert-base-multilingual-cased (mBERT), but mBERT's shared 110k WordPiece "
         "vocabulary diluted Arabic-specific representations and led to poor convergence "
-        "on the bilingual 16-label gap detection task. XLM-RoBERTa, pre-trained on "
-        "2.5 TB of CommonCrawl data with a 250k SentencePiece vocabulary, provides "
-        "significantly better cross-lingual transfer for Arabic/English regulatory text. "
-        "The model uses the [CLS] token representation fed into a wider two-layer "
-        "classification head with Batch Normalization and sigmoid activation for "
-        "multi-label classification across 16 gap labels.")
+        "on the bilingual 16-label gap detection task. mDeBERTa-v3, pre-trained on "
+        "CC100 multilingual data with a 128k SentencePiece vocabulary and disentangled "
+        "attention, provides significantly better cross-lingual transfer for "
+        "Arabic/English regulatory text. The model uses mean-pooled token representations "
+        "fed into a wider two-layer classification head with Batch Normalization and "
+        "sigmoid activation for multi-label classification across 16 gap labels.")
 
     _p(doc, "Table 3.5: Model Architecture Parameters")
     _table(doc,
         ["Parameter", "Value"],
         [
-            ["Base Model","xlm-roberta-base"],
+            ["Base Model","microsoft/mdeberta-v3-base"],
             ["Previous Model (replaced)","bert-base-multilingual-cased (mBERT)"],
-            ["Vocabulary Size","250,002 tokens (SentencePiece)"],
+            ["Vocabulary Size","128,100 tokens (SentencePiece)"],
             ["Hidden Size","768"],
             ["Attention Heads","12"],
             ["Encoder Layers","12"],
             ["Language Support","100+ languages (English, Arabic)"],
-            ["Pre-training Data","2.5 TB CommonCrawl (vs mBERT: Wikipedia only)"],
+            ["Pre-training Data","CC100 multilingual corpus (vs mBERT: Wikipedia only)"],
             ["Max Sequence Length","512 tokens"],
             ["Pooling Strategy","[CLS] token representation"],
             ["Classification Head","Linear(768\u2192512) \u2192 BN \u2192 ReLU \u2192 Dropout \u2192 Linear(512\u2192256) \u2192 ReLU \u2192 Dropout \u2192 Linear(256\u219216)"],
@@ -598,15 +599,15 @@ def build():
     _p(doc, "Model Evolution:")
     _b(doc, "v1.0 \u2014 3-class BertForSequenceClassification (compliant / partial / non-compliant)")
     _b(doc, "v2.0 \u2014 16-class multi-label GapDetectionModel with mBERT + BCEWithLogitsLoss (poor convergence on bilingual task)")
-    _b(doc, "v3.0 \u2014 XLM-RoBERTa-base + BCEWithLogitsLoss with pos_weight + wider classification head + layer-wise LR (current)")
+    _b(doc, "v3.0 \u2014 mDeBERTa-v3-base + BCEWithLogitsLoss with pos_weight + wider classification head + layer-wise LR (current)")
 
     _h(doc, "Document Processing Pipeline", 3)
     _p(doc,
         "For inference, documents undergo a chunking pipeline:")
     _b(doc, "1. Input text (up to 50,000 characters)")
     _b(doc, "2. Document chunking: split on headings, then paragraphs (~350 words/chunk, 50-word overlap)")
-    _b(doc, "3. Per-chunk tokenization with XLM-RoBERTa tokenizer (512 max tokens)")
-    _b(doc, "4. Per-chunk inference: XLM-RoBERTa \u2192 classifier \u2192 16 sigmoid outputs")
+    _b(doc, "3. Per-chunk tokenization with mDeBERTa-v3 tokenizer (512 max tokens)")
+    _b(doc, "4. Per-chunk inference: mDeBERTa-v3 \u2192 classifier \u2192 16 sigmoid outputs")
     _b(doc, "5. Max-pooling aggregation across all chunks per gap label")
     _b(doc, "6. Domain detection via keyword heuristic")
     _b(doc, "7. Severity-weighted compliance scoring")
@@ -876,7 +877,7 @@ def build():
     # ── 4.2 Training Results ──
     _h(doc, "4.2  Model Training Results", 2)
     _p(doc,
-        "The XLM-RoBERTa-base model was trained for 52 epochs with early stopping "
+        "The mDeBERTa-v3-base model was trained for 52 epochs with early stopping "
         "(patience=10). The best checkpoint was saved at epoch 42 based on validation "
         "Macro F1. Training used BCEWithLogitsLoss with pos_weight for class imbalance, "
         "layer-wise learning rates (backbone: 8e-6 to 1.5e-5, classification head: 5e-4), "
@@ -1048,7 +1049,7 @@ def build():
         f"Graduation Project 2 successfully transitioned the {SHORT} platform from "
         "conceptual design to a fully implemented and deployed system:")
     _b(doc, "Custom bilingual dataset of 260 samples (130 EN + 130 AR) with 16 gap labels")
-    _b(doc, "Fine-tuned XLM-RoBERTa-base model (evolved from mBERT baseline) achieving test Macro F1 of 0.6037")
+    _b(doc, "Fine-tuned mDeBERTa-v3-base model (evolved from mBERT baseline) achieving test Macro F1 of 0.6037")
     _b(doc, "FastAPI backend with document chunking deployed on Google Cloud Run")
     _b(doc, "Full-featured React/TypeScript web application with bilingual support")
     _b(doc, "Supabase PostgreSQL with RLS on policies, assessments, and remediation tasks; user profiles managed by Supabase Auth")
@@ -1056,9 +1057,9 @@ def build():
 
     _h(doc, "5.2  Key Findings", 2)
     _b(doc, "Multi-label gap detection provides more actionable insights than single-label classification.")
-    _b(doc, "XLM-RoBERTa's SentencePiece tokenizer (250k vocab, 2.5 TB pre-training) significantly outperforms mBERT for bilingual Arabic/English compliance text.")
+    _b(doc, "mDeBERTa-v3's SentencePiece tokenizer (128k vocab, CC100 pre-training) with disentangled attention significantly outperforms mBERT for bilingual Arabic/English compliance text.")
     _b(doc, "BCEWithLogitsLoss with pos_weight effectively handles class imbalance by up-weighting minority gap labels.")
-    _b(doc, "Model evolution from mBERT to XLM-RoBERTa was necessary: mBERT's shared 110k WordPiece vocabulary failed to capture Arabic regulatory nuances.")
+    _b(doc, "Model evolution from mBERT to mDeBERTa-v3 was necessary: mBERT's shared 110k WordPiece vocabulary failed to capture Arabic regulatory nuances.")
     _b(doc, "Conservative per-label threshold optimization improves Macro F1 by 8.8% over the fixed 0.50 baseline.")
     _b(doc, "Password Policy domain (F1: 0.6758) outperforms Risk Assessment (F1: 0.5317) due to higher training support.")
     _b(doc, "Document chunking with max-pool aggregation handles long texts within the 512-token limit.")
@@ -1069,7 +1070,7 @@ def build():
     _b(doc, "Arabic NLP: Formal Arabic regulatory language required specialized normalization.")
     _b(doc, "Class Imbalance: Sparse multi-label gaps (mean 1.8/sample) required pos_weight in BCEWithLogitsLoss to avoid predicting all zeros.")
     _b(doc, "RA Domain Performance: Risk Assessment gaps with lower training support (80\u2013100 samples) showed weaker F1 (0.53).")
-    _b(doc, "Model Size: XLM-RoBERTa (~1.1 GB) requires Docker optimization for Cloud Run.")
+    _b(doc, "Model Size: mDeBERTa-v3 (~350 MB) requires Docker optimization for Cloud Run.")
     _b(doc, "Cold Start: Initial model loading takes 30\u201360 s; mitigated by keep-alive.")
 
     _h(doc, "5.4  Lessons Learned", 2)

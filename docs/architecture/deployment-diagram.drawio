@@ -35,7 +35,7 @@
     <mxCell id="n_fastapi" value="FastAPI + Uvicorn&#xa;GET /health · POST /analyze&#xa;chunking + threshold blend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="410" y="140" width="240" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="n_xlmr" value="XLM-RoBERTa-base (~279M params)&#xa;xlm-roberta-base&#xa;head: 768→512→256→16&#xa;mean-pooling · sigmoid → max-pool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="n_xlmr" value="mDeBERTa-v3-base (~86M params)&#xa;microsoft/mdeberta-v3-base&#xa;head: 768→512→BN→256→16&#xa;mean-pooling · sigmoid → max-pool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="410" y="190" width="240" height="55" as="geometry"/>
     </mxCell>
     <mxCell id="n_cr_spec" value="2 vCPU · 2 GiB RAM · max 3 instances&#xa;300s request timeout · port 8080" style="text;html=1;fontSize=7;fontStyle=2;fillColor=#D5E8D4;strokeColor=none;" vertex="1" parent="1">

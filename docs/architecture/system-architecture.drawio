@@ -3,10 +3,16 @@
     <mxCell id="0"/>
     <mxCell id="1" parent="0"/>
 
-    <mxCell id="title" value="&lt;font style=&quot;font-size:20px&quot;&gt;PolicyShield / AICG — System Architecture&lt;/font&gt;" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+    <mxCell id="title" value="&lt;font style=&quot;font-size:20px&quot;&gt;AICG — System Architecture&lt;/font&gt;" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
       <mxGeometry x="400" y="15" width="600" height="40" as="geometry"/>
     </mxCell>
 
+    <!-- User Actor (left side, connects to frontend only) -->
+    <mxCell id="user_icon" value="User&#10;(Compliance Officer)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1230" y="220" width="40" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Frontend -->
     <mxCell id="c_fe" value="Frontend — Vercel CDN" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;fontStyle=1;rounded=1;arcSize=8;swimlaneLine=0;" vertex="1" parent="1">
       <mxGeometry x="30" y="70" width="600" height="380" as="geometry"/>
     </mxCell>
@@ -35,10 +41,10 @@
     <mxCell id="pg_risk" value="RiskDashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="pg_grp">
       <mxGeometry x="110" y="32" width="100" height="28" as="geometry"/>
     </mxCell>
-    <mxCell id="pg_rep" value="AccountPage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="pg_grp">
+    <mxCell id="pg_acct" value="AccountPage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="pg_grp">
       <mxGeometry x="220" y="32" width="90" height="28" as="geometry"/>
     </mxCell>
-    <mxCell id="pg_sched" value="AuthPages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="pg_grp">
+    <mxCell id="pg_auth" value="AuthPages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="pg_grp">
       <mxGeometry x="340" y="32" width="100" height="28" as="geometry"/>
     </mxCell>
     <mxCell id="pg_landing" value="LandingPage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="pg_grp">
@@ -71,7 +77,7 @@
     <mxCell id="i18n_box" value="i18n.ts: en / ar translations · RTL support" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=8;fontStyle=2;" vertex="1" parent="c_fe">
       <mxGeometry x="20" y="296" width="280" height="24" as="geometry"/>
     </mxCell>
-    <mxCell id="router_box" value="react-router-dom v7  ·  6 dashboard routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=8;fontStyle=2;" vertex="1" parent="c_fe">
+    <mxCell id="router_box" value="react-router-dom v7 · 6 dashboard routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=8;fontStyle=2;" vertex="1" parent="c_fe">
       <mxGeometry x="320" y="296" width="200" height="24" as="geometry"/>
     </mxCell>
     <mxCell id="legend_page" value="Pages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;" vertex="1" parent="c_fe">
@@ -84,6 +90,7 @@
       <mxGeometry x="210" y="340" width="90" height="20" as="geometry"/>
     </mxCell>
 
+    <!-- Backend API -->
     <mxCell id="c_api" value="Policy Analysis API — Cloud Run (me-central1)" style="swimlane;startSize=30;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=14;fontStyle=1;rounded=1;arcSize=8;swimlaneLine=0;" vertex="1" parent="1">
       <mxGeometry x="700" y="70" width="440" height="260" as="geometry"/>
     </mxCell>
@@ -93,10 +100,10 @@
     <mxCell id="api_ep" value="Endpoints&#10;GET /  ·  GET /health&#10;POST /analyze" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="c_api">
       <mxGeometry x="20" y="60" width="150" height="60" as="geometry"/>
     </mxCell>
-    <mxCell id="api_pipeline" value="Inference Pipeline&#10;Domain detect → Chunk&#10;→ SentencePiece tokenize&#10;→ XLM-R forward → Sigmoid&#10;→ Threshold blend → Max-pool&#10;→ Severity scoring" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;" vertex="1" parent="c_api">
+    <mxCell id="api_pipeline" value="Inference Pipeline&#10;Domain detect → Chunk&#10;→ Tokenize (max 512)&#10;→ mDeBERTa-v3 forward → Sigmoid&#10;→ Threshold blend → Max-pool&#10;→ Severity scoring" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;" vertex="1" parent="c_api">
       <mxGeometry x="190" y="55" width="220" height="80" as="geometry"/>
     </mxCell>
-    <mxCell id="api_model" value="XLM-RoBERTa-base (~279M params)&#10;xlm-roberta-base&#10;+ head: 768→512→BN→256→16&#10;model.pt / model.safetensors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;fontStyle=1;" vertex="1" parent="c_api">
+    <mxCell id="api_model" value="mDeBERTa-v3-base (~86M params)&#10;microsoft/mdeberta-v3-base&#10;+ head: 768→512→BN→256→16&#10;model.safetensors | model.pt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;fontStyle=1;" vertex="1" parent="c_api">
       <mxGeometry x="20" y="150" width="200" height="70" as="geometry"/>
     </mxCell>
     <mxCell id="api_labels" value="16 Gap Labels&#10;GAP_PP_001 … 008&#10;GAP_RA_001 … 008" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=9;" vertex="1" parent="c_api">
@@ -107,6 +114,7 @@
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
+    <!-- Supabase -->
     <mxCell id="c_sb" value="Supabase (BaaS)" style="swimlane;startSize=30;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=14;fontStyle=1;rounded=1;arcSize=8;swimlaneLine=0;" vertex="1" parent="1">
       <mxGeometry x="30" y="510" width="600" height="210" as="geometry"/>
     </mxCell>
@@ -119,7 +127,7 @@
     <mxCell id="sb_storage" value="Storage Buckets&#10;policy-files&#10;evidence-files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="c_sb">
       <mxGeometry x="385" y="40" width="140" height="55" as="geometry"/>
     </mxCell>
-    <mxCell id="sb_trigger" value="Supabase Auth manages user metadata directly" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=8;" vertex="1" parent="c_sb">
+    <mxCell id="sb_trigger" value="update_updated_at() trigger on all tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=8;" vertex="1" parent="c_sb">
       <mxGeometry x="20" y="110" width="220" height="28" as="geometry"/>
     </mxCell>
     <mxCell id="sb_rls" value="Row-Level Security on all tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=8;" vertex="1" parent="c_sb">
@@ -128,14 +136,15 @@
     <mxCell id="sb_cache" value="localStorage cache fallback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=8;" vertex="1" parent="c_sb">
       <mxGeometry x="20" y="155" width="180" height="24" as="geometry"/>
     </mxCell>
-    <mxCell id="sb_7t" value="3 application tables  ·  2 storage buckets" style="text;html=1;fontSize=8;fontStyle=2;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="c_sb">
+    <mxCell id="sb_7t" value="3 application tables · 2 storage buckets" style="text;html=1;fontSize=8;fontStyle=2;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="c_sb">
       <mxGeometry x="220" y="155" width="260" height="18" as="geometry"/>
     </mxCell>
 
+    <!-- GCP -->
     <mxCell id="c_gcp" value="Google Cloud Platform" style="swimlane;startSize=30;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=14;fontStyle=1;rounded=1;arcSize=8;swimlaneLine=0;" vertex="1" parent="1">
       <mxGeometry x="700" y="400" width="440" height="170" as="geometry"/>
     </mxCell>
-    <mxCell id="gcs" value="GCS Bucket&#10;model-files33 / policy_gap_detector&#10;model.pt · tokenizer · config.json" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;boundedLbl=1;size=10;" vertex="1" parent="c_gcp">
+    <mxCell id="gcs" value="GCS Bucket&#10;model-files33 / policy_gap_detector&#10;model.safetensors · tokenizer · config.json" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;boundedLbl=1;size=10;" vertex="1" parent="c_gcp">
       <mxGeometry x="20" y="45" width="200" height="75" as="geometry"/>
     </mxCell>
     <mxCell id="ar" value="Artifact Registry&#10;Docker images&#10;me-central1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="c_gcp">
@@ -145,6 +154,7 @@
       <mxGeometry x="250" y="115" width="160" height="40" as="geometry"/>
     </mxCell>
 
+    <!-- CI/CD -->
     <mxCell id="c_cicd" value="CI / CD — GitHub Actions" style="swimlane;startSize=28;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;fontStyle=1;rounded=1;arcSize=8;swimlaneLine=0;" vertex="1" parent="1">
       <mxGeometry x="700" y="610" width="440" height="60" as="geometry"/>
     </mxCell>
@@ -152,6 +162,7 @@
       <mxGeometry x="10" y="32" width="420" height="20" as="geometry"/>
     </mxCell>
 
+    <!-- Connections -->
     <mxCell id="conn1" value="POST /analyze  (HTTPS + X-API-Key)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#82B366;fontSize=9;fontStyle=1;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="c_fe" target="c_api" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
@@ -168,21 +179,9 @@
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <mxCell id="user_icon" value="User&#10;(Compliance Officer)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
-      <mxGeometry x="1210" y="155" width="40" height="60" as="geometry"/>
-    </mxCell>
-    <mxCell id="conn_user" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#6C8EBF;fontSize=9;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="c_api" target="user_icon" parent="1">
+    <!-- User ↔ Frontend only (user does NOT directly interact with API) -->
+    <mxCell id="conn_user" value="Browser (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#6C8EBF;fontSize=9;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.4;entryDx=0;entryDy=0;" edge="1" source="user_icon" target="c_fe" parent="1">
       <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="conn_user2" value="Browser (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#6C8EBF;fontSize=9;entryX=1;entryY=0.35;entryDx=0;entryDy=0;" edge="1" source="user_icon" target="c_fe" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="1300" y="185"/>
-          <mxPoint x="1300" y="30"/>
-          <mxPoint x="330" y="30"/>
-          <mxPoint x="330" y="203"/>
-        </Array>
-      </mxGeometry>
     </mxCell>
 
   </root>

@@ -26,7 +26,7 @@
     <mxCell id="ll_api" value=":Analysis API&#xa;(Cloud Run)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#D5E8D4;strokeColor=#82B366;size=40;" vertex="1" parent="1">
       <mxGeometry x="940" y="60" width="110" height="660" as="geometry"/>
     </mxCell>
-    <mxCell id="ll_xlmr" value=":XLM-RoBERTa" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFE6CC;strokeColor=#D79B00;size=40;" vertex="1" parent="1">
+    <mxCell id="ll_xlmr" value=":mDeBERTa-v3" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFE6CC;strokeColor=#D79B00;size=40;" vertex="1" parent="1">
       <mxGeometry x="1120" y="60" width="110" height="660" as="geometry"/>
     </mxCell>
 
@@ -105,7 +105,7 @@
     </mxCell>
 
     <!-- 5b. Forward each chunk -->
-    <mxCell id="m5b" value="5b. SentencePiece tokenize + forward per chunk" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+    <mxCell id="m5b" value="5b. tokenize (max 512) + forward per chunk" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="995" y="470" as="sourcePoint"/>
         <mxPoint x="1175" y="470" as="targetPoint"/>

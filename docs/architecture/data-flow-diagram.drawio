@@ -16,7 +16,7 @@
     <mxCell id="p1" value="1.0&#xa;Upload, Extract&#xa;&amp; Store Policy" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="220" y="60" width="160" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="p2" value="2.0&#xa;Policy Analysis&#xa;(XLM-RoBERTa)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="p2" value="2.0&#xa;Policy Analysis&#xa;(mDeBERTa-v3)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="480" y="60" width="160" height="70" as="geometry"/>
     </mxCell>
     <mxCell id="p3" value="3.0&#xa;Assessment&#xa;Engine" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">

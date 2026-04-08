@@ -116,13 +116,8 @@
     <mxCell id="ea1" style="endArrow=none;" edge="1" source="uc5" target="actor_ml" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
     <mxCell id="ea2" style="endArrow=none;" edge="1" source="uc15" target="actor_sb" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
     <mxCell id="ea3" style="endArrow=none;" edge="1" source="uc16" target="actor_sb" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
-    <mxCell id="ea4" style="endArrow=none;" edge="1" source="uc1" target="actor_sb" parent="1">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="900" y="95"/>
-          <mxPoint x="1100" y="300"/>
-        </Array>
-      </mxGeometry>
+    <mxCell id="ea4" style="endArrow=none;curved=1;" edge="1" source="uc1" target="actor_sb" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
     <!-- Upload evidence → Storage -->

@@ -1,4 +1,4 @@
-<mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+<mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
   <root>
     <mxCell id="0"/>
     <mxCell id="1" parent="0"/>
@@ -15,16 +15,16 @@
 
     <!-- Contexts -->
     <mxCell id="cls_auth" value="AuthContext" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;" vertex="1" parent="1">
-      <mxGeometry x="40" y="110" width="220" height="140" as="geometry"/>
+      <mxGeometry x="40" y="110" width="220" height="170" as="geometry"/>
     </mxCell>
-    <mxCell id="auth_attrs" value="+ user: User | null&#xa;+ loading: boolean&#xa;─────────────&#xa;+ signIn(email, password)&#xa;+ signUp(email, password, name)&#xa;+ signOut()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_auth">
-      <mxGeometry x="5" y="30" width="210" height="100" as="geometry"/>
+    <mxCell id="auth_attrs" value="+ user: User | null&#xa;+ session: Session | null&#xa;+ loading: boolean&#xa;─────────────&#xa;+ signIn(email, password)&#xa;+ signUp(email, password, name?)&#xa;+ signOut()&#xa;+ requestPasswordReset(email)&#xa;+ updatePassword(password)" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_auth">
+      <mxGeometry x="5" y="30" width="210" height="130" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_lang" value="LanguageContext" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=11;" vertex="1" parent="1">
       <mxGeometry x="280" y="110" width="220" height="140" as="geometry"/>
     </mxCell>
-    <mxCell id="lang_attrs" value="+ locale: &quot;en&quot; | &quot;ar&quot;&#xa;+ dir: &quot;ltr&quot; | &quot;rtl&quot;&#xa;+ t: Translations&#xa;─────────────&#xa;+ toggleLanguage()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_lang">
+    <mxCell id="lang_attrs" value="+ locale: &quot;en&quot; | &quot;ar&quot;&#xa;+ dir: &quot;ltr&quot; | &quot;rtl&quot;&#xa;+ t: TranslationKeys&#xa;─────────────&#xa;+ toggleLanguage()&#xa;+ setLocale(locale)" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_lang">
       <mxGeometry x="5" y="30" width="210" height="100" as="geometry"/>
     </mxCell>
 
@@ -32,79 +32,94 @@
     <mxCell id="cls_store" value="useComplianceStore()" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;" vertex="1" parent="1">
       <mxGeometry x="520" y="110" width="220" height="220" as="geometry"/>
     </mxCell>
-    <mxCell id="store_attrs" value="+ policies: Policy[]&#xa;+ assessments: Assessment[]&#xa;+ tasks: RemediationTask[]&#xa;─────────────&#xa;+ addPolicy(data): string&#xa;+ updatePolicy(id, data)&#xa;+ deletePolicy(id)&#xa;+ addAssessment(data): string&#xa;+ updateAssessment(id, data)&#xa;+ deleteAssessment(id)&#xa;+ addTask(data) / updateTask()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_store">
+    <mxCell id="store_attrs" value="+ policies: Policy[]&#xa;+ assessments: Assessment[]&#xa;+ tasks: RemediationTask[]&#xa;─────────────&#xa;+ addPolicy(data): string&#xa;+ updatePolicy(id, data)&#xa;+ deletePolicy(id)&#xa;+ addAssessment(data): string&#xa;+ updateAssessment(id, data)&#xa;+ deleteAssessment(id)&#xa;+ addTask(data) / updateTask()&#xa;+ deleteTask(id) / deleteAllTasks()" style="text;align=left;verticalAlign=top;html=1;fontSize=9;whiteSpace=wrap;" vertex="1" parent="cls_store">
       <mxGeometry x="5" y="30" width="210" height="180" as="geometry"/>
     </mxCell>
 
-    <!-- Pages -->
+    <!-- Pages (row 1) -->
+    <mxCell id="cls_landing" value="LandingPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="310" width="130" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="land_a" value="Hero section&#xa;Features grid&#xa;How-it-works CTA" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_landing">
+      <mxGeometry x="5" y="24" width="120" height="50" as="geometry"/>
+    </mxCell>
+
     <mxCell id="cls_overview" value="OverviewPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="40" y="290" width="160" height="90" as="geometry"/>
+      <mxGeometry x="185" y="310" width="130" height="80" as="geometry"/>
     </mxCell>
     <mxCell id="ov_a" value="KPI cards&#xa;Quick-start guide&#xa;Recent activity" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_overview">
-      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+      <mxGeometry x="5" y="24" width="120" height="50" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_policies" value="PoliciesPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="220" y="290" width="160" height="90" as="geometry"/>
+      <mxGeometry x="330" y="310" width="130" height="80" as="geometry"/>
     </mxCell>
     <mxCell id="pol_a" value="Upload dialog&#xa;Text extraction&#xa;ML analysis trigger&#xa;Policy cards + filters" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_policies">
-      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+      <mxGeometry x="5" y="24" width="120" height="50" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_assess" value="AssessmentsPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="400" y="290" width="160" height="90" as="geometry"/>
+      <mxGeometry x="475" y="310" width="130" height="80" as="geometry"/>
     </mxCell>
-    <mxCell id="ass_a" value="New assessment dialog&#xa;Control-by-control table&#xa;Evidence + Comments tabs&#xa;Generate tasks" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_assess">
-      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+    <mxCell id="ass_a" value="New assessment dialog&#xa;Control-by-control table&#xa;Evidence + Comments&#xa;Generate tasks" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_assess">
+      <mxGeometry x="5" y="24" width="120" height="50" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_remed" value="RemediationPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="580" y="290" width="160" height="90" as="geometry"/>
+      <mxGeometry x="620" y="310" width="130" height="80" as="geometry"/>
     </mxCell>
     <mxCell id="rem_a" value="Task cards&#xa;AI guidance steps&#xa;Priority / status badges&#xa;Gap sub-lists" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_remed">
-      <mxGeometry x="5" y="24" width="150" height="60" as="geometry"/>
+      <mxGeometry x="5" y="24" width="120" height="50" as="geometry"/>
     </mxCell>
 
+    <!-- Pages (row 2) -->
     <mxCell id="cls_fwcomp" value="FrameworkComparisonPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="40" y="410" width="175" height="80" as="geometry"/>
+      <mxGeometry x="40" y="420" width="175" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="fw_a" value="ECC ↔ ISO mapping table&#xa;Domain coverage chart&#xa;Search + filter" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_fwcomp">
-      <mxGeometry x="5" y="24" width="165" height="50" as="geometry"/>
+    <mxCell id="fw_a" value="ECC ↔ ISO mapping table&#xa;Domain coverage · Search" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_fwcomp">
+      <mxGeometry x="5" y="24" width="165" height="40" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_risk" value="RiskDashboardPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="235" y="410" width="175" height="80" as="geometry"/>
+      <mxGeometry x="235" y="420" width="155" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="risk_a" value="Risk posture viz&#xa;Compliance trends&#xa;Gap heatmap" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_risk">
-      <mxGeometry x="5" y="24" width="165" height="50" as="geometry"/>
+    <mxCell id="risk_a" value="5×5 risk heatmap&#xa;Compliance trends" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_risk">
+      <mxGeometry x="5" y="24" width="145" height="40" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_account" value="AccountPage" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="430" y="410" width="175" height="80" as="geometry"/>
+      <mxGeometry x="410" y="420" width="155" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="acct_a" value="Edit full name&#xa;Update password&#xa;Store auth metadata" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_account">
-      <mxGeometry x="5" y="24" width="165" height="50" as="geometry"/>
+    <mxCell id="acct_a" value="Edit full name&#xa;Update password" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_account">
+      <mxGeometry x="5" y="24" width="145" height="40" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cls_authpages" value="AuthPages" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="585" y="420" width="155" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="authp_a" value="Sign-in · Sign-up&#xa;Forgot / Reset password" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_authpages">
+      <mxGeometry x="5" y="24" width="145" height="40" as="geometry"/>
     </mxCell>
 
     <!-- Service Classes -->
     <mxCell id="cls_api" value="PolicyClassifierAPI" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="40" y="530" width="220" height="100" as="geometry"/>
     </mxCell>
-    <mxCell id="api_a" value="- baseUrl: string&#xa;- apiKey: string&#xa;─────────────&#xa;+ checkHealth(): HealthResponse&#xa;+ analyzeDocument(text, threshold?)&#xa;  → AnalyzeResponse" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_api">
+    <mxCell id="api_a" value="- baseUrl: string (Cloud Run)&#xa;- apiKey: string (X-API-Key)&#xa;─────────────&#xa;+ checkHealth(): HealthResponse&#xa;+ analyzeDocument(text, threshold?)&#xa;  → AnalyzeResponse" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_api">
       <mxGeometry x="5" y="24" width="210" height="70" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_extract" value="extractTextFromFile()" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="280" y="530" width="220" height="100" as="geometry"/>
     </mxCell>
-    <mxCell id="ext_a" value="PDF → pdfjs-dist (CDN worker)&#xa;DOCX → XML &lt;w:t&gt; parsing&#xa;TXT/CSV/MD → FileReader&#xa;─────────────&#xa;Returns: extracted text string" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_extract">
+    <mxCell id="ext_a" value="PDF → pdfjs-dist (CDN worker)&#xa;DOCX → XML &lt;w:t&gt; parsing&#xa;TXT/CSV/MD → FileReader&#xa;─────────────&#xa;+ splitIntoSections(text)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_extract">
       <mxGeometry x="5" y="24" width="210" height="70" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_storage" value="StorageService" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="520" y="530" width="220" height="100" as="geometry"/>
     </mxCell>
-    <mxCell id="sto_a" value="+ uploadEvidenceFile(uid, aid, file)&#xa;+ getEvidenceFileUrl(path)&#xa;+ deleteEvidenceFile(path)&#xa;+ downloadEvidenceFile(path, name)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_storage">
+    <mxCell id="sto_a" value="+ uploadPolicyFile(userId, file)&#xa;+ getPolicyFileUrl(path): signedUrl&#xa;+ uploadEvidenceFile(userId, aId, file)&#xa;+ getEvidenceFileUrl(path)&#xa;+ deleteEvidenceFile(path)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_storage">
       <mxGeometry x="5" y="24" width="210" height="70" as="geometry"/>
     </mxCell>
 
@@ -127,7 +142,7 @@
     <mxCell id="t_guide" value="AIGuidance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
       <mxGeometry x="490" y="30" width="90" height="28" as="geometry"/>
     </mxCell>
-    <mxCell id="t_report" value="AuthUserMetadata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
+    <mxCell id="t_nca" value="NCAControl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
       <mxGeometry x="590" y="30" width="100" height="28" as="geometry"/>
     </mxCell>
     <mxCell id="t_ev" value="EvidenceFile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
@@ -136,11 +151,8 @@
     <mxCell id="t_comment" value="Comment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
       <mxGeometry x="110" y="68" width="90" height="28" as="geometry"/>
     </mxCell>
-    <mxCell id="t_nca" value="NCAControl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="cls_types">
-      <mxGeometry x="210" y="68" width="90" height="28" as="geometry"/>
-    </mxCell>
     <mxCell id="t_maps" value="NCA_CONTROLS | GAP_CONTROL_MAP | DOMAIN_CONTROL_MAP&#xa;GAP_NAMES_AR | NCA_CONTROL_NAMES_AR | DOMAIN_NAMES_AR | ISO_CONTROL_NAMES_AR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;" vertex="1" parent="cls_types">
-      <mxGeometry x="310" y="63" width="380" height="40" as="geometry"/>
+      <mxGeometry x="210" y="63" width="380" height="40" as="geometry"/>
     </mxCell>
 
     <!-- Backend Package -->
@@ -148,41 +160,46 @@
       <mxGeometry x="820" y="60" width="400" height="420" as="geometry"/>
     </mxCell>
 
-    <mxCell id="cls_gap_model" value="GapDetectionModel (XLM-RoBERTa)" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;" vertex="1" parent="1">
+    <mxCell id="cls_gap_model" value="GapDetectionModel (mDeBERTa-v3)" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="840" y="110" width="360" height="140" as="geometry"/>
     </mxCell>
-    <mxCell id="gm_a" value="- backbone: XLM-RoBERTa-base (~279M, 768 hidden)&#xa;- pooling: mean-pooling over attention mask&#xa;- classifier: Sequential(&#xa;    Linear(768→512), BatchNorm, ReLU, Dropout,&#xa;    Linear(512→256), ReLU, Dropout, Linear(256→16))&#xa;─────────────&#xa;+ forward(input_ids, attention_mask)&#xa;  → logits: Tensor[batch, 16]" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_gap_model">
+    <mxCell id="gm_a" value="- backbone: mDeBERTa-v3-base (~86M, 768 hidden)&#xa;- pooling: mean-pooling over attention mask&#xa;- classifier: Sequential(&#xa;    Linear(768→512), BatchNorm, ReLU, Dropout(0.4),&#xa;    Linear(512→256), ReLU, Dropout(0.4), Linear(256→16))&#xa;- freeze: embeddings + first 8 encoder layers&#xa;─────────────&#xa;+ forward(input_ids, attention_mask)&#xa;  → logits: Tensor[batch, 16]" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_gap_model">
       <mxGeometry x="5" y="24" width="350" height="110" as="geometry"/>
     </mxCell>
 
     <mxCell id="cls_app" value="FastAPI App (app.py)" style="swimlane;fontStyle=1;align=center;startSize=22;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="840" y="270" width="360" height="190" as="geometry"/>
     </mxCell>
-    <mxCell id="app_a" value="Endpoints:&#xa;  GET /        → meta info&#xa;  GET /health  → readiness + model status&#xa;  POST /analyze → full gap analysis&#xa;─────────────&#xa;Lifespan: download model bundle from GCS → load&#xa;Domain detection: keyword heuristic (EN+AR)&#xa;Chunking: heading/paragraph, ~350 words, 50 overlap&#xa;Inference: tokenize → forward → sigmoid → threshold blend → max-pool&#xa;Scoring: severity-weighted penalty&#xa;Auth: X-API-Key header (optional)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_app">
+    <mxCell id="app_a" value="Endpoints:&#xa;  GET /        → meta info&#xa;  GET /health  → readiness + model status&#xa;  POST /analyze → full gap analysis&#xa;─────────────&#xa;Lifespan: download model bundle from GCS → load&#xa;Domain detection: keyword heuristic (EN+AR)&#xa;Chunking: heading / paragraph, ~350 words, 50 overlap&#xa;Inference: tokenize → forward → sigmoid → threshold blend → max-pool&#xa;Scoring: severity-weighted penalty&#xa;Auth: X-API-Key header (optional)" style="text;align=left;verticalAlign=top;html=1;fontSize=8;whiteSpace=wrap;" vertex="1" parent="cls_app">
       <mxGeometry x="5" y="24" width="350" height="160" as="geometry"/>
     </mxCell>
 
-    <!-- Dependencies: Pages → Store -->
-    <mxCell id="dep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.3;entryY=1;" edge="1" source="cls_overview" target="cls_store" parent="1">
+    <!-- Dependencies: Pages → Store (spread exit/entry points to avoid overlap) -->
+    <mxCell id="dep1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.2;entryY=1;entryDx=0;entryDy=0;" edge="1" source="cls_overview" target="cls_store" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="dep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" source="cls_policies" target="cls_store" parent="1">
+    <mxCell id="dep2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="cls_policies" target="cls_store" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="dep3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.7;entryY=1;" edge="1" source="cls_assess" target="cls_store" parent="1">
+    <mxCell id="dep3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.8;entryY=1;entryDx=0;entryDy=0;" edge="1" source="cls_assess" target="cls_store" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
     <!-- PoliciesPage → API + Extract -->
-    <mxCell id="dep4" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;" edge="1" source="cls_policies" target="cls_api" parent="1">
+    <mxCell id="dep4" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="cls_policies" target="cls_api" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="dep5" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;" edge="1" source="cls_policies" target="cls_extract" parent="1">
+    <mxCell id="dep5" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="cls_policies" target="cls_extract" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- AssessmentsPage → Storage -->
+    <mxCell id="dep5b" value="evidence" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;dashed=1;endArrow=open;endFill=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="cls_assess" target="cls_storage" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
     <!-- API → Backend -->
-    <mxCell id="dep6" value="HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" source="cls_api" target="cls_app" parent="1">
+    <mxCell id="dep6" value="HTTP POST /analyze" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="cls_api" target="cls_app" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 

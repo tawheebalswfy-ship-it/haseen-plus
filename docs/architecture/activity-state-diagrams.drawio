@@ -12,7 +12,7 @@
       <mxGeometry x="40" y="55" width="260" height="28" as="geometry"/>
     </mxCell>
 
-    <!-- Swimlanes -->
+    <!-- Swimlane -->
     <mxCell id="sl_user" value="Compliance Officer" style="shape=swimlane;startSize=20;horizontal=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1;fontSize=9;collapsible=0;" vertex="1" parent="1">
       <mxGeometry x="40" y="90" width="260" height="690" as="geometry"/>
     </mxCell>
@@ -43,7 +43,7 @@
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <!-- Fork for parallel -->
+    <!-- Fork -->
     <mxCell id="fork1" value="" style="line;strokeWidth=3;fillColor=#000000;align=left;" vertex="1" parent="sl_user">
       <mxGeometry x="55" y="245" width="140" height="5" as="geometry"/>
     </mxCell>
@@ -89,7 +89,7 @@
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <!-- Decision: review controls loop -->
+    <!-- Decision -->
     <mxCell id="dec1" value="more&#xa;controls?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;" vertex="1" parent="sl_user">
       <mxGeometry x="80" y="460" width="80" height="50" as="geometry"/>
     </mxCell>
@@ -104,7 +104,7 @@
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <mxCell id="e_a7_dec" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" source="a7" target="dec1" parent="sl_user">
+    <mxCell id="e_a7_dec" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="a7" target="dec1" parent="sl_user">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="230" y="547"/>
@@ -116,7 +116,7 @@
     <mxCell id="a8" value="Generate&#xa;remediation tasks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=9;" vertex="1" parent="sl_user">
       <mxGeometry x="55" y="585" width="140" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="e_dec_a8" value="No" style="endArrow=block;fontSize=8;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="dec1" target="a8" parent="sl_user">
+    <mxCell id="e_dec_a8" value="No" style="endArrow=block;fontSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="dec1" target="a8" parent="sl_user">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="30" y="485"/>
@@ -136,7 +136,7 @@
 
     <!-- ===== RIGHT HALF: State Diagrams ===== -->
 
-    <!-- Policy State Machine -->
+    <!-- Policy State Machine (matches DB: uploaded, analyzing, analyzed) -->
     <mxCell id="st_pol_title" value="Policy States" style="text;html=1;fontSize=14;fontStyle=5;fillColor=#D5E8D4;strokeColor=#82B366;rounded=1;align=center;" vertex="1" parent="1">
       <mxGeometry x="400" y="55" width="180" height="28" as="geometry"/>
     </mxCell>
@@ -144,38 +144,32 @@
     <mxCell id="ps_start" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
       <mxGeometry x="530" y="100" width="20" height="20" as="geometry"/>
     </mxCell>
-    <mxCell id="ps_draft" value="draft" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+    <mxCell id="ps_uploaded" value="uploaded" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="490" y="140" width="100" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="e_ps_s" style="endArrow=block;" edge="1" source="ps_start" target="ps_draft" parent="1">
+    <mxCell id="e_ps_s" style="endArrow=block;" edge="1" source="ps_start" target="ps_uploaded" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="ps_analyzing" value="analyzing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="490" y="205" width="100" height="35" as="geometry"/>
+      <mxGeometry x="490" y="210" width="100" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="e_ps_da" value="upload" style="endArrow=block;fontSize=8;" edge="1" source="ps_draft" target="ps_analyzing" parent="1">
+    <mxCell id="e_ps_ua" value="trigger ML" style="endArrow=block;fontSize=8;" edge="1" source="ps_uploaded" target="ps_analyzing" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="ps_analyzed" value="analyzed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="490" y="270" width="100" height="35" as="geometry"/>
+      <mxGeometry x="490" y="280" width="100" height="35" as="geometry"/>
     </mxCell>
     <mxCell id="e_ps_aa" value="ML done" style="endArrow=block;fontSize=8;" edge="1" source="ps_analyzing" target="ps_analyzed" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="ps_reviewed" value="reviewed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="490" y="335" width="100" height="35" as="geometry"/>
-    </mxCell>
-    <mxCell id="e_ps_ar" value="officer review" style="endArrow=block;fontSize=8;" edge="1" source="ps_analyzed" target="ps_reviewed" parent="1">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
     <mxCell id="ps_error" value="error" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="630" y="205" width="80" height="35" as="geometry"/>
+      <mxGeometry x="630" y="210" width="80" height="35" as="geometry"/>
     </mxCell>
     <mxCell id="e_ps_err" value="fail" style="endArrow=block;fontSize=8;dashed=1;" edge="1" source="ps_analyzing" target="ps_error" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <!-- Assessment State Machine -->
+    <!-- Assessment State Machine (matches DB: draft, in_progress, completed) -->
     <mxCell id="st_ass_title" value="Assessment States" style="text;html=1;fontSize=14;fontStyle=5;fillColor=#FFE6CC;strokeColor=#D79B00;rounded=1;align=center;" vertex="1" parent="1">
       <mxGeometry x="780" y="55" width="200" height="28" as="geometry"/>
     </mxCell>
@@ -183,20 +177,26 @@
     <mxCell id="as_start" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
       <mxGeometry x="870" y="100" width="20" height="20" as="geometry"/>
     </mxCell>
-    <mxCell id="as_in_progress" value="in_progress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+    <mxCell id="as_draft" value="draft" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
       <mxGeometry x="830" y="140" width="100" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="e_as_s" style="endArrow=block;" edge="1" source="as_start" target="as_in_progress" parent="1">
+    <mxCell id="e_as_sd" style="endArrow=block;" edge="1" source="as_start" target="as_draft" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="as_in_progress" value="in_progress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="830" y="210" width="100" height="35" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_as_di" value="begin&#xa;evaluation" style="endArrow=block;fontSize=8;" edge="1" source="as_draft" target="as_in_progress" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="as_completed" value="completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="830" y="210" width="100" height="35" as="geometry"/>
+      <mxGeometry x="830" y="280" width="100" height="35" as="geometry"/>
     </mxCell>
     <mxCell id="e_as_ic" value="all controls&#xa;evaluated" style="endArrow=block;fontSize=8;" edge="1" source="as_in_progress" target="as_completed" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
 
-    <!-- Task State Machine -->
+    <!-- Task State Machine (matches DB: open, in_progress, completed, deferred) -->
     <mxCell id="st_task_title" value="Remediation Task States" style="text;html=1;fontSize=14;fontStyle=5;fillColor=#E1D5E7;strokeColor=#9673A6;rounded=1;align=center;" vertex="1" parent="1">
       <mxGeometry x="1060" y="55" width="240" height="28" as="geometry"/>
     </mxCell>
@@ -211,27 +211,34 @@
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="ts_in_prog" value="in_progress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="1130" y="205" width="100" height="35" as="geometry"/>
+      <mxGeometry x="1130" y="210" width="100" height="35" as="geometry"/>
     </mxCell>
     <mxCell id="e_ts_oi" value="assign" style="endArrow=block;fontSize=8;" edge="1" source="ts_open" target="ts_in_prog" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="ts_completed" value="completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="1130" y="270" width="100" height="35" as="geometry"/>
+      <mxGeometry x="1130" y="280" width="100" height="35" as="geometry"/>
     </mxCell>
     <mxCell id="e_ts_ic" value="resolve" style="endArrow=block;fontSize=8;" edge="1" source="ts_in_prog" target="ts_completed" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="ts_overdue" value="overdue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
-      <mxGeometry x="1260" y="205" width="80" height="35" as="geometry"/>
+    <mxCell id="ts_deferred" value="deferred" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="1270" y="210" width="80" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="e_ts_io" value="deadline&#xa;passed" style="endArrow=block;fontSize=8;dashed=1;" edge="1" source="ts_in_prog" target="ts_overdue" parent="1">
+    <mxCell id="e_ts_id" value="defer" style="endArrow=block;fontSize=8;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ts_in_prog" target="ts_deferred" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="e_ts_oc" value="resolve" style="endArrow=block;fontSize=8;" edge="1" source="ts_overdue" target="ts_completed" parent="1">
+    <mxCell id="e_ts_dc" value="resume +&#xa;resolve" style="endArrow=block;fontSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ts_deferred" target="ts_completed" parent="1">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
-          <mxPoint x="1300" y="287"/>
+          <mxPoint x="1310" y="297"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_ts_do" value="reopen" style="endArrow=block;fontSize=8;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ts_deferred" target="ts_open" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1310" y="157"/>
         </Array>
       </mxGeometry>
     </mxCell>
