@@ -31,7 +31,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field
 from safetensors.torch import load_file as load_safetensors_file
-from transformers import BertConfig, BertTokenizer, BertModel
+from transformers import AutoConfig, AutoTokenizer, AutoModel
 from google.cloud import storage
 
 # ---------------------------------------------------------------------------
@@ -124,7 +124,7 @@ FALLBACK_GCS_PREFIXES = ["policy_gap_detector/", "checkpoint-505/"]
 # ---------------------------------------------------------------------------
 # Global model / tokenizer (loaded once at startup)
 # ---------------------------------------------------------------------------
-tokenizer: BertTokenizer | None = None
+tokenizer: AutoTokenizer | None = None
 gap_model: nn.Module | None = None
 model_config: dict | None = None
 
@@ -135,19 +135,19 @@ model_config: dict | None = None
 class GapDetectionModel(nn.Module):
     """
     Multi-label gap detection model (Enhanced).
-    mBERT backbone (partially frozen) + wider classification head.
+    XLM-RoBERTa backbone (partially frozen) + wider classification head.
     """
 
     def __init__(
         self,
-        model_source: str = "bert-base-multilingual-cased",
+        model_source: str = "microsoft/mdeberta-v3-base",
         num_gaps: int = 16,
         dropout_rate: float = 0.4,
         freeze_layers: int = 8,
     ):
         super().__init__()
-        bert_config = BertConfig.from_pretrained(model_source)
-        self.bert = BertModel(bert_config)
+        bert_config = AutoConfig.from_pretrained(model_source)
+        self.bert = AutoModel.from_config(bert_config)
         hidden_size = self.bert.config.hidden_size  # 768
 
         # Freeze embeddings + lower encoder layers
@@ -169,9 +169,15 @@ class GapDetectionModel(nn.Module):
             nn.Linear(256, num_gaps),
         )
 
+    def mean_pooling(self, last_hidden_state, attention_mask):
+        mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
+        sum_embeddings = torch.sum(last_hidden_state * mask_expanded, dim=1)
+        sum_mask = torch.clamp(mask_expanded.sum(dim=1), min=1e-9)
+        return sum_embeddings / sum_mask
+
     def forward(self, input_ids, attention_mask):
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-        pooled = outputs.pooler_output  # [CLS] token, shape: (batch, 768)
+        pooled = self.mean_pooling(outputs.last_hidden_state, attention_mask)  # (batch, 768)
         logits = self.classifier(pooled)  # shape: (batch, 16)
         return logits  # raw logits — apply sigmoid at inference
 
@@ -241,7 +247,7 @@ def resolve_model_source(config: dict) -> str:
         value = config.get(key)
         if isinstance(value, str) and value.strip():
             return value
-    return "bert-base-multilingual-cased"
+    return "microsoft/mdeberta-v3-base"
 
 
 def load_gap_model_weights(model_dir: str) -> dict[str, torch.Tensor]:
@@ -585,7 +591,7 @@ async def lifespan(app: FastAPI):
 
     # Load tokenizer
     logger.info("Loading tokenizer from %s …", MODEL_PATH)
-    tokenizer = BertTokenizer.from_pretrained(MODEL_PATH)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
     logger.info("Tokenizer loaded ✓")
 
     # Load gap detection model

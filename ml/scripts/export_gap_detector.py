@@ -20,10 +20,10 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 from safetensors.torch import save_file as save_safetensors_file
-from transformers import BertModel, BertTokenizer
+from transformers import AutoModel, AutoTokenizer
 
 
-MODEL_NAME = "bert-base-multilingual-cased"
+MODEL_NAME = "microsoft/mdeberta-v3-base"
 NUM_GAPS = 16
 # These defaults are overridden at runtime from the saved config.json
 DROPOUT_RATE = 0.4
@@ -44,7 +44,7 @@ class GapDetectionModel(nn.Module):
         freeze_layers: int = FREEZE_LAYERS,
     ):
         super().__init__()
-        self.bert = BertModel.from_pretrained(model_name)
+        self.bert = AutoModel.from_pretrained(model_name)
         hidden_size = self.bert.config.hidden_size
 
         # Freeze embeddings + lower encoder layers
@@ -66,9 +66,15 @@ class GapDetectionModel(nn.Module):
             nn.Linear(256, num_gaps),
         )
 
+    def mean_pooling(self, last_hidden_state, attention_mask):
+        mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
+        sum_embeddings = torch.sum(last_hidden_state * mask_expanded, dim=1)
+        sum_mask = torch.clamp(mask_expanded.sum(dim=1), min=1e-9)
+        return sum_embeddings / sum_mask
+
     def forward(self, input_ids, attention_mask):
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-        pooled = outputs.pooler_output
+        pooled = self.mean_pooling(outputs.last_hidden_state, attention_mask)
         return self.classifier(pooled)
 
 
@@ -114,7 +120,7 @@ def main() -> None:
 
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
 
-    tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = GapDetectionModel(
         dropout_rate=dropout_rate,
         freeze_layers=freeze_layers,

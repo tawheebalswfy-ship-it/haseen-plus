@@ -5,9 +5,9 @@ Primary React frontend for the PolicyShield monorepo. This app now lives at `app
 ## Features
 
 - AI gap detection for policy uploads and pasted text
-- Compliance dashboard, assessments, reports, remediation, and risk views
+- Compliance dashboard, assessments, remediation, framework comparison, and risk views
 - English and Arabic UI with RTL support
-- Supabase-backed auth, storage, and persistent records
+- Supabase-backed auth, storage, and persistent policy, assessment, and remediation records
 - Browser-side PDF and DOCX extraction before API analysis
 
 ## Monorepo Location

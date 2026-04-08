@@ -59,25 +59,6 @@ export interface AIGuidance {
   quick_wins?: string[];
 }
 
-export interface ComplianceReport {
-  id: string;
-  title: string;
-  type: string;
-  assessment_id?: string;
-  framework?: string;
-  content?: ReportContent;
-  created_date: string;
-}
-
-export interface ReportContent {
-  summary?: string;
-  score?: number;
-  sections?: { title: string; body: string }[];
-  recommendations?: string[];
-  risk_rating?: string;
-  share_token?: string;
-}
-
 // Evidence for assessment controls
 export interface EvidenceFile {
   id: string;

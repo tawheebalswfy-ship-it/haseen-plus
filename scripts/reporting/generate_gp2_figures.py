@@ -216,12 +216,15 @@ class DrawioRenderer:
     def __init__(self, file_path: Path):
         tree = ET.parse(file_path)
         root = tree.getroot()
-        diagram = root.find("diagram")
-        if diagram is None:
-            raise ValueError(f"No diagram found in {file_path}")
-        model = diagram.find("mxGraphModel")
-        if model is None:
-            raise ValueError(f"No graph model found in {file_path}")
+        if root.tag == "mxGraphModel":
+            model = root
+        else:
+            diagram = root.find("diagram")
+            if diagram is None:
+                raise ValueError(f"No diagram found in {file_path}")
+            model = diagram.find("mxGraphModel")
+            if model is None:
+                raise ValueError(f"No graph model found in {file_path}")
         graph_root = model.find("root")
         if graph_root is None:
             raise ValueError(f"No graph root found in {file_path}")
@@ -642,7 +645,7 @@ def generate_ml_pipeline() -> None:
     steps = [
         ((70, 230, 300, 470), "Dataset Generation", ["Google Gemini 2.5 Flash", "Bilingual policy excerpts", "Two-pass verification"], "#dae8fc", ACCENT_BLUE),
         ((365, 230, 595, 470), "Preprocessing", ["Label extraction", "Multi-hot vectors", "Train/validation split"], "#d5e8d4", ACCENT_GREEN),
-        ((660, 230, 890, 470), "mBERT Training", ["bert-base-multilingual-cased", "16-label sigmoid head", "AdamW + warmup"], "#fff2cc", ACCENT_AMBER),
+        ((660, 230, 890, 470), "XLM-RoBERTa Training", ["xlm-roberta-base", "16-label sigmoid head", "AdamW + warmup"], "#fff2cc", ACCENT_AMBER),
         ((955, 230, 1185, 470), "Model Export", ["SafeTensors weights", "Tokenizer files", "Config artifacts"], "#f8cecc", ACCENT_RED),
         ((1250, 230, 1480, 470), "Deployment", ["FastAPI service", "Cloud Run (me-central1)", "GCS model loading"], "#e1d5e7", ACCENT_VIOLET),
     ]
@@ -656,26 +659,34 @@ def generate_ml_pipeline() -> None:
     draw.rounded_rectangle((150, 560, 1430, 770), radius=18, fill=GRAY_100, outline=GRAY_300, width=2)
     draw.text((610, 585), "End-to-End Flow", fill=BLACK, font=FONT_16_B)
     flow_text = (
-        "Generate synthetic compliance text -> encode 16 gap labels -> fine-tune mBERT -> export artifacts -> serve inference API"
+        "Generate synthetic compliance text -> encode 16 gap labels -> fine-tune XLM-RoBERTa -> export artifacts -> serve inference API"
     )
     draw_multiline_text(draw, (190, 620, 1390, 735), flow_text, fill=GRAY_700, align="center", font_obj=FONT_14_B)
     save_manual(image, "fig_3_2_ml_pipeline.png")
 
 
 def generate_classification_head() -> None:
-    image, draw = canvas(1400, 900)
+    image, draw = canvas(1680, 980)
     draw.text((370, 32), "Figure 3.3 - Model Classification Head", fill=BLACK, font=FONT_18_B)
 
-    box(draw, (110, 170, 470, 390), "mBERT Backbone", ["12 encoder layers", "768 hidden size", "[CLS] token representation"], fill="#dae8fc", outline=ACCENT_BLUE)
-    box(draw, (520, 230, 760, 350), "Linear 768 -> 256", ["Dense projection"], fill="#d5e8d4", outline=ACCENT_GREEN)
-    box(draw, (810, 230, 1050, 350), "ReLU + Dropout", ["Dropout = 0.3"], fill="#fff2cc", outline=ACCENT_AMBER)
-    box(draw, (1100, 230, 1320, 350), "Linear 256 -> 16", ["One logit per gap label"], fill="#f8cecc", outline=ACCENT_RED)
-    box(draw, (470, 520, 960, 760), "Sigmoid Outputs", ["GAP_PP_001 ... GAP_PP_008", "GAP_RA_001 ... GAP_RA_008", "Independent multi-label probabilities"], fill="#e1d5e7", outline=ACCENT_VIOLET)
+    box(draw, (90, 180, 410, 430), "XLM-RoBERTa Backbone", ["24 transformer layers", "768 hidden size", "250k SentencePiece vocab"], fill="#dae8fc", outline=ACCENT_BLUE)
+    box(draw, (470, 235, 690, 355), "Mean Pooling", ["Aggregate token embeddings", "Document vector (768-dim)"], fill="#d5e8d4", outline=ACCENT_GREEN)
+    box(draw, (750, 170, 970, 290), "Linear 768 -> 512", ["Wide projection"], fill="#d5e8d4", outline=ACCENT_GREEN)
+    box(draw, (1020, 170, 1240, 290), "BatchNorm + ReLU", ["Normalize and activate"], fill="#fff2cc", outline=ACCENT_AMBER)
+    box(draw, (1290, 170, 1510, 290), "Dropout", ["p = 0.4"], fill="#fff2cc", outline=ACCENT_AMBER)
+    box(draw, (540, 430, 790, 550), "Linear 512 -> 256", ["Compression layer"], fill="#d5e8d4", outline=ACCENT_GREEN)
+    box(draw, (850, 430, 1110, 550), "ReLU + Dropout", ["p = 0.4"], fill="#fff2cc", outline=ACCENT_AMBER)
+    box(draw, (1170, 430, 1410, 550), "Linear 256 -> 16", ["One logit per gap label"], fill="#f8cecc", outline=ACCENT_RED)
+    box(draw, (550, 690, 1130, 860), "Sigmoid Outputs", ["GAP_PP_001 ... GAP_PP_008", "GAP_RA_001 ... GAP_RA_008", "Independent multi-label probabilities"], fill="#e1d5e7", outline=ACCENT_VIOLET)
 
-    draw_arrow(draw, (470, 280), (520, 280), GRAY_700, width=4)
-    draw_arrow(draw, (760, 280), (810, 280), GRAY_700, width=4)
-    draw_arrow(draw, (1050, 280), (1100, 280), GRAY_700, width=4)
-    draw_arrow(draw, (1210, 350), (780, 520), GRAY_700, width=4)
+    draw_arrow(draw, (410, 305), (470, 295), GRAY_700, width=4)
+    draw_arrow(draw, (690, 295), (750, 230), GRAY_700, width=4)
+    draw_arrow(draw, (970, 230), (1020, 230), GRAY_700, width=4)
+    draw_arrow(draw, (1240, 230), (1290, 230), GRAY_700, width=4)
+    draw_arrow(draw, (1400, 290), (790, 470), GRAY_700, width=4)
+    draw_arrow(draw, (790, 490), (850, 490), GRAY_700, width=4)
+    draw_arrow(draw, (1110, 490), (1170, 490), GRAY_700, width=4)
+    draw_arrow(draw, (1290, 550), (970, 690), GRAY_700, width=4)
 
     save_manual(image, "fig_3_3_model_classification_head.png")
 
@@ -687,7 +698,7 @@ def generate_chunking_pipeline() -> None:
     blocks = [
         ((70, 220, 300, 430), "Input Document", ["Policy text up to 50,000 chars", "PDF / DOCX / TXT extraction"], "#dae8fc", ACCENT_BLUE),
         ((360, 220, 590, 430), "Section Split", ["Headings and paragraphs", "~350 word chunks", "~50 word overlap"], "#d5e8d4", ACCENT_GREEN),
-        ((650, 220, 880, 430), "Tokenizer", ["mBERT tokenizer", "512 token max length", "Per-chunk tensors"], "#fff2cc", ACCENT_AMBER),
+        ((650, 220, 880, 430), "Tokenizer", ["XLM-R SentencePiece", "512 token max length", "Per-chunk tensors"], "#fff2cc", ACCENT_AMBER),
         ((940, 220, 1170, 430), "Chunk Inference", ["Forward pass per chunk", "16 sigmoid probabilities", "Domain evidence"], "#f8cecc", ACCENT_RED),
         ((1230, 220, 1530, 430), "Aggregation", ["Max-pool across chunks", "Severity-weighted scoring", "Overall compliance"], "#e1d5e7", ACCENT_VIOLET),
     ]
@@ -722,21 +733,21 @@ def generate_system_architecture() -> None:
     draw_actor(draw, 1540, 110, 'IT\nAuditor')
 
     box(draw, (120, 320, 430, 410), 'Public Web App', ['Landing page and OTP auth', 'Single-policy analysis flow'], fill=WHITE, outline=ACCENT_VIOLET)
-    box(draw, (500, 320, 880, 410), 'Compliance Workspace', ['Policies, assessments, tasks', 'Reports, framework, risk views'], fill=WHITE, outline=ACCENT_VIOLET)
+    box(draw, (500, 320, 880, 410), 'Compliance Workspace', ['Policies, assessments, tasks', 'Framework mapping and risk views'], fill=WHITE, outline=ACCENT_VIOLET)
     box(draw, (980, 320, 1320, 410), 'Bilingual UI', ['Arabic RTL and English UI', 'Accessible dashboard views'], fill=WHITE, outline=ACCENT_VIOLET)
     box(draw, (1400, 320, 1680, 410), 'Client Cache', ['Local storage for seeded data', 'Offline report demo state'], fill=WHITE, outline=ACCENT_VIOLET)
 
     box(draw, (120, 585, 390, 680), 'FastAPI Service', ['GET /health', 'POST /analyze', 'Request validation'], fill=WHITE, outline=ACCENT_AMBER)
-    box(draw, (430, 585, 760, 680), 'mBERT Inference Engine', ['Chunking and tokenization', '16-label multi-label scoring'], fill=WHITE, outline=ACCENT_AMBER)
-    box(draw, (800, 585, 1000, 680), 'History Logger', ['Persist results', 'Return prior classifications'], fill=WHITE, outline=ACCENT_AMBER)
+    box(draw, (430, 585, 760, 680), 'XLM-RoBERTa Inference Engine', ['Chunking and tokenization', '16-label multi-label scoring'], fill=WHITE, outline=ACCENT_AMBER)
+    box(draw, (800, 585, 1000, 680), 'Result Aggregator', ['Aggregate scores', 'Return domain analysis'], fill=WHITE, outline=ACCENT_AMBER)
 
     box(draw, (1160, 560, 1370, 650), 'Google Cloud Run', ['Hosts FastAPI container'], fill=WHITE, outline=ACCENT_RED)
     box(draw, (1410, 560, 1680, 650), 'Supabase Auth', ['Email OTP and JWT session'], fill=WHITE, outline=ACCENT_RED)
     box(draw, (1260, 685, 1580, 765), 'Gemini 2.5 Flash', ['Synthetic bilingual dataset support'], fill=WHITE, outline=ACCENT_RED)
 
-    cylinder_box(draw, (120, 910, 420, 1015), 'Supabase PostgreSQL', ['profiles', 'policies', 'assessments', 'classification_history'], fill=WHITE, outline=ACCENT_BLUE)
+    cylinder_box(draw, (120, 910, 420, 1015), 'Supabase PostgreSQL', ['policies', 'assessments', 'tasks', 'RLS with Supabase Auth'], fill=WHITE, outline=ACCENT_BLUE)
     cylinder_box(draw, (500, 910, 800, 1015), 'Cloud Storage', ['model.safetensors', 'tokenizer.json', 'config artifacts'], fill=WHITE, outline=ACCENT_BLUE)
-    cylinder_box(draw, (910, 910, 1210, 1015), 'Browser localStorage', ['dashboard cache', 'tasks, reports, teams'], fill=WHITE, outline=ACCENT_BLUE)
+    cylinder_box(draw, (910, 910, 1210, 1015), 'Browser localStorage', ['dashboard cache', 'policies, assessments, tasks'], fill=WHITE, outline=ACCENT_BLUE)
     cylinder_box(draw, (1300, 910, 1600, 1015), 'Training Dataset', ['CSV, JSON, JSONL samples', 'AR/EN compliance excerpts'], fill=WHITE, outline=ACCENT_BLUE)
 
     poly_arrow(draw, [(260, 206), (260, 320)], ACCENT_GREEN, label='HTTPS', label_box=(190, 235, 330, 270))
@@ -748,7 +759,7 @@ def generate_system_architecture() -> None:
     poly_arrow(draw, [(1320, 365), (1410, 365), (1410, 605)], ACCENT_AMBER, label='OTP auth', label_box=(1360, 430, 1500, 462))
     poly_arrow(draw, [(390, 630), (430, 630)], ACCENT_RED, label='validated request', label_box=(385, 598, 510, 626))
     poly_arrow(draw, [(760, 630), (800, 630)], ACCENT_VIOLET, label='scores and domains', label_box=(742, 600, 940, 628))
-    poly_arrow(draw, [(900, 680), (900, 962), (420, 962)], ACCENT_GREEN, label='save history', label_box=(640, 858, 850, 892))
+    poly_arrow(draw, [(900, 680), (900, 962), (420, 962)], ACCENT_GREEN, label='store analysis', label_box=(640, 858, 850, 892))
     poly_arrow(draw, [(595, 680), (595, 962), (650, 962)], ACCENT_AMBER, label='load model', label_box=(520, 858, 700, 892))
     poly_arrow(draw, [(1265, 650), (1265, 630), (390, 630)], GRAY_700, label='deploy container', label_box=(890, 564, 1110, 596))
     poly_arrow(draw, [(1420, 765), (1420, 962), (1450, 962)], ACCENT_RED, label='generate samples', label_box=(1300, 850, 1490, 885))
@@ -765,7 +776,7 @@ def generate_sequence_policy_classification() -> None:
     lifeline(draw, x_user, 'User', '(Browser)', color_fill=SOFT_BLUE, color_outline=ACCENT_BLUE)
     lifeline(draw, x_app, 'React App', '(AICG Web UI)', color_fill=SOFT_GREEN, color_outline=ACCENT_GREEN)
     lifeline(draw, x_api, 'FastAPI', '(Cloud Run)', color_fill=SOFT_ROSE, color_outline=ACCENT_RED)
-    lifeline(draw, x_model, 'mBERT Model', '(Inference)', color_fill=SOFT_AMBER, color_outline=ACCENT_AMBER)
+    lifeline(draw, x_model, 'XLM-RoBERTa', '(Inference)', color_fill=SOFT_AMBER, color_outline=ACCENT_AMBER)
     lifeline(draw, x_db, 'Supabase DB', '(PostgreSQL)', color_fill=SOFT_VIOLET, color_outline=ACCENT_VIOLET)
 
     activation_bar(draw, x_app, 220, 790, color_fill='#dff0df', color_outline=ACCENT_GREEN)
@@ -778,7 +789,7 @@ def generate_sequence_policy_classification() -> None:
     message_arrow(draw, 360, x_app, x_api, '3. POST /analyze {text, category}', color=ACCENT_RED)
     message_arrow(draw, 430, x_api, x_model, '4. Tokenize chunks and build tensors', color=ACCENT_AMBER)
     message_arrow(draw, 500, x_model, x_api, '5. Return gap labels and probabilities', color=ACCENT_AMBER, open_head=True)
-    message_arrow(draw, 580, x_api, x_db, '6. INSERT classification_history', color=ACCENT_VIOLET)
+    message_arrow(draw, 580, x_api, x_db, '6. UPDATE policies SET analysis_result', color=ACCENT_VIOLET)
     message_arrow(draw, 650, x_db, x_api, '7. Persisted successfully', color=ACCENT_VIOLET, open_head=True)
     message_arrow(draw, 730, x_api, x_app, '8. JSON result with score and domain evidence', color=ACCENT_RED, open_head=True)
     message_arrow(draw, 810, x_app, x_user, '9. Render compliance badge, bars, and explanations', color=ACCENT_GREEN, open_head=True)
@@ -794,11 +805,11 @@ def generate_class_diagram() -> None:
     draw.text((690, 30), 'Figure 3.6 - Simplified Class and Component Diagram', fill=BLACK, font=FONT_20_B)
 
     panel(draw, (60, 110, 900, 520), 'Frontend Components (React + TypeScript)', fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    panel(draw, (1000, 110, 1840, 520), 'Backend and ML Service (FastAPI + mBERT)', fill=SOFT_ROSE, outline=ACCENT_RED)
+    panel(draw, (1000, 110, 1840, 520), 'Backend and ML Service (FastAPI + XLM-RoBERTa)', fill=SOFT_ROSE, outline=ACCENT_RED)
     panel(draw, (260, 610, 1640, 1010), 'Persistence and Support Services', fill=SOFT_AMBER, outline=ACCENT_AMBER)
 
-    uml_class(draw, (100, 180, 300, 450), 'ComplianceDashboard', ['+ currentPolicy: Policy | null', '+ metrics: DashboardMetrics'], ['+ loadOverview()', '+ openAssessment()', '+ exportReport()'], fill=WHITE, outline=ACCENT_GREEN)
-    uml_class(draw, (340, 180, 560, 450), 'PolicyAnalysisController', ['+ category: str', '+ text: str', '+ lastResult: AnalyzeResponse'], ['+ analyzePolicy(text)', '+ uploadDocument(file)', '+ fetchHistory()'], fill=WHITE, outline=ACCENT_GREEN)
+    uml_class(draw, (100, 180, 300, 450), 'ComplianceDashboard', ['+ currentPolicy: Policy | null', '+ metrics: DashboardMetrics'], ['+ loadOverview()', '+ openAssessment()', '+ openRiskDashboard()'], fill=WHITE, outline=ACCENT_GREEN)
+    uml_class(draw, (340, 180, 560, 450), 'PolicyAnalysisController', ['+ category: str', '+ text: str', '+ lastResult: AnalyzeResponse'], ['+ analyzePolicy(text)', '+ uploadDocument(file)', '+ fetchResults()'], fill=WHITE, outline=ACCENT_GREEN)
     uml_class(draw, (600, 180, 820, 450), 'AuthContext', ['+ user: User | null', '+ isAuthenticated: bool'], ['+ signIn(email)', '+ verifyOTP(code)', '+ signOut()'], fill=WHITE, outline=ACCENT_GREEN)
 
     uml_class(draw, (1040, 180, 1290, 450), 'FastAPIApp', ['- model: GapDetectionModel', '- repository: SupabaseRepository'], ['+ health()', '+ analyze(request)', '+ serializeResponse()'], fill=WHITE, outline=ACCENT_RED)
@@ -806,7 +817,7 @@ def generate_class_diagram() -> None:
     uml_class(draw, (1330, 360, 1570, 520), 'AnalyzeResponse', ['+ overallScore: float', '+ detectedDomains: list', '+ probabilities: dict'], ['+ toJSON()'], fill=WHITE, outline=ACCENT_RED)
     uml_class(draw, (1610, 180, 1800, 450), 'GapDetectionModel', ['- tokenizer', '- labelMap[16]'], ['+ loadArtifacts()', '+ predict(text)', '+ aggregateChunks()'], fill=WHITE, outline=ACCENT_RED)
 
-    uml_class(draw, (340, 700, 620, 940), 'SupabaseRepository', ['+ profiles', '+ policies', '+ assessments', '+ history'], ['+ saveClassification()', '+ listAssessments()', '+ listReports()'], fill=WHITE, outline=ACCENT_AMBER)
+    uml_class(draw, (340, 700, 620, 940), 'SupabaseRepository', ['+ auth user metadata', '+ policies', '+ assessments', '+ tasks'], ['+ saveAnalysisResult()', '+ listAssessments()', '+ listTasks()'], fill=WHITE, outline=ACCENT_AMBER)
     uml_class(draw, (690, 700, 970, 940), 'ReportBuilder', ['+ figuresPath', '+ outputPath'], ['+ buildDocx()', '+ insertFigure()', '+ formatTables()'], fill=WHITE, outline=ACCENT_AMBER)
     uml_class(draw, (1040, 700, 1320, 940), 'DatasetBuilder', ['+ promptTemplate', '+ bilingualSamples'], ['+ generateSamples()', '+ validateDataset()', '+ exportJsonl()'], fill=WHITE, outline=ACCENT_AMBER)
 
@@ -815,7 +826,7 @@ def generate_class_diagram() -> None:
     poly_arrow(draw, [(1290, 270), (1330, 270)], ACCENT_RED, label='binds', label_box=(1284, 235, 1354, 262))
     poly_arrow(draw, [(1290, 400), (1330, 440)], ACCENT_RED, label='returns', label_box=(1265, 405, 1360, 432))
     poly_arrow(draw, [(1570, 270), (1610, 270)], ACCENT_AMBER, label='invokes', label_box=(1562, 235, 1645, 262))
-    poly_arrow(draw, [(1165, 450), (1165, 700), (620, 700)], ACCENT_BLUE, label='persist history', label_box=(875, 600, 1085, 632))
+    poly_arrow(draw, [(1165, 450), (1165, 700), (620, 700)], ACCENT_BLUE, label='persist results', label_box=(875, 600, 1085, 632))
     poly_arrow(draw, [(200, 450), (200, 820), (690, 820)], ACCENT_VIOLET, label='export data', label_box=(350, 790, 520, 820))
     poly_arrow(draw, [(1180, 700), (1705, 700), (1705, 450)], ACCENT_AMBER, label='training inputs', label_box=(1380, 665, 1545, 694))
 
@@ -829,30 +840,29 @@ def generate_dfd_level_1() -> None:
 
     box(draw, (70, 170, 280, 280), 'Security Analyst', ['Uploads policies', 'Reviews classifier output'], fill=WHITE, outline=ACCENT_BLUE)
     box(draw, (70, 520, 280, 630), 'Compliance Officer', ['Runs assessments', 'Tracks remediation'], fill=WHITE, outline=ACCENT_GREEN)
-    box(draw, (70, 860, 280, 970), 'IT Auditor', ['Reviews reports', 'Checks audit evidence'], fill=WHITE, outline=ACCENT_VIOLET)
+    box(draw, (70, 860, 280, 970), 'IT Auditor', ['Reviews dashboards', 'Checks audit evidence'], fill=WHITE, outline=ACCENT_VIOLET)
 
     box(draw, (1560, 110, 1820, 210), 'Supabase Auth', ['OTP verification', 'Session tokens'], fill=WHITE, outline=ACCENT_AMBER)
     box(draw, (1560, 1030, 1820, 1130), 'Gemini 2.5 Flash', ['Generates synthetic samples'], fill=WHITE, outline=ACCENT_RED)
 
     process_node(draw, (430, 140, 720, 250), '1.0 Authenticate User', ['issue OTP session'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
     process_node(draw, (430, 300, 720, 410), '2.0 Analyze Policy', ['submit text or file'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    process_node(draw, (840, 300, 1150, 410), '3.0 Detect Gaps and Score', ['mBERT inference'], fill=SOFT_ROSE, outline=ACCENT_RED)
-    process_node(draw, (1250, 300, 1540, 410), '4.0 Manage Classification History', ['save result'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    process_node(draw, (840, 300, 1150, 410), '3.0 Detect Gaps and Score', ['XLM-RoBERTa inference'], fill=SOFT_ROSE, outline=ACCENT_RED)
+    process_node(draw, (1250, 300, 1540, 410), '4.0 Store Analysis Result', ['save to policies table'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
     process_node(draw, (430, 520, 720, 630), '5.0 Run Assessment', ['map policy to controls'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
     process_node(draw, (840, 520, 1150, 630), '6.0 Generate Remediation Tasks', ['derive actions'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    process_node(draw, (1250, 520, 1540, 630), '7.0 Generate Reports', ['summaries and exports'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    process_node(draw, (430, 780, 720, 890), '8.0 Schedule Analysis', ['set future runs'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    process_node(draw, (1250, 520, 1540, 630), '7.0 Visualize Results', ['dashboard and risk views'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    process_node(draw, (430, 780, 720, 890), '8.0 Refresh Dashboard', ['reuse cached state'], fill=SOFT_GREEN, outline=ACCENT_GREEN)
     process_node(draw, (1250, 980, 1540, 1090), '9.0 Generate Training Dataset', ['prompt LLM and validate'], fill=SOFT_ROSE, outline=ACCENT_RED)
 
-    data_store_box(draw, (1560, 250, 1820, 330), 'D1 Profiles', ['user profile metadata'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 350, 1820, 430), 'D2 Classification History', ['labels, score, timestamp'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 500, 1820, 580), 'D3 Policies', ['uploaded policy records'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 600, 1820, 680), 'D4 Assessments', ['framework results'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 700, 1820, 780), 'D5 Remediation Tasks', ['priority and status'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 800, 1820, 880), 'D6 Reports', ['PDF and summary content'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 900, 1820, 980), 'D7 Schedules', ['planned analysis jobs'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (920, 140, 1160, 220), 'D8 Model Artifacts', ['weights and tokenizer'], fill=WHITE, outline=ACCENT_VIOLET)
-    data_store_box(draw, (1560, 1140, 1820, 1220), 'D9 Training Dataset', ['CSV, JSON, JSONL'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 250, 1820, 330), 'D1 Auth Metadata', ['Supabase user profile data'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 350, 1820, 430), 'D2 Policies', ['uploaded policy records'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 500, 1820, 580), 'D3 Assessments', ['framework results'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 600, 1820, 680), 'D4 Remediation Tasks', ['priority and status'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 700, 1820, 780), 'D5 Browser Cache', ['local dashboard state'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 800, 1820, 880), 'D6 Framework Mapping', ['static ECC and ISO data'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (920, 140, 1160, 220), 'D7 Model Artifacts', ['weights and tokenizer'], fill=WHITE, outline=ACCENT_VIOLET)
+    data_store_box(draw, (1560, 900, 1820, 980), 'D8 Training Dataset', ['CSV, JSON, JSONL'], fill=WHITE, outline=ACCENT_VIOLET)
 
     poly_arrow(draw, [(280, 225), (430, 225)], ACCENT_BLUE, label='email + OTP', label_box=(300, 188, 420, 218))
     poly_arrow(draw, [(720, 195), (1560, 195)], ACCENT_AMBER, label='OTP request', label_box=(1030, 162, 1180, 190))
@@ -861,22 +871,22 @@ def generate_dfd_level_1() -> None:
     poly_arrow(draw, [(720, 355), (840, 355)], ACCENT_RED, label='normalized text', label_box=(730, 318, 842, 348))
     poly_arrow(draw, [(995, 300), (995, 220)], ACCENT_AMBER, label='load weights', label_box=(905, 246, 1088, 274))
     poly_arrow(draw, [(1150, 355), (1250, 355)], ACCENT_GREEN, label='label + score', label_box=(1144, 318, 1262, 348))
-    poly_arrow(draw, [(1540, 355), (1560, 390)], ACCENT_VIOLET, label='save result', label_box=(1460, 328, 1564, 356))
+    poly_arrow(draw, [(1540, 355), (1560, 390)], ACCENT_VIOLET, label='update policy', label_box=(1460, 328, 1572, 356))
     poly_arrow(draw, [(1150, 390), (280, 390)], ACCENT_GREEN, label='classification output', label_box=(640, 392, 900, 424), open_head=True)
     poly_arrow(draw, [(280, 575), (430, 575)], ACCENT_GREEN, label='framework + policies', label_box=(290, 538, 430, 568))
-    poly_arrow(draw, [(720, 575), (1560, 540)], ACCENT_VIOLET, label='stored policies', label_box=(1020, 510, 1180, 538))
-    poly_arrow(draw, [(720, 610), (1560, 640)], ACCENT_VIOLET, label='assessment results', label_box=(1010, 615, 1190, 645))
+    poly_arrow(draw, [(720, 575), (1560, 365)], ACCENT_VIOLET, label='stored policies', label_box=(1020, 440, 1180, 468))
+    poly_arrow(draw, [(720, 610), (1560, 540)], ACCENT_VIOLET, label='assessment results', label_box=(1010, 565, 1190, 595))
     poly_arrow(draw, [(720, 575), (840, 575)], ACCENT_GREEN, label='identified gaps', label_box=(732, 538, 842, 568))
-    poly_arrow(draw, [(1150, 575), (1560, 740)], ACCENT_VIOLET, label='new tasks', label_box=(1280, 640, 1400, 670))
+    poly_arrow(draw, [(1150, 575), (1560, 640)], ACCENT_VIOLET, label='new tasks', label_box=(1280, 590, 1400, 620))
     poly_arrow(draw, [(720, 610), (1250, 610)], ACCENT_GREEN, label='assessment context', label_box=(840, 578, 1030, 608))
-    poly_arrow(draw, [(1540, 575), (1560, 840)], ACCENT_VIOLET, label='report content', label_box=(1480, 685, 1576, 715))
-    poly_arrow(draw, [(1540, 610), (280, 915)], ACCENT_VIOLET, label='published report', label_box=(760, 760, 980, 790), open_head=True)
-    poly_arrow(draw, [(280, 915), (430, 835)], ACCENT_VIOLET, label='schedule request', label_box=(290, 838, 430, 868))
-    poly_arrow(draw, [(720, 835), (1560, 940)], ACCENT_VIOLET, label='schedule configuration', label_box=(1020, 868, 1220, 898))
+    poly_arrow(draw, [(1540, 575), (1560, 740)], ACCENT_VIOLET, label='cache summary state', label_box=(1450, 635, 1590, 665))
+    poly_arrow(draw, [(1540, 610), (280, 915)], ACCENT_VIOLET, label='dashboard insights', label_box=(760, 760, 960, 790), open_head=True)
+    poly_arrow(draw, [(280, 915), (430, 835)], ACCENT_VIOLET, label='refresh request', label_box=(290, 838, 430, 868))
+    poly_arrow(draw, [(720, 835), (1560, 840)], ACCENT_VIOLET, label='cached filters', label_box=(1040, 808, 1185, 838))
     poly_arrow(draw, [(1540, 1035), (1560, 1080)], ACCENT_RED, label='prompt', label_box=(1484, 1002, 1562, 1030))
-    poly_arrow(draw, [(1690, 1130), (1690, 1140)], ACCENT_RED)
+    poly_arrow(draw, [(1690, 1030), (1690, 900)], ACCENT_RED)
     poly_arrow(draw, [(1820, 1080), (1540, 1080)], ACCENT_RED, label='generated samples', label_box=(1580, 1050, 1775, 1078), open_head=True)
-    poly_arrow(draw, [(1540, 1080), (1560, 1180)], ACCENT_VIOLET, label='validated dataset', label_box=(1460, 1135, 1572, 1163))
+    poly_arrow(draw, [(1540, 1080), (1560, 940)], ACCENT_VIOLET, label='validated dataset', label_box=(1460, 985, 1572, 1013))
 
     save_manual(image, 'fig_3_8_dfd_level_1.png')
 
@@ -904,10 +914,10 @@ def generate_activity_policy_assessment() -> None:
     task_box(draw, (560, 910, 780, 970), 'Display score, gaps, and evidence', fill=WHITE, outline=ACCENT_GREEN)
 
     task_box(draw, (980, 650, 1200, 710), 'Tokenize and chunk document', fill=WHITE, outline=ACCENT_RED)
-    task_box(draw, (980, 770, 1200, 830), 'Run mBERT inference', fill=WHITE, outline=ACCENT_RED)
+    task_box(draw, (980, 770, 1200, 830), 'Run XLM-RoBERTa inference', fill=WHITE, outline=ACCENT_RED)
     task_box(draw, (980, 890, 1200, 950), 'Aggregate domain scores', fill=WHITE, outline=ACCENT_RED)
 
-    task_box(draw, (1400, 920, 1620, 980), 'Persist classification history', fill=WHITE, outline=ACCENT_VIOLET)
+    task_box(draw, (1400, 920, 1620, 980), 'Persist analysis result', fill=WHITE, outline=ACCENT_VIOLET)
     task_box(draw, (150, 1040, 370, 1100), 'Review result and next actions', fill=WHITE, outline=ACCENT_BLUE)
     draw.ellipse((240, 1115, 280, 1155), fill=BLACK, outline=BLACK)
     draw.ellipse((248, 1123, 272, 1147), fill=WHITE, outline=BLACK)
@@ -940,17 +950,17 @@ def generate_deployment_architecture() -> None:
 
     box(draw, (120, 210, 340, 320), 'Web Browser', ['Chrome / Edge / Firefox', 'Responsive desktop UI'], fill=WHITE, outline=ACCENT_BLUE)
     box(draw, (120, 360, 340, 470), 'React + Vite SPA', ['Public portal and dashboard', 'RTL and English support'], fill=WHITE, outline=ACCENT_BLUE)
-    box(draw, (370, 360, 520, 470), 'Local Storage', ['seeded demo state', 'tasks and reports'], fill=WHITE, outline=ACCENT_BLUE)
+    box(draw, (370, 360, 520, 470), 'Local Storage', ['seeded demo state', 'policies, assessments, tasks'], fill=WHITE, outline=ACCENT_BLUE)
 
     box(draw, (730, 230, 980, 360), 'Cloud Run Service', ['FastAPI container', '/health and /analyze'], fill=WHITE, outline=ACCENT_AMBER)
     box(draw, (1030, 230, 1210, 360), 'Model Bucket', ['GCS artifacts', 'weights and tokenizer'], fill=WHITE, outline=ACCENT_AMBER)
-    box(draw, (730, 410, 1210, 520), 'mBERT Runtime', ['document chunking', 'multi-label inference', 'score aggregation'], fill=WHITE, outline=ACCENT_AMBER)
+    box(draw, (730, 410, 1210, 520), 'XLM-RoBERTa Runtime', ['document chunking', 'multi-label inference', 'score aggregation'], fill=WHITE, outline=ACCENT_AMBER)
 
     box(draw, (1440, 200, 1750, 300), 'Model Notebook', ['fine-tuning experiments', 'evaluation notebooks'], fill=WHITE, outline=GRAY_700)
     box(draw, (1440, 350, 1750, 450), 'Dataset Scripts', ['generate_compliance_dataset.py', 'dataset_utils.py'], fill=WHITE, outline=GRAY_700)
     box(draw, (1440, 500, 1750, 600), 'Report Generator', ['generate_gp2_report.py', 'report_assets/*.png'], fill=WHITE, outline=GRAY_700)
 
-    cylinder_box(draw, (730, 800, 980, 910), 'PostgreSQL', ['profiles', 'policies', 'assessments', 'history'], fill=WHITE, outline=ACCENT_VIOLET)
+    cylinder_box(draw, (730, 800, 980, 910), 'PostgreSQL', ['policies', 'assessments', 'tasks', 'auth metadata via Supabase Auth'], fill=WHITE, outline=ACCENT_VIOLET)
     box(draw, (1030, 800, 1210, 910), 'Supabase Auth', ['OTP provider and JWT issuer'], fill=WHITE, outline=ACCENT_VIOLET)
     box(draw, (1470, 820, 1750, 920), 'Gemini 2.5 Flash API', ['prompted dataset generation'], fill=WHITE, outline=ACCENT_RED)
 
@@ -977,7 +987,7 @@ def generate_use_case_diagram() -> None:
     draw_actor(draw, 210, 760, 'Compliance\nOfficer')
     draw_actor(draw, 1685, 690, 'IT\nAuditor')
     draw_actor(draw, 1685, 190, 'Supabase\nAuth')
-    draw_actor(draw, 1685, 440, 'mBERT\nService')
+    draw_actor(draw, 1685, 440, 'ML API\n(Cloud Run)')
 
     draw.text((420, 170), 'Access and Profile', fill=GRAY_700, font=FONT_14_B)
     draw.text((420, 390), 'Policy Analysis', fill=GRAY_700, font=FONT_14_B)
@@ -991,17 +1001,17 @@ def generate_use_case_diagram() -> None:
     use_case(draw, (450, 420, 700, 500), 'Submit Policy Text', fill=SOFT_GREEN, outline=ACCENT_GREEN)
     use_case(draw, (760, 420, 1010, 500), 'Upload Document', fill=SOFT_GREEN, outline=ACCENT_GREEN)
     use_case(draw, (1070, 420, 1320, 500), 'Analyze Policy', fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    use_case(draw, (1380, 420, 1530, 500), 'Review History', fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    use_case(draw, (1380, 420, 1530, 500), 'Review Results', fill=SOFT_GREEN, outline=ACCENT_GREEN)
     use_case(draw, (760, 530, 1010, 610), 'View Results and Evidence', fill=SOFT_GREEN, outline=ACCENT_GREEN)
 
     use_case(draw, (450, 680, 700, 760), 'Manage Policies', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
     use_case(draw, (760, 680, 1010, 760), 'Run Assessment', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
     use_case(draw, (1070, 680, 1320, 760), 'Track Remediation', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
-    use_case(draw, (1380, 680, 1530, 760), 'Generate Report', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
+    use_case(draw, (1380, 680, 1530, 760), 'View Framework Mapping', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
 
     use_case(draw, (450, 940, 700, 1020), 'View Dashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
-    use_case(draw, (760, 940, 1010, 1020), 'View Audit Log', fill=SOFT_AMBER, outline=ACCENT_AMBER)
-    use_case(draw, (1070, 940, 1320, 1020), 'Manage Teams', fill=SOFT_AMBER, outline=ACCENT_AMBER)
+    use_case(draw, (760, 940, 1010, 1020), 'Review Assessments', fill=SOFT_AMBER, outline=ACCENT_AMBER)
+    use_case(draw, (1070, 940, 1320, 1020), 'View Risk Dashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
 
     poly_arrow(draw, [(280, 420), (450, 240)], ACCENT_BLUE, open_head=True)
     poly_arrow(draw, [(280, 440), (760, 240)], ACCENT_BLUE, open_head=True)
@@ -1036,11 +1046,11 @@ def generate_dfd_level_0() -> None:
     image, draw = canvas(1400, 900)
     draw.text((360, 32), "Figure 3.7 - DFD Level 0 (Context Diagram)", fill=BLACK, font=FONT_18_B)
 
-    box(draw, (470, 250, 930, 560), "AICG Compliance Platform", ["Policy upload and analysis", "Gap detection with mBERT", "Assessments, tasks, and reports"], fill="#d5e8d4", outline=ACCENT_GREEN)
+    box(draw, (470, 250, 930, 560), "AICG Compliance Platform", ["Policy upload and analysis", "Gap detection with XLM-RoBERTa", "Assessments and remediation tasks"], fill="#d5e8d4", outline=ACCENT_GREEN)
     box(draw, (90, 190, 320, 330), "Security Analyst", ["Uploads policies", "Reviews results"], fill="#dae8fc", outline=ACCENT_BLUE)
     box(draw, (90, 430, 320, 570), "Compliance Officer", ["Runs assessments", "Tracks remediation"], fill="#dae8fc", outline=ACCENT_BLUE)
-    box(draw, (1080, 140, 1310, 300), "Supabase / PostgreSQL", ["Profiles", "Policies", "Assessments", "Tasks, Reports"], fill="#e1d5e7", outline=ACCENT_VIOLET)
-    box(draw, (1080, 360, 1310, 520), "FastAPI + mBERT", ["/analyze endpoint", "Document chunking", "16-label inference"], fill="#f8cecc", outline=ACCENT_RED)
+    box(draw, (1080, 140, 1310, 300), "Supabase / PostgreSQL", ["Auth metadata", "Policies", "Assessments", "Tasks"], fill="#e1d5e7", outline=ACCENT_VIOLET)
+    box(draw, (1080, 360, 1310, 520), "FastAPI + XLM-RoBERTa", ["/analyze endpoint", "Document chunking", "16-label inference"], fill="#f8cecc", outline=ACCENT_RED)
     box(draw, (1080, 580, 1310, 740), "Google Cloud Storage", ["Model artifacts", "Tokenizer files"], fill="#fff2cc", outline=ACCENT_AMBER)
 
     draw_arrow(draw, (320, 260), (470, 320), GRAY_700, width=4)
@@ -1052,28 +1062,25 @@ def generate_dfd_level_0() -> None:
 
 
 def generate_database_erd() -> None:
-    image, draw = canvas(1600, 1000)
+    image, draw = canvas(1800, 1100)
     draw.text((410, 28), "Figure 3.11 - Database Entity-Relationship Diagram", fill=BLACK, font=FONT_18_B)
 
     tables = [
-        ((120, 140, 430, 360), "profiles", ["PK id", "email", "full_name", "avatar_url"]),
-        ((520, 120, 870, 390), "policies", ["PK id", "FK user_id -> profiles.id", "title", "status", "compliance_score", "analysis_result"]),
-        ((980, 120, 1330, 390), "assessments", ["PK id", "FK user_id -> profiles.id", "name", "framework", "overall_score", "results"]),
-        ((520, 470, 870, 760), "tasks", ["PK id", "FK user_id -> profiles.id", "FK assessment_id -> assessments.id", "title", "priority", "status", "ai_guidance"]),
-        ((980, 470, 1330, 720), "reports", ["PK id", "FK user_id -> profiles.id", "FK assessment_id -> assessments.id", "title", "type", "content"]),
-        ((120, 500, 430, 730), "classification_history", ["PK id", "FK user_id -> profiles.id", "policy_text", "result_label", "confidence", "created_at"]),
+        ((110, 140, 420, 380), "auth.users", ["PK id", "email", "raw_user_meta_data", "created_at", "managed by Supabase Auth"]),
+        ((500, 120, 850, 430), "policies", ["PK id", "FK user_id -> auth.users.id", "title", "status", "compliance_score", "analysis_result"]),
+        ((910, 120, 1260, 430), "assessments", ["PK id", "FK user_id -> auth.users.id", "name", "framework", "overall_score", "results"]),
+        ((500, 540, 850, 900), "tasks", ["PK id", "FK user_id -> auth.users.id", "assessment_id", "control_id", "priority", "ai_guidance"]),
     ]
 
     for xy, title, body in tables:
         box(draw, xy, title, body, fill=WHITE, outline=GRAY_700)
 
-    draw_arrow(draw, (430, 210), (520, 210), GRAY_700, width=3)
-    draw_arrow(draw, (430, 260), (980, 230), GRAY_700, width=3)
-    draw_arrow(draw, (430, 610), (520, 610), GRAY_700, width=3)
-    draw_arrow(draw, (870, 610), (980, 610), GRAY_700, width=3)
-    draw_arrow(draw, (870, 300), (980, 300), GRAY_700, width=3)
+    draw_arrow(draw, (420, 230), (500, 230), GRAY_700, width=3)
+    draw_arrow(draw, (420, 285), (910, 260), GRAY_700, width=3)
+    draw_arrow(draw, (420, 320), (500, 700), GRAY_700, width=3)
+    draw_arrow(draw, (910, 305), (850, 690), GRAY_700, width=3)
 
-    draw.text((540, 810), "Core relationships: one profile owns many policies, assessments, tasks, reports, and history records.", fill=GRAY_700, font=FONT_12_B)
+    draw.text((420, 980), "Core relationships: each auth user owns many policies, assessments, and remediation tasks.", fill=GRAY_700, font=FONT_12_B)
     save_manual(image, "fig_3_11_database_erd.png")
 
 
@@ -1087,9 +1094,10 @@ def main() -> None:
     generate_classification_head()
     generate_chunking_pipeline()
     generate_sequence_policy_classification()
+    render_drawio("sequence-authentication.drawio", "fig_3_5b_sequence_authentication.png")
+    render_drawio("sequence-assessment-gap-analysis.drawio", "fig_3_5c_sequence_assessment_gap.png")
     generate_class_diagram()
-    generate_dfd_level_0()
-    generate_dfd_level_1()
+    render_drawio("data-flow-diagram.drawio", "fig_3_7_dfd.png")
     generate_activity_policy_assessment()
     generate_deployment_architecture()
     generate_database_erd()

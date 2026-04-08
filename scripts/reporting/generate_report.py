@@ -149,14 +149,14 @@ def build_report():
         "PolicyShield is an AI-powered compliance gap detection system designed to help "
         "organizations assess their security policies against the Saudi National Cybersecurity "
         "Authority (NCA) Essential Cybersecurity Controls (ECC-2:2024) and ISO 27001:2022 standards. "
-        "The system uses a fine-tuned multilingual BERT (mBERT) model to automatically identify "
+        "The system uses a fine-tuned XLM-RoBERTa model to automatically identify "
         "16 specific compliance gaps across two critical security domains: Password Policy and "
         "Risk Assessment."
     )
     add_body(doc,
         "The platform provides a complete compliance management workflow — from uploading and "
         "classifying policy documents through AI-powered gap detection, to generating remediation "
-        "tasks with contextual guidance, and producing comprehensive compliance reports. The system "
+        "tasks with contextual guidance, and maintaining assessment-driven compliance records. The system "
         "supports both English and Arabic languages, making it particularly suited for organizations "
         "operating in the Gulf region."
     )
@@ -164,7 +164,7 @@ def build_report():
     add_heading_with_number(doc, "Key Capabilities", level=2)
     capabilities = [
         "Automated detection of 16 compliance gaps using multi-label classification",
-        "Support for both English and Arabic policy documents (bilingual mBERT)",
+        "Support for both English and Arabic policy documents (bilingual XLM-RoBERTa)",
         "Real-time inference via REST API (100–500ms per document)",
         "Severity-weighted compliance scoring aligned with NCA ECC-2:2024",
         "Automated remediation task generation with AI guidance",
@@ -231,7 +231,7 @@ def build_report():
         "1) Presentation Layer — React 19 + TypeScript SPA with TailwindCSS, providing an "
         "interactive compliance dashboard with bilingual support.\n"
         "2) Application Layer — FastAPI REST API deployed on Google Cloud Run, hosting the "
-        "mBERT inference engine with auto-scaling capabilities.\n"
+        "XLM-RoBERTa inference engine with auto-scaling capabilities.\n"
         "3) Data Layer — Supabase (PostgreSQL) for persistent storage with Row-Level Security, "
         "Supabase Storage for file management, and Google Cloud Storage for model artifacts."
     )
@@ -242,8 +242,8 @@ def build_report():
         [
             ["Frontend SPA", "React 19, TypeScript 5.9, Vite", "User interface, data visualization, workflow management"],
             ["API Gateway", "FastAPI + Uvicorn", "Model inference, document analysis, health monitoring"],
-            ["ML Model", "mBERT (110M params)", "Multi-label gap detection (16 sigmoid outputs)"],
-            ["Database", "Supabase (PostgreSQL)", "Policies, assessments, tasks, reports, user profiles"],
+            ["ML Model", "XLM-RoBERTa-base (~279M params)", "Multi-label gap detection (16 sigmoid outputs)"],
+            ["Database", "Supabase (PostgreSQL)", "Policies, assessments, tasks, and auth-linked ownership"],
             ["File Storage", "Supabase Storage", "Policy files, evidence documents (with signed URLs)"],
             ["Model Storage", "Google Cloud Storage", "Model weights (SafeTensors), tokenizer files"],
             ["Container Runtime", "Google Cloud Run", "Auto-scaling serverless container (me-central1)"],
@@ -257,7 +257,7 @@ def build_report():
         "1. User uploads a policy document (PDF/DOCX/TXT) through the web dashboard.\n"
         "2. Document text is extracted and sent to the FastAPI /analyze endpoint.\n"
         "3. The API chunks the document into ~350-word segments with 50-word overlap.\n"
-        "4. Each chunk is tokenized (max 512 tokens) and passed through the mBERT model.\n"
+        "4. Each chunk is tokenized (max 512 tokens) and passed through the XLM-RoBERTa model.\n"
         "5. Per-chunk predictions are aggregated via max-pooling across all 16 gap labels.\n"
         "6. Probabilities exceeding the threshold (default 0.6) are flagged as detected gaps.\n"
         "7. A severity-weighted compliance score is computed per domain and overall.\n"
@@ -283,7 +283,7 @@ def build_report():
         [
             ["Dataset Generation", "Google Gemini 2.5 Flash API", "Synthetic policy documents (JSON/CSV/JSONL)"],
             ["Data Preprocessing", "Pandas, NumPy, HuggingFace Tokenizer", "Multi-hot vectors (N×16), tokenized sequences"],
-            ["Model Training", "HuggingFace Trainer, PyTorch", "mBERT + classifier head checkpoints"],
+            ["Model Training", "HuggingFace Trainer, PyTorch", "XLM-RoBERTa + classifier head checkpoints"],
             ["Model Export", "SafeTensors", "model.safetensors (~681 MB) + tokenizer files"],
             ["Deployment", "Docker, Google Cloud Run", "FastAPI container with GCS model download"],
         ],
@@ -307,7 +307,7 @@ def build_report():
     add_body(doc,
         "Each sample is converted to a 16-dimensional binary vector (multi-hot encoding) "
         "representing the presence or absence of each gap. The text is tokenized using the "
-        "bert-base-multilingual-cased tokenizer with a maximum sequence length of 512 tokens. "
+        "xlm-roberta-base SentencePiece tokenizer with a maximum sequence length of 512 tokens. "
         "Documents exceeding this limit are split into overlapping chunks (~350 words with "
         "~50-word overlap) and predictions are aggregated via max-pooling."
     )
@@ -363,13 +363,13 @@ def build_report():
     add_heading_with_number(doc, "5.1 GapDetectionModel", level=2)
     add_body(doc,
         "The production model (v2.0) is a custom PyTorch module built on top of the "
-        "bert-base-multilingual-cased backbone. It uses a two-layer classification head "
+        "xlm-roberta-base backbone. It uses a deeper classification head "
         "with dropout regularization to produce 16 independent probability outputs."
     )
     add_body(doc,
-        "Architecture: mBERT backbone (12 layers, 12 attention heads, 768 hidden dim) → "
-        "[CLS] token embedding (768-dim) → Linear(768→256) → ReLU → Dropout(0.3) → "
-        "Linear(256→16) → Sigmoid. Each output represents the probability of a specific "
+        "Architecture: XLM-RoBERTa backbone (12 layers, 12 attention heads, 768 hidden dim) → "
+        "mean pooled embedding → Linear(768→512) → BatchNorm → ReLU → Dropout → "
+        "Linear(512→256) → ReLU → Dropout → Linear(256→16) → Sigmoid. Each output represents the probability of a specific "
         "compliance gap being present in the document."
     )
 
@@ -377,29 +377,29 @@ def build_report():
     add_styled_table(doc,
         ["Property", "Value"],
         [
-            ["Base Model", "bert-base-multilingual-cased"],
+            ["Base Model", "xlm-roberta-base"],
             ["Task", "Multi-label binary classification"],
             ["Number of Labels", "16"],
             ["Hidden Size", "768"],
             ["Attention Heads", "12"],
             ["Transformer Layers", "12"],
-            ["Vocabulary Size", "119,547 (multilingual WordPiece)"],
+            ["Vocabulary Size", "250,002 (SentencePiece)"],
             ["Classifier Dropout", "0.3"],
             ["Activation Functions", "ReLU (hidden), Sigmoid (output)"],
-            ["Total Parameters", "~110M (backbone) + ~200K (classifier head)"],
+            ["Total Parameters", "~279M (backbone) + classifier head"],
             ["Model Size", "~681 MB (SafeTensors format)"],
             ["Max Input Tokens", "512"],
         ],
     )
 
-    add_heading_with_number(doc, "5.3 Why mBERT?", level=2)
+    add_heading_with_number(doc, "5.3 Why XLM-RoBERTa?", level=2)
     add_styled_table(doc,
-        ["Requirement", "mBERT Capability"],
+        ["Requirement", "XLM-RoBERTa Capability"],
         [
-            ["Bilingual (Arabic + English)", "Pre-trained on 104 languages including Arabic"],
-            ["Domain Understanding", "Strong contextual encoding of security policy language"],
+            ["Bilingual (Arabic + English)", "Pre-trained multilingual backbone with strong Arabic coverage"],
+            ["Domain Understanding", "Stronger contextual encoding for mixed Arabic/English compliance text"],
             ["Sequence Classification", "CLS token pooling well-suited for document-level labels"],
-            ["Deployment Constraints", "~110M params fits in Cloud Run CPU instances"],
+            ["Deployment Constraints", "Optimized export still fits the Cloud Run deployment profile"],
         ],
     )
 
@@ -606,14 +606,10 @@ def build_report():
     add_styled_table(doc,
         ["Table", "Purpose", "Key Fields"],
         [
-            ["profiles", "User accounts (synced from auth.users)", "id (UUID), email, full_name, avatar_url"],
-            ["classification_history", "Past analysis results", "policy_text, result_label, confidence, inference_time_ms"],
+            ["auth.users", "Supabase-managed identity and profile metadata", "id (UUID), email, raw_user_meta_data"],
             ["policies", "Uploaded policy documents", "title, status, category, compliance_score, file_url, analysis_result (JSONB)"],
             ["assessments", "Compliance assessments", "name, framework, status, overall_score, results (JSONB), comments (JSONB)"],
-            ["reports", "Generated compliance reports", "title, type, assessment_id, content (JSONB)"],
             ["tasks", "Remediation tasks", "title, control_id, priority, status, ai_guidance (JSONB), comments (JSONB)"],
-            ["schedules", "Recurring assessment schedules", "name, framework, frequency, enabled, next_run"],
-            ["teams", "Team management", "name, description, members (JSONB)"],
         ],
     )
 
@@ -709,7 +705,6 @@ def build_report():
             ["Policies", "PoliciesPage.tsx", "Upload policies, trigger ML analysis, view per-policy results and NCA mappings"],
             ["Assessments", "AssessmentsPage.tsx", "Create assessments from analysis results, manage controls, upload evidence, add comments"],
             ["Remediation", "RemediationPage.tsx", "View auto-generated tasks, AI guidance, status tracking, comment threads"],
-            ["Reports", "ReportsPage.tsx", "Generate and export compliance reports (PDF/JSON), audit trails"],
             ["Risk Dashboard", "RiskDashboardPage.tsx", "Risk heat maps, severity distribution, domain-level risk analysis"],
             ["Framework Comparison", "FrameworkComparisonPage.tsx", "Compare NCA ECC vs ISO 27001 coverage, control mapping visualization"],
         ],
@@ -793,9 +788,9 @@ def build_report():
         "Risk Assessment requires 2+ keyword matches.\n\n"
         "2. Document Chunking — Text is split into ~350-word segments with ~50-word overlap "
         "at section headings, then paragraphs, then word-count boundaries.\n\n"
-        "3. Tokenization — Each chunk is tokenized with the mBERT tokenizer (max 512 tokens, "
+        "3. Tokenization — Each chunk is tokenized with the XLM-RoBERTa tokenizer (max 512 tokens, "
         "dynamic padding, truncation enabled).\n\n"
-        "4. Per-Chunk Inference — Each tokenized chunk passes through the mBERT backbone and "
+        "4. Per-Chunk Inference — Each tokenized chunk passes through the XLM-RoBERTa backbone and "
         "classification head, producing 16 sigmoid probabilities.\n\n"
         "5. Max-Pool Aggregation — For multi-chunk documents, per-gap maximum probability "
         "is taken across all chunks.\n\n"
@@ -922,42 +917,42 @@ def build_report():
         ("system-architecture.drawio",
          "System Architecture Diagram",
          "Shows the three-tier architecture: Frontend Layer (React SPA, TailwindCSS), "
-         "Backend/API Layer (FastAPI, Uvicorn, mBERT Model, Document Chunker), "
+         "Backend/API Layer (FastAPI, Uvicorn, XLM-RoBERTa model, Document Chunker), "
          "Data Layer (Supabase PostgreSQL, Supabase Storage, Google Cloud Storage). "
          "Includes Cloud Run container deployment with auto-scaling."),
 
         ("use-case-diagram.drawio",
          "Use Case Diagram",
          "Defines 13 use cases across 3 actors: Security Officer (upload policy, view results, "
-         "manage assessments, create remediation tasks), Compliance Manager (approve assessments, "
-         "generate reports, compare frameworks), System Administrator (manage users, configure "
-         "schedules, manage teams). The PolicyShield System boundary contains all use cases."),
+         "manage assessments, create remediation tasks), Compliance Manager (review assessments, "
+         "compare frameworks, review risk posture), and platform services for auth and ML inference. "
+         "The PolicyShield System boundary contains the current implemented use cases."),
 
         ("class-component-diagram.drawio",
          "Class / Component Diagram",
-         "Maps React component hierarchy: ComplianceDashboard → 7 page components "
-         "(OverviewPage, PoliciesPage, AssessmentsPage, RemediationPage, ReportsPage, "
-         "RiskDashboardPage, FrameworkComparisonPage). Shows library classes: "
+         "Maps React component hierarchy: ComplianceDashboard → active dashboard pages "
+         "(OverviewPage, PoliciesPage, AssessmentsPage, RemediationPage, "
+         "RiskDashboardPage, FrameworkComparisonPage) plus account management. Shows library classes: "
          "PolicyClassifierAPI, useComplianceStore, SupabaseClient. Includes type interfaces "
-         "for Policy, Assessment, Task, Report."),
+         "for Policy, Assessment, Task, and EvidenceFile."),
 
         ("data-flow-diagram.drawio",
          "Data Flow Diagram (DFD Level 1)",
-         "Traces data through 6 processes: Upload Policy, Analyze Document (AI), "
-         "Store Results, Generate Assessment, Create Tasks, Generate Report. "
-         "External entities: User, ML Model API, Supabase DB. Data stores: "
-         "Policy Store, Assessment Store, Task Store, Report Store."),
+         "Traces data through the active workflow: Upload Policy, Analyze Document (AI), "
+         "Store Results, Generate Assessment, Create Tasks, and visualize dashboard outputs. "
+         "External entities: User, ML Model API, Supabase services. Data stores: "
+         "Policy Store, Assessment Store, Task Store, file storage, and browser cache."),
 
         ("sequence-authentication.drawio",
          "Sequence Diagram — Authentication",
          "Shows the email/password sign-up and sign-in flow between User, Frontend (React), "
-         "Supabase Auth, and Database. Includes profile auto-creation trigger, JWT token "
+         "Supabase Auth, and Auth metadata. Includes metadata storage, JWT token "
          "management, and session persistence."),
 
         ("sequence-policy-classification.drawio",
          "Sequence Diagram — Policy Classification",
          "Details the end-to-end flow: User submits text → Frontend sends POST /analyze → "
-         "FastAPI chunks document → mBERT inference → Max-pool aggregation → "
+         "FastAPI chunks document → XLM-RoBERTa inference → Max-pool aggregation → "
          "Domain scoring → Response with gaps, scores, compliance level."),
 
         ("sequence-gap-analysis.drawio",
@@ -1016,7 +1011,7 @@ def build_report():
         [
             ["Google Gemini 2.5 Flash", "Latest", "Synthetic dataset generation"],
             ["PyTorch", "≥ 2.0.0", "Deep learning framework"],
-            ["HuggingFace Transformers", "≥ 4.35.0", "mBERT backbone and Trainer"],
+            ["HuggingFace Transformers", ">= 4.35.0", "XLM-RoBERTa backbone and Trainer"],
             ["SafeTensors", "≥ 0.4.0", "Secure model serialization"],
             ["scikit-learn", "≥ 1.3", "Evaluation metrics"],
             ["Pandas / NumPy", "≥ 2.0 / ≥ 1.24", "Data processing"],
@@ -1088,7 +1083,7 @@ def build_report():
             ["Notification System", "Email/SMS alerts for assessment deadlines and task assignments"],
             ["Multi-tenant Support", "Organization-level data isolation and team management"],
             ["API Rate Limiting", "Token-based rate limiting for production security"],
-            ["PDF Report Export", "Generate formatted PDF compliance reports with charts"],
+            ["PDF Assessment Export", "Generate formatted PDF assessment summaries with charts"],
         ],
     )
 

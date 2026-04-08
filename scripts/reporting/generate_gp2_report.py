@@ -19,6 +19,7 @@ OUTPUT_PATH = os.fspath(REPO_ROOT / "docs" / "reports" / "GP2_Report_AICG_v4.doc
 UQU_LOGO = os.fspath(REPO_ROOT / "artifacts" / "gp1-images" / "page1_img1.png")
 AICG_LOGO = os.fspath(REPO_ROOT / "artifacts" / "gp1-images" / "page1_img2.png")
 REPORT_ASSET_DIR = os.fspath(REPO_ROOT / "artifacts" / "report-assets")
+CHART_DIR = os.fspath(REPO_ROOT / "artifacts" / "report_charts")
 
 STUDENTS = [
     ("Sabah Alanazi",   "44411937"),
@@ -60,8 +61,15 @@ FIGURE_ASSETS = {
     "Figure 3.22: Framework Comparison": os.path.join(REPORT_ASSET_DIR, "fig_3_21_framework.png"),
     "Figure 3.23: Risk Dashboard": os.path.join(REPORT_ASSET_DIR, "fig_3_22_risk.png"),
     "Figure 3.24: Arabic RTL Interface": os.path.join(REPORT_ASSET_DIR, "fig_3_23_arabic_rtl.png"),
-    "Figure 4.1: Analysis Result \u2014 Compliant Document (High Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_17_analysis_compliant.png"),
-    "Figure 4.2: Analysis Result \u2014 Non-Compliant Document (Low Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_18_analysis_non_compliant.png"),
+    "Figure 4.1: Dataset Distribution Overview": os.path.join(CHART_DIR, "dataset_distribution_overview.png"),
+    "Figure 4.2: Training Progress (Enhanced)": os.path.join(CHART_DIR, "training_curves.png"),
+    "Figure 4.3: Per-Gap Precision / Recall / F1 (Test Set)": os.path.join(CHART_DIR, "per_gap_performance.png"),
+    "Figure 4.4: ROC Curves (Test Set)": os.path.join(CHART_DIR, "roc_curves.png"),
+    "Figure 4.5: Domain-Level Performance Comparison": os.path.join(CHART_DIR, "domain_radar.png"),
+    "Figure 4.6: Multi-Label Confusion Matrix": os.path.join(CHART_DIR, "confusion_heatmap.png"),
+    "Figure 4.7: Gap Count Distribution per Sample": os.path.join(CHART_DIR, "gap_count_distribution.png"),
+    "Figure 4.8: Analysis Result \u2014 Compliant Document (High Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_17_analysis_compliant.png"),
+    "Figure 4.9: Analysis Result \u2014 Non-Compliant Document (Low Score)": os.path.join(REPORT_ASSET_DIR, "fig_3_18_analysis_non_compliant.png"),
 }
 
 # ── helpers ──────────────────────────────────────────────────────────
@@ -243,18 +251,20 @@ def build():
         "this report documents the full implementation, deployment, and evaluation of the "
         f"{SHORT} platform \u2014 an AI-powered cybersecurity compliance system for Saudi "
         "SMEs. The implemented system comprises: (1) a custom bilingual compliance dataset "
-        "of 260 samples generated via Google Gemini 2.5 Flash; (2) a fine-tuned multilingual "
-        "BERT (mBERT) model for 16-label multi-label gap detection across Password Policy "
-        "(ECC 2-2) and Risk Assessment (ECC 1-5) domains; (3) a FastAPI backend deployed on "
-        "Google Cloud Run with document chunking and severity-weighted compliance scoring; "
-        "(4) a React/TypeScript web application with bilingual (Arabic/English) support and "
-        "a comprehensive compliance dashboard; and (5) a Supabase PostgreSQL database with "
-        "row-level security. The platform accepts policy documents in PDF, DOCX, or plain "
-        "text, analyzes them against NCA ECC controls, maps detected gaps to ISO 27001:2022 "
-        "clauses, and provides actionable remediation guidance. The system achieves sub-second "
-        "inference time and reduces manual audit effort from weeks to minutes.")
+        "of 891 samples generated via Google Gemini 2.5 Flash with automated quality "
+        "verification; (2) a fine-tuned XLM-RoBERTa-base model with layer-wise learning rates "
+        "and per-label threshold optimization for 16-label multi-label gap detection across "
+        "Password Policy (ECC 2-2) and Risk Assessment (ECC 1-5) domains, achieving a test "
+        "Macro F1 of 0.6037; (3) a FastAPI backend deployed on Google Cloud Run with document "
+        "chunking and severity-weighted compliance scoring; (4) a React/TypeScript web "
+        "application with bilingual (Arabic/English) support and a comprehensive compliance "
+        "dashboard; and (5) a Supabase PostgreSQL database with row-level security. The "
+        "platform accepts policy documents in PDF, DOCX, or plain text, analyzes them against "
+        "NCA ECC controls, maps detected gaps to ISO 27001:2022 clauses, and provides "
+        "actionable remediation guidance. The system achieves sub-second inference time and "
+        "reduces manual audit effort from weeks to minutes.")
     _p(doc,
-        "Keywords\u2014 NCA ECC, ISO 27001, Compliance Automation, NLP, mBERT, "
+        "Keywords\u2014 NCA ECC, ISO 27001, Compliance Automation, NLP, XLM-RoBERTa, "
         "Multi-label Classification, Gap Detection, Saudi Arabia, Vision 2030.")
     _pb(doc)
 
@@ -282,9 +292,12 @@ def build():
         ("3.9","Compliance Scoring Thresholds"),
         ("3.10","Threat Model and Security Controls"),
         ("3.11","STRIDE Threat Model & Mitigations"),
-        ("4.1","Test Case Results \u2014 Model Inference"),
-        ("4.2","Test Case Results \u2014 API Endpoints"),
-        ("4.3","Usability Evaluation Criteria"),
+        ("4.1","Test Set Evaluation \u2014 Threshold Strategies"),
+        ("4.2","Per-Gap Detection Metrics (Conservative Per-Label)"),
+        ("4.3","Domain-Level Summary"),
+        ("4.4","Test Case Results \u2014 Model Inference"),
+        ("4.5","Test Case Results \u2014 API Endpoints"),
+        ("4.6","Usability Evaluation Criteria"),
     ]
     for n, t in lot: _p(doc, f"Table {n}: {t}")
     _pb(doc)
@@ -318,6 +331,15 @@ def build():
         ("3.22","Prototype \u2014 Framework Comparison"),
         ("3.23","Prototype \u2014 Risk Dashboard"),
         ("3.24","Prototype \u2014 Arabic RTL Interface"),
+        ("4.1","Dataset Distribution Overview"),
+        ("4.2","Training Progress (Enhanced)"),
+        ("4.3","Per-Gap Precision / Recall / F1 (Test Set)"),
+        ("4.4","ROC Curves (Test Set)"),
+        ("4.5","Domain-Level Performance Comparison"),
+        ("4.6","Multi-Label Confusion Matrix"),
+        ("4.7","Gap Count Distribution per Sample"),
+        ("4.8","Analysis Result \u2014 Compliant Document (High Score)"),
+        ("4.9","Analysis Result \u2014 Non-Compliant Document (Low Score)"),
     ]
     for n, t in lof: _p(doc, f"Figure {n}: {t}")
     _pb(doc)
@@ -357,7 +379,7 @@ def build():
 
     _h(doc, "1.3  Project Contribution", 2)
     _p(doc, f"The main contributions delivered in GP2 for {SHORT} are:")
-    _b(doc, "AI-driven 16-label multi-label gap detection using fine-tuned mBERT")
+    _b(doc, "AI-driven 16-label multi-label gap detection using fine-tuned XLM-RoBERTa (evolved from mBERT baseline)")
     _b(doc, "Custom bilingual (Arabic/English) compliance dataset of 260 samples")
     _b(doc, "Automated ECC\u2013ISO 27001 cross-framework mapping")
     _b(doc, "Full-stack web platform with real-time compliance scoring")
@@ -374,8 +396,9 @@ def build():
         "Chapter 3: Solution Approach / Methodology \u2014 details the full implementation "
         "including dataset construction, AI model, backend, frontend, database, system "
         "diagrams, prototype screenshots, and security. "
-        "Chapter 4: Testing and Evaluation \u2014 covers model testing, API testing, "
-        "performance metrics, and usability evaluation. "
+        "Chapter 4: Testing and Evaluation \u2014 covers dataset analysis, model training results, "
+        "test set evaluation with per-gap metrics, model inference testing, API testing, "
+        "performance metrics, compliance score validation, and usability evaluation. "
         "Chapter 5: Conclusion \u2014 summarizes achievements, challenges, lessons learned, "
         "and future work.")
     _pb(doc)
@@ -445,7 +468,7 @@ def build():
     _p(doc, "The system architecture consists of several interconnected modules:")
     _b(doc, "Data Collection Module: Regulatory documents (NCA ECC, ISO 27001) and organizational policies.")
     _b(doc, "Preprocessing and Feature Extraction Engine: Cleaning, tokenization, language detection, Arabic normalization.")
-    _b(doc, "AI Model: Supervised classification engine built on mBERT for 16-label gap detection.")
+    _b(doc, "AI Model: Supervised classification engine built on XLM-RoBERTa for 16-label gap detection.")
     _b(doc, "Compliance Scoring Module: Severity-weighted scoring with per-domain breakdown.")
     _b(doc, "User Interface: Interactive dashboard with real-time compliance metrics.")
     _b(doc, "Real-time Monitoring: Continuous visibility over compliance status.")
@@ -534,24 +557,38 @@ def build():
     _h(doc, "3.2.3  AI Model Development", 3)
     _p(doc,
         f"The core analytical component of {SHORT} is a GapDetectionModel built on "
-        "bert-base-multilingual-cased (mBERT). The model uses a two-layer classification "
-        "head on top of the [CLS] token output with sigmoid activation for multi-label "
-        "classification across 16 gap labels.")
+        "xlm-roberta-base (XLM-RoBERTa). The model was initially developed using "
+        "bert-base-multilingual-cased (mBERT), but mBERT's shared 110k WordPiece "
+        "vocabulary diluted Arabic-specific representations and led to poor convergence "
+        "on the bilingual 16-label gap detection task. XLM-RoBERTa, pre-trained on "
+        "2.5 TB of CommonCrawl data with a 250k SentencePiece vocabulary, provides "
+        "significantly better cross-lingual transfer for Arabic/English regulatory text. "
+        "The model uses the [CLS] token representation fed into a wider two-layer "
+        "classification head with Batch Normalization and sigmoid activation for "
+        "multi-label classification across 16 gap labels.")
 
     _p(doc, "Table 3.5: Model Architecture Parameters")
     _table(doc,
         ["Parameter", "Value"],
         [
-            ["Base Model","bert-base-multilingual-cased"],
-            ["Vocabulary Size","119,547 tokens"],
+            ["Base Model","xlm-roberta-base"],
+            ["Previous Model (replaced)","bert-base-multilingual-cased (mBERT)"],
+            ["Vocabulary Size","250,002 tokens (SentencePiece)"],
             ["Hidden Size","768"],
             ["Attention Heads","12"],
             ["Encoder Layers","12"],
+            ["Language Support","100+ languages (English, Arabic)"],
+            ["Pre-training Data","2.5 TB CommonCrawl (vs mBERT: Wikipedia only)"],
             ["Max Sequence Length","512 tokens"],
-            ["Classification Head","Linear(768\u2192256) \u2192 ReLU \u2192 Dropout(0.3) \u2192 Linear(256\u219216)"],
+            ["Pooling Strategy","[CLS] token representation"],
+            ["Classification Head","Linear(768\u2192512) \u2192 BN \u2192 ReLU \u2192 Dropout \u2192 Linear(512\u2192256) \u2192 ReLU \u2192 Dropout \u2192 Linear(256\u219216)"],
             ["Output Activation","Sigmoid (per-label independent)"],
-            ["Loss Function","BCEWithLogitsLoss (multi-label)"],
-            ["Optimizer","AdamW with linear warmup"],
+            ["Loss Function","BCEWithLogitsLoss with pos_weight"],
+            ["Optimizer","AdamW with layer-wise learning rates"],
+            ["Backbone LR","8e-6 to 1.5e-5 (adaptive to dataset size)"],
+            ["Head LR","5e-4"],
+            ["Label Smoothing","0.05"],
+            ["Word Dropout Augmentation","10%"],
             ["Number of Gap Labels","16 (8 Password Policy + 8 Risk Assessment)"],
         ]
     )
@@ -560,15 +597,16 @@ def build():
 
     _p(doc, "Model Evolution:")
     _b(doc, "v1.0 \u2014 3-class BertForSequenceClassification (compliant / partial / non-compliant)")
-    _b(doc, "v2.0 \u2014 16-class multi-label GapDetectionModel with gap-level sigmoid classification (current)")
+    _b(doc, "v2.0 \u2014 16-class multi-label GapDetectionModel with mBERT + BCEWithLogitsLoss (poor convergence on bilingual task)")
+    _b(doc, "v3.0 \u2014 XLM-RoBERTa-base + BCEWithLogitsLoss with pos_weight + wider classification head + layer-wise LR (current)")
 
     _h(doc, "Document Processing Pipeline", 3)
     _p(doc,
         "For inference, documents undergo a chunking pipeline:")
     _b(doc, "1. Input text (up to 50,000 characters)")
     _b(doc, "2. Document chunking: split on headings, then paragraphs (~350 words/chunk, 50-word overlap)")
-    _b(doc, "3. Per-chunk tokenization with mBERT tokenizer (512 max tokens)")
-    _b(doc, "4. Per-chunk inference: mBERT \u2192 classifier \u2192 16 sigmoid outputs")
+    _b(doc, "3. Per-chunk tokenization with XLM-RoBERTa tokenizer (512 max tokens)")
+    _b(doc, "4. Per-chunk inference: XLM-RoBERTa \u2192 classifier \u2192 16 sigmoid outputs")
     _b(doc, "5. Max-pooling aggregation across all chunks per gap label")
     _b(doc, "6. Domain detection via keyword heuristic")
     _b(doc, "7. Severity-weighted compliance scoring")
@@ -654,14 +692,10 @@ def build():
     _table(doc,
         ["Table","Purpose","Key Columns"],
         [
-            ["profiles","User profiles (auto-created)","id, email, full_name, avatar_url"],
+            ["auth.users","Supabase-managed identity and user metadata","id, email, raw_user_meta_data"],
             ["policies","Uploaded policy documents","title, status, compliance_score, analysis_result"],
             ["assessments","Compliance assessments","framework, overall_score, results (JSONB)"],
             ["tasks","Remediation tasks","priority, status, control_id, ai_guidance"],
-            ["reports","Generated reports","type, framework, content (JSONB)"],
-            ["classification_history","API call audit trail","policy_text, result_label, confidence"],
-            ["schedules","Assessment schedules","framework, frequency, next_run"],
-            ["teams","Team management","name, members (JSONB)"],
         ]
     )
     _p(doc, "Storage Buckets:")
@@ -674,18 +708,13 @@ def build():
     _h(doc, "3.3  System Modeling Diagrams", 2)
 
     _h(doc, "3.3.1  Sequence Diagram \u2014 Policy Classification", 3)
-    _p(doc,
-        "The following sequence diagram illustrates the end-to-end flow when a user "
-        "uploads a policy document for AI-powered compliance analysis. It shows the "
-        "interaction between 7 lifelines: User, Browser, Supabase Auth, React Frontend, "
-        "FastAPI Backend, mBERT Model, and Supabase DB.")
     _fig(doc, "Figure 3.5: Sequence Diagram \u2014 Policy Classification")
 
     _h(doc, "3.3.2  Sequence Diagram \u2014 Authentication", 3)
     _p(doc,
         "This diagram covers the Sign Up and Sign In workflows using Supabase Auth. "
         "The Sign Up flow includes email/password registration, email verification, "
-        "and automatic profile creation via a database trigger. The Sign In flow shows "
+        "and storage of user metadata within Supabase Auth. The Sign In flow shows "
         "JWT token exchange and session establishment.")
     _fig(doc, "Figure 3.6: Sequence Diagram \u2014 Authentication")
 
@@ -709,8 +738,8 @@ def build():
         "The data flow diagram shows how data moves through the system: from user "
         "interactions through authentication, policy upload, text extraction, AI "
         "classification, compliance scoring, assessment management, and task generation. "
-        "It identifies 6 core processes and 8 data stores including Supabase tables "
-        "and Cloud Storage.")
+        "It highlights the current runtime stores and integrations, including Supabase "
+        "Auth, the three application tables, browser cache, and cloud storage.")
     _fig(doc, "Figure 3.9: Data Flow Diagram")
 
     # ── 3.4 Operational Logic ──
@@ -726,10 +755,9 @@ def build():
 
     _h(doc, "3.4.2  Use Case Diagram", 3)
     _p(doc,
-        "The use case diagram shows three actors (SME Compliance Officer, System "
-        "Administrator, AI/ML Engine) interacting with 16 use cases organized into "
-        "subsystems: Authentication, Policy Management, Assessment, Remediation, "
-        "and Administration.")
+        "The use case diagram shows the current actors and workflows around authentication, "
+        "policy analysis, assessments, remediation, framework comparison, and risk review. "
+        "It reflects the implemented dashboard experience rather than the earlier expanded model.")
     _fig(doc, "Figure 3.13: Use Case Diagram")
     _pb(doc)
 
@@ -786,7 +814,7 @@ def build():
 
     _h(doc, "3.6.1  Security Controls Implemented", 3)
     _b(doc, "Supabase Auth with JWT session tokens and automatic refresh")
-    _b(doc, "Row-Level Security (RLS) on all 8 database tables")
+    _b(doc, "Row-Level Security (RLS) on the application tables: policies, assessments, and tasks")
     _b(doc, "Per-user data isolation (users access only their own records)")
     _b(doc, "Optional API Key authentication for backend endpoints")
     _b(doc, "HTTPS/TLS encryption in transit; Supabase encryption at rest")
@@ -798,10 +826,10 @@ def build():
     _table(doc,
         ["Threat Category","Example in System","Mitigation"],
         [
-            ["Spoofing","Fake admin login to alter reports","Supabase Auth with JWT, route guards"],
+            ["Spoofing","Fake user login to alter assessment data","Supabase Auth with JWT, route guards"],
             ["Tampering","Unauthorized alteration of compliance data","RLS policies, JSONB integrity, HTTPS"],
-            ["Repudiation","User denies submitting a document","classification_history audit logs with timestamps"],
-            ["Information Disclosure","Leak of SME compliance reports","RLS isolation, CORS config, encrypted transport"],
+            ["Repudiation","User denies submitting a document","Policy analysis_result JSONB audit trail with timestamps"],
+            ["Information Disclosure","Leak of SME assessment findings or remediation tasks","RLS isolation, CORS config, encrypted transport"],
             ["Denial of Service","API overload by malicious actor","Cloud Run auto-scaling, input size limits"],
             ["Elevation of Privilege","User gains admin rights","RLS per-user policies, no admin escalation path"],
         ]
@@ -820,7 +848,7 @@ def build():
              "Automated backups, SHA-256 checksums"],
             ["Denial of Service","API overload","C:2 I:3 A:10 = 5","Medium",
              "Rate limiting, Cloud Run scaling"],
-            ["Privacy Leakage","Reports expose PII","C:4 I:3 A:2 = 3","Low",
+            ["Privacy Leakage","Assessment comments expose PII","C:4 I:3 A:2 = 3","Low",
              "Data minimization, masking"],
         ]
     )
@@ -831,10 +859,112 @@ def build():
     # ════════════════════════════════════════════════════════════════
     _h(doc, "4  Testing and Evaluation")
 
-    _h(doc, "4.1  Model Testing", 2)
+    # ── 4.1 Dataset Analysis ──
+    _h(doc, "4.1  Dataset Analysis", 2)
+    _p(doc,
+        "The final training dataset consists of 891 bilingual samples (472 English, 419 Arabic) "
+        "generated via Google Gemini 2.5 Flash with automated quality verification. After "
+        "data cleaning, 13 mislabeled samples were removed where intended gaps did not match "
+        "actual gap labels. Figure 4.1 shows the dataset distribution across gap labels, "
+        "compliance levels, domains, and languages.")
+    _fig(doc, "Figure 4.1: Dataset Distribution Overview")
+    _fig(doc, "Figure 4.7: Gap Count Distribution per Sample")
+    _p(doc,
+        "The gap count distribution shows a mean of 1.8 gaps per sample, with a heavy "
+        "concentration at 0 gaps (compliant samples comprising 48% of the dataset).")
+
+    # ── 4.2 Training Results ──
+    _h(doc, "4.2  Model Training Results", 2)
+    _p(doc,
+        "The XLM-RoBERTa-base model was trained for 52 epochs with early stopping "
+        "(patience=10). The best checkpoint was saved at epoch 42 based on validation "
+        "Macro F1. Training used BCEWithLogitsLoss with pos_weight for class imbalance, "
+        "layer-wise learning rates (backbone: 8e-6 to 1.5e-5, classification head: 5e-4), "
+        "and word dropout augmentation (10%). This model replaced the initial mBERT "
+        "baseline which struggled to converge on the bilingual 16-label task.")
+    _fig(doc, "Figure 4.2: Training Progress (Enhanced)")
+    _p(doc,
+        "The training curves show steady convergence: training loss decreased from 1.45 to "
+        "0.98, while validation loss decreased from 1.23 to 0.72. Validation Macro F1 "
+        "plateaued around 0.60 after epoch 30, with the best checkpoint at epoch 42.")
+
+    # ── 4.3 Test Set Evaluation ──
+    _h(doc, "4.3  Test Set Evaluation", 2)
+    _p(doc,
+        "Three threshold strategies were compared on the held-out test set (134 samples):")
+
+    _p(doc, "Table 4.1: Test Set Evaluation \u2014 Threshold Strategies")
+    _table(doc,
+        ["Strategy", "Macro F1", "Micro F1", "Exact Match", "Hamming Acc"],
+        [
+            ["Fixed (0.50)", "0.5551", "0.5566", "0.3582", "0.8484"],
+            ["Global (0.74)", "0.5910", "0.6017", "0.5000", "0.9104"],
+            ["Conservative per-label", "0.6037", "0.6069", "0.4552", "0.8997"],
+        ]
+    )
+    _p(doc,
+        "The Conservative Per-Label strategy achieved the best test Macro F1 of 0.6037. "
+        "This strategy optimizes a threshold per gap label on the validation set, clamps "
+        "to [0.43, 0.65], and blends with the global optimum (0.74).")
+
+    _p(doc, "Table 4.2: Per-Gap Detection Metrics (Conservative Per-Label)")
+    _table(doc,
+        ["Gap ID", "Precision", "Recall", "F1", "Support"],
+        [
+            ["GAP_PP_001", "0.895", "1.000", "0.944", "17"],
+            ["GAP_PP_002", "0.591", "0.684", "0.634", "19"],
+            ["GAP_PP_003", "0.571", "0.522", "0.545", "23"],
+            ["GAP_PP_004", "0.667", "0.706", "0.686", "17"],
+            ["GAP_PP_005", "0.650", "1.000", "0.788", "13"],
+            ["GAP_PP_006", "0.625", "0.882", "0.732", "17"],
+            ["GAP_PP_007", "0.588", "0.500", "0.541", "20"],
+            ["GAP_PP_008", "0.550", "0.524", "0.537", "21"],
+            ["GAP_RA_001", "0.917", "0.733", "0.815", "15"],
+            ["GAP_RA_002", "0.304", "0.700", "0.424", "10"],
+            ["GAP_RA_003", "0.444", "0.889", "0.593", "9"],
+            ["GAP_RA_004", "0.550", "0.917", "0.688", "12"],
+            ["GAP_RA_005", "0.333", "0.875", "0.483", "8"],
+            ["GAP_RA_006", "0.389", "0.700", "0.500", "10"],
+            ["GAP_RA_007", "0.222", "0.333", "0.267", "12"],
+            ["GAP_RA_008", "0.364", "0.727", "0.485", "11"],
+        ]
+    )
+    _fig(doc, "Figure 4.3: Per-Gap Precision / Recall / F1 (Test Set)")
+
+    _p(doc, "Table 4.3: Domain-Level Summary")
+    _table(doc,
+        ["Domain", "Macro F1", "Strongest Gap", "Weakest Gap"],
+        [
+            ["Password Policy (PP)", "0.6758", "GAP_PP_001 (0.944)", "GAP_PP_008 (0.537)"],
+            ["Risk Assessment (RA)", "0.5317", "GAP_RA_001 (0.815)", "GAP_RA_007 (0.267)"],
+        ]
+    )
+    _fig(doc, "Figure 4.5: Domain-Level Performance Comparison")
+    _p(doc,
+        "The model performs notably stronger on Password Policy gaps (Macro F1: 0.6758) "
+        "than Risk Assessment gaps (0.5317). The 14-point gap is attributed to lower training "
+        "support for RA labels (80\u2013100 samples vs 102\u2013120 for PP labels).")
+
+    _fig(doc, "Figure 4.4: ROC Curves (Test Set)")
+    _p(doc,
+        "ROC analysis shows strong discriminative ability across all gaps. Password Policy "
+        "AUCs range from 0.87 to 1.00, while Risk Assessment AUCs range from 0.81 to 0.98. "
+        "Even the weakest gap (GAP_RA_007, AUC=0.81) is well above random baseline, indicating "
+        "the model has learned meaningful representations.")
+
+    _fig(doc, "Figure 4.6: Multi-Label Confusion Matrix")
+    _p(doc,
+        "The confusion matrix reveals that False Positives (FP) are more common than False "
+        "Negatives (FN) for most RA gaps, confirming the model\u2019s tendency to over-predict "
+        "low-support labels. The BCEWithLogitsLoss with pos_weight effectively handles high-support "
+        "PP labels but the RA domain labels with fewer positive samples remain challenging.")
+
+    # ── 4.4 Model Inference Testing ──
+    _h(doc, "4.4  Model Inference Testing", 2)
     _p(doc,
         "The model was tested using representative policy samples covering different "
         "compliance levels and languages.")
+    _p(doc, "Table 4.4: Test Case Results \u2014 Model Inference")
     _table(doc,
         ["Test Case","Input","Expected Result","Status"],
         [
@@ -853,11 +983,13 @@ def build():
         ]
     )
 
-    _h(doc, "4.2  API Testing", 2)
+    _h(doc, "4.5  API Testing", 2)
     _p(doc, "The API was tested at three levels:")
     _b(doc, "test_local.py \u2014 Offline model inference (4 test cases)")
     _b(doc, "test_api.py \u2014 Local server endpoint tests")
     _b(doc, "test_deployed_api.py \u2014 Cloud Run deployment verification")
+
+    _p(doc, "Table 4.5: Test Case Results \u2014 API Endpoints")
 
     _table(doc,
         ["Test","Endpoint","Expected","Result"],
@@ -871,28 +1003,29 @@ def build():
         ]
     )
 
-    _h(doc, "4.3  Performance Metrics", 2)
+    _h(doc, "4.6  Performance Metrics", 2)
     _b(doc, "Model inference time: <500 ms per document (CPU)")
     _b(doc, "API response time: <1 second end-to-end")
     _b(doc, "Cold start: ~30\u201360 seconds (model download from GCS)")
     _b(doc, "Warm inference: consistent sub-second on subsequent requests")
     _b(doc, "Document support: up to 50,000 characters per request")
 
-    _h(doc, "4.4  Compliance Score Validation", 2)
+    _h(doc, "4.7  Compliance Score Validation", 2)
     _p(doc,
         "The AI model\u2019s compliance scoring was validated by analyzing documents with "
         "known compliance levels. Below are results showing the percentage scores generated "
         "by the system for compliant and non-compliant documents.")
-    _fig(doc, "Figure 4.1: Analysis Result \u2014 Compliant Document (High Score)")
+    _fig(doc, "Figure 4.8: Analysis Result \u2014 Compliant Document (High Score)")
     _p(doc,
         "The above shows the system\u2019s analysis of a well-structured policy that meets "
         "most NCA ECC requirements, resulting in a high compliance percentage.")
-    _fig(doc, "Figure 4.2: Analysis Result \u2014 Non-Compliant Document (Low Score)")
+    _fig(doc, "Figure 4.9: Analysis Result \u2014 Non-Compliant Document (Low Score)")
     _p(doc,
         "The above shows the system\u2019s analysis of a weak policy with multiple gaps, "
         "resulting in a low compliance percentage with specific gap identifications.")
 
-    _h(doc, "4.5  Usability Evaluation", 2)
+    _h(doc, "4.8  Usability Evaluation", 2)
+    _p(doc, "Table 4.6: Usability Evaluation Criteria")
     _table(doc,
         ["Criterion","Status","Notes"],
         [
@@ -915,32 +1048,42 @@ def build():
         f"Graduation Project 2 successfully transitioned the {SHORT} platform from "
         "conceptual design to a fully implemented and deployed system:")
     _b(doc, "Custom bilingual dataset of 260 samples (130 EN + 130 AR) with 16 gap labels")
-    _b(doc, "Fine-tuned mBERT model with multi-label classification achieving sub-second inference")
+    _b(doc, "Fine-tuned XLM-RoBERTa-base model (evolved from mBERT baseline) achieving test Macro F1 of 0.6037")
     _b(doc, "FastAPI backend with document chunking deployed on Google Cloud Run")
     _b(doc, "Full-featured React/TypeScript web application with bilingual support")
-    _b(doc, "Supabase PostgreSQL database with RLS and 8 tables")
+    _b(doc, "Supabase PostgreSQL with RLS on policies, assessments, and remediation tasks; user profiles managed by Supabase Auth")
     _b(doc, "End-to-end integration: upload \u2192 extraction \u2192 analysis \u2192 scoring \u2192 remediation")
 
     _h(doc, "5.2  Key Findings", 2)
     _b(doc, "Multi-label gap detection provides more actionable insights than single-label classification.")
-    _b(doc, "Document chunking with max-pool aggregation handles long texts within BERT\u2019s 512-token limit.")
-    _b(doc, "mBERT provides native multilingual capability without separate language models.")
+    _b(doc, "XLM-RoBERTa's SentencePiece tokenizer (250k vocab, 2.5 TB pre-training) significantly outperforms mBERT for bilingual Arabic/English compliance text.")
+    _b(doc, "BCEWithLogitsLoss with pos_weight effectively handles class imbalance by up-weighting minority gap labels.")
+    _b(doc, "Model evolution from mBERT to XLM-RoBERTa was necessary: mBERT's shared 110k WordPiece vocabulary failed to capture Arabic regulatory nuances.")
+    _b(doc, "Conservative per-label threshold optimization improves Macro F1 by 8.8% over the fixed 0.50 baseline.")
+    _b(doc, "Password Policy domain (F1: 0.6758) outperforms Risk Assessment (F1: 0.5317) due to higher training support.")
+    _b(doc, "Document chunking with max-pool aggregation handles long texts within the 512-token limit.")
     _b(doc, "Severity-weighted scoring offers more nuanced assessment than binary pass/fail.")
 
     _h(doc, "5.3  Challenges Encountered", 2)
-    _b(doc, "Dataset Scarcity: No public NCA ECC datasets exist; synthetic generation was necessary.")
+    _b(doc, "Dataset Scarcity: No public NCA ECC datasets exist; synthetic generation via Gemini was necessary.")
     _b(doc, "Arabic NLP: Formal Arabic regulatory language required specialized normalization.")
-    _b(doc, "Model Size: mBERT (~681 MB) requires Docker optimization for Cloud Run.")
+    _b(doc, "Class Imbalance: Sparse multi-label gaps (mean 1.8/sample) required pos_weight in BCEWithLogitsLoss to avoid predicting all zeros.")
+    _b(doc, "RA Domain Performance: Risk Assessment gaps with lower training support (80\u2013100 samples) showed weaker F1 (0.53).")
+    _b(doc, "Model Size: XLM-RoBERTa (~1.1 GB) requires Docker optimization for Cloud Run.")
     _b(doc, "Cold Start: Initial model loading takes 30\u201360 s; mitigated by keep-alive.")
 
     _h(doc, "5.4  Lessons Learned", 2)
     _b(doc, "Sigmoid multi-label classification is better suited for gap detection than softmax multi-class.")
-    _b(doc, "Synthetic dataset generation with LLMs can bootstrap domain-specific ML.")
+    _b(doc, "BCEWithLogitsLoss with pos_weight is effective for sparse multi-label tasks where negatives outnumber positives.")
+    _b(doc, "Synthetic dataset generation with LLMs can bootstrap domain-specific ML, but quality verification is essential.")
+    _b(doc, "Per-label threshold optimization blended with a global threshold provides robust generalization.")
     _b(doc, "Cloud Run provides cost-effective serverless deployment for bursty ML inference.")
     _b(doc, "Row-Level Security simplifies multi-tenant isolation without app-layer logic.")
 
     _h(doc, "5.5  Future Work", 2)
     _b(doc, "Expand to additional ECC domains: Network Security, Data Protection, Incident Response, Business Continuity")
+    _b(doc, "Explore Asymmetric Loss or focal loss for RA labels to further reduce false positives on low-support gaps")
+    _b(doc, "Augment RA training samples via paraphrasing and back-translation to close the domain performance gap")
     _b(doc, "Integrate Gemini 2.5 Pro for AI-generated remediation guidance")
     _b(doc, "Add scheduled assessment automation with periodic re-analysis")
     _b(doc, "Implement PDF report generation for audit-ready documentation")

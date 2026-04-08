@@ -309,8 +309,8 @@ export default function LandingPage() {
                 step: "4",
                 title: t.landing.howItWorks.step3.title,
                 desc: isRtl
-                  ? "احصل على تقارير مفصلة وتوصيات للمعالجة مع ربط بضوابط NCA و ISO."
-                  : "Get detailed reports and remediation recommendations mapped to NCA and ISO controls.",
+                  ? "راجع نتائج التقييم وخطط المعالجة مع ربط واضح بضوابط NCA و ISO."
+                  : "Review assessment outcomes and remediation recommendations mapped to NCA and ISO controls.",
               },
             ].map((item) => (
               <div key={item.step} className="rounded-[24px] border border-gray-200 bg-white p-6 text-start dark:border-gray-800 dark:bg-gray-900">

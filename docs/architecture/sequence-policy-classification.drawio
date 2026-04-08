@@ -3,7 +3,7 @@
     <mxCell id="0"/>
     <mxCell id="1" parent="0"/>
 
-    <mxCell id="title" value="Sequence — Policy Upload &amp; Classification" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="title" value="Sequence — Policy Upload &amp; Analysis" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="250" y="10" width="600" height="35" as="geometry"/>
     </mxCell>
 
@@ -23,10 +23,10 @@
     <mxCell id="ll_store" value=":ComplianceStore" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFE6CC;strokeColor=#D79B00;size=40;" vertex="1" parent="1">
       <mxGeometry x="750" y="60" width="120" height="660" as="geometry"/>
     </mxCell>
-    <mxCell id="ll_api" value=":ML API&#xa;(Cloud Run)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#D5E8D4;strokeColor=#82B366;size=40;" vertex="1" parent="1">
+    <mxCell id="ll_api" value=":Analysis API&#xa;(Cloud Run)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#D5E8D4;strokeColor=#82B366;size=40;" vertex="1" parent="1">
       <mxGeometry x="940" y="60" width="110" height="660" as="geometry"/>
     </mxCell>
-    <mxCell id="ll_mbert" value=":mBERT Model" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFE6CC;strokeColor=#D79B00;size=40;" vertex="1" parent="1">
+    <mxCell id="ll_xlmr" value=":XLM-RoBERTa" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#FFE6CC;strokeColor=#D79B00;size=40;" vertex="1" parent="1">
       <mxGeometry x="1120" y="60" width="110" height="660" as="geometry"/>
     </mxCell>
 
@@ -105,14 +105,14 @@
     </mxCell>
 
     <!-- 5b. Forward each chunk -->
-    <mxCell id="m5b" value="5b. forward(input_ids) per chunk → 16 logits" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+    <mxCell id="m5b" value="5b. SentencePiece tokenize + forward per chunk" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="995" y="470" as="sourcePoint"/>
         <mxPoint x="1175" y="470" as="targetPoint"/>
       </mxGeometry>
     </mxCell>
 
-    <mxCell id="m5br" value="sigmoid(logits) → probabilities" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+    <mxCell id="m5br" value="16 sigmoid probabilities" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="1175" y="500" as="sourcePoint"/>
         <mxPoint x="995" y="500" as="targetPoint"/>
@@ -120,7 +120,7 @@
     </mxCell>
 
     <!-- 5c. Max-pool aggregate -->
-    <mxCell id="m5c" value="5c. max-pool + severity scoring" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=8;dashed=1;" edge="1" parent="1">
+    <mxCell id="m5c" value="5c. threshold blend + max-pool severity scoring" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=8;dashed=1;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="995" y="530" as="sourcePoint"/>
         <mxPoint x="995" y="550" as="targetPoint"/>
@@ -132,7 +132,7 @@
     </mxCell>
 
     <!-- 5d. Return AnalyzeResponse -->
-    <mxCell id="m5r" value="AnalyzeResponse {gaps, scores, domains}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;fontStyle=1;" edge="1" parent="1">
+    <mxCell id="m5r" value="AnalyzeResponse {domains, gaps, score}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;fontStyle=1;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="995" y="580" as="sourcePoint"/>
         <mxPoint x="260" y="580" as="targetPoint"/>

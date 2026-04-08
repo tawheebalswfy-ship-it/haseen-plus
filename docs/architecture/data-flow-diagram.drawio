@@ -3,7 +3,7 @@
     <mxCell id="0"/>
     <mxCell id="1" parent="0"/>
 
-    <mxCell id="title" value="AICG — Data Flow Diagram" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="title" value="AICG — Data Flow Diagram (Level 1)" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="350" y="10" width="400" height="35" as="geometry"/>
     </mxCell>
 
@@ -13,10 +13,10 @@
     </mxCell>
 
     <!-- Processes -->
-    <mxCell id="p1" value="1.0&#xa;Upload &amp; Extract&#xa;Policy Text" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="p1" value="1.0&#xa;Upload, Extract&#xa;&amp; Store Policy" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="220" y="60" width="160" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="p2" value="2.0&#xa;ML Gap&#xa;Classification" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="p2" value="2.0&#xa;Policy Analysis&#xa;(XLM-RoBERTa)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="480" y="60" width="160" height="70" as="geometry"/>
     </mxCell>
     <mxCell id="p3" value="3.0&#xa;Assessment&#xa;Engine" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
@@ -25,7 +25,7 @@
     <mxCell id="p4" value="4.0&#xa;Remediation&#xa;Task Generator" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="480" y="220" width="160" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="p5" value="5.0&#xa;Report&#xa;Generator" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="p5" value="5.0&#xa;Dashboard &amp;&#xa;Risk Views" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="220" y="400" width="160" height="70" as="geometry"/>
     </mxCell>
     <mxCell id="p6" value="6.0&#xa;NCA ↔ ISO&#xa;Mapping" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
@@ -48,10 +48,10 @@
     <mxCell id="ds5" value="D5  Evidence Files (Storage)" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="750" y="310" width="180" height="30" as="geometry"/>
     </mxCell>
-    <mxCell id="ds6" value="D6  Model Weights (GCS)" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="ds6" value="D6  Model Bundle (GCS)" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=9;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="750" y="370" width="180" height="30" as="geometry"/>
     </mxCell>
-    <mxCell id="ds7" value="D7  Reports (Supabase)" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="ds7" value="D7  Browser Cache (localStorage)" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=9;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="750" y="430" width="180" height="30" as="geometry"/>
     </mxCell>
     <mxCell id="ds8" value="D8  NCA/ISO Controls (static)" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="1">
@@ -75,7 +75,7 @@
     <mxCell id="f3" value="extracted text" style="endArrow=block;fontSize=8;strokeWidth=1;" edge="1" source="p1" target="p2" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="f4" value="gap results&#xa;+ compliance %" style="endArrow=block;fontSize=8;strokeWidth=1;" edge="1" source="p2" target="p3" parent="1">
+    <mxCell id="f4" value="analysis_result&#xa;+ compliance score" style="endArrow=block;fontSize=8;strokeWidth=1;" edge="1" source="p2" target="p3" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="f5" value="non-compliant&#xa;controls" style="endArrow=block;fontSize=8;strokeWidth=1;" edge="1" source="p3" target="p4" parent="1">
@@ -89,13 +89,16 @@
     </mxCell>
 
     <!-- Process → Data Stores -->
-    <mxCell id="fd1" value="store policy record" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p1" target="ds1" parent="1">
+    <mxCell id="fd1" value="create policy record" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p1" target="ds1" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="fd1b" value="upload file" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p1" target="ds4" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="fd2" value="load model" style="endArrow=open;dashed=1;fontSize=7;" edge="1" source="p2" target="ds6" parent="1">
+    <mxCell id="fd1c" value="update analysis_result + score" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p2" target="ds1" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="fd2" value="load model bundle" style="endArrow=open;dashed=1;fontSize=7;" edge="1" source="p2" target="ds6" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="fd3" value="store assessment" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p3" target="ds2" parent="1">
@@ -107,7 +110,7 @@
     <mxCell id="fd4" value="store tasks" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p4" target="ds3" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="fd5" value="store report" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p5" target="ds7" parent="1">
+    <mxCell id="fd5" value="cache summary state" style="endArrow=block;fontSize=7;strokeWidth=1;" edge="1" source="p5" target="ds7" parent="1">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
     <mxCell id="fd6" value="read mappings" style="endArrow=open;dashed=1;fontSize=7;" edge="1" source="p6" target="ds8" parent="1">
@@ -115,7 +118,7 @@
     </mxCell>
 
     <!-- User outputs -->
-    <mxCell id="f_report" value="reports / remediation tasks" style="endArrow=open;dashed=1;fontSize=8;" edge="1" source="p5" target="ext_user" parent="1">
+    <mxCell id="f_report" value="results / remediation tasks" style="endArrow=open;dashed=1;fontSize=8;" edge="1" source="p5" target="ext_user" parent="1">
       <mxGeometry relative="1" as="geometry">
         <Array as="points">
           <mxPoint x="80" y="435"/>

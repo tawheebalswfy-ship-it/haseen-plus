@@ -223,21 +223,6 @@ DEMO_DATA = {
             "comments": [],
         },
     ],
-    "reports": [
-        {
-            "id": "report-1",
-            "title": "ECC Executive Summary",
-            "type": "executive",
-            "framework": "ECC",
-            "created_date": iso(0),
-            "content": {
-                "summary": "Overall compliance posture is improving, but identity and risk management controls remain the highest priorities.",
-                "score": 68,
-                "risk_rating": "High",
-                "share_token": "share-demo-token",
-            },
-        }
-    ],
 }
 
 

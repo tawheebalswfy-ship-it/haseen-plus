@@ -3,7 +3,7 @@
     <mxCell id="0"/>
     <mxCell id="1" parent="0"/>
 
-    <mxCell id="title" value="AICG — Deployment Diagram (UML)" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+    <mxCell id="title" value="AICG — Deployment Architecture" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
       <mxGeometry x="350" y="10" width="400" height="35" as="geometry"/>
     </mxCell>
 
@@ -32,10 +32,10 @@
       <mxGeometry x="390" y="105" width="280" height="200" as="geometry"/>
     </mxCell>
 
-    <mxCell id="n_fastapi" value="FastAPI + Uvicorn&#xa;GET /health · POST /analyze" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="n_fastapi" value="FastAPI + Uvicorn&#xa;GET /health · POST /analyze&#xa;chunking + threshold blend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="410" y="140" width="240" height="35" as="geometry"/>
     </mxCell>
-    <mxCell id="n_mbert" value="mBERT (110M params)&#xa;bert-base-multilingual-cased&#xa;classifier: Linear(768→256→16)&#xa;SafeTensors · sigmoid → max-pool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;fontStyle=1;" vertex="1" parent="1">
+    <mxCell id="n_xlmr" value="XLM-RoBERTa-base (~279M params)&#xa;xlm-roberta-base&#xa;head: 768→512→256→16&#xa;mean-pooling · sigmoid → max-pool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=8;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="410" y="190" width="240" height="55" as="geometry"/>
     </mxCell>
     <mxCell id="n_cr_spec" value="2 vCPU · 2 GiB RAM · max 3 instances&#xa;300s request timeout · port 8080" style="text;html=1;fontSize=7;fontStyle=2;fillColor=#D5E8D4;strokeColor=none;" vertex="1" parent="1">
@@ -47,7 +47,7 @@
       <mxGeometry x="30" y="400" width="500" height="160" as="geometry"/>
     </mxCell>
 
-    <mxCell id="n_pg" value="PostgreSQL&#xa;7+ tables · RLS" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=8;fontStyle=1;boundedLbl=1;size=8;" vertex="1" parent="1">
+    <mxCell id="n_pg" value="PostgreSQL&#xa;3 app tables · RLS" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=8;fontStyle=1;boundedLbl=1;size=8;" vertex="1" parent="1">
       <mxGeometry x="50" y="445" width="120" height="55" as="geometry"/>
     </mxCell>
     <mxCell id="n_sb_auth" value="Auth Service&#xa;Email/Password&#xa;JWT sessions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;" vertex="1" parent="1">
@@ -56,7 +56,7 @@
     <mxCell id="n_sb_stor" value="Storage&#xa;policy-files&#xa;evidence-files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="330" y="448" width="120" height="45" as="geometry"/>
     </mxCell>
-    <mxCell id="n_sb_tables" value="profiles · policies · assessments · tasks · reports · schedules · teams" style="text;html=1;fontSize=7;fontStyle=2;fillColor=#E1D5E7;strokeColor=none;" vertex="1" parent="1">
+    <mxCell id="n_sb_tables" value="policies · assessments · tasks · auth metadata via Supabase Auth" style="text;html=1;fontSize=7;fontStyle=2;fillColor=#E1D5E7;strokeColor=none;" vertex="1" parent="1">
       <mxGeometry x="50" y="510" width="400" height="18" as="geometry"/>
     </mxCell>
 
@@ -64,7 +64,7 @@
     <mxCell id="n_gcs" value="«cloud»&#xa;Google Cloud Storage" style="shape=mxgraph.uml.node;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
       <mxGeometry x="770" y="60" width="230" height="100" as="geometry"/>
     </mxCell>
-    <mxCell id="n_gcs_inner" value="model-files33 bucket&#xa;model.safetensors (681 MB)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;boundedLbl=1;size=8;" vertex="1" parent="1">
+    <mxCell id="n_gcs_inner" value="policy_gap_detector/&#xa;model.pt · tokenizer · config.json" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=8;fontStyle=1;boundedLbl=1;size=8;" vertex="1" parent="1">
       <mxGeometry x="800" y="100" width="170" height="45" as="geometry"/>
     </mxCell>
 

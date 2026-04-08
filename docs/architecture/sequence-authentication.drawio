@@ -19,7 +19,7 @@
     <mxCell id="ll_sb_auth" value=":Supabase Auth" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#E1D5E7;strokeColor=#9673A6;size=40;" vertex="1" parent="1">
       <mxGeometry x="620" y="60" width="110" height="560" as="geometry"/>
     </mxCell>
-    <mxCell id="ll_pg" value=":PostgreSQL" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;size=40;" vertex="1" parent="1">
+    <mxCell id="ll_pg" value=":Auth Metadata" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;size=40;" vertex="1" parent="1">
       <mxGeometry x="840" y="60" width="100" height="560" as="geometry"/>
     </mxCell>
 
@@ -48,14 +48,14 @@
       </mxGeometry>
     </mxCell>
 
-    <mxCell id="m4" value="4. handle_new_user() trigger → INSERT INTO profiles" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
+    <mxCell id="m4" value="4. Supabase Auth stores user metadata" style="html=1;verticalAlign=bottom;endArrow=block;fontSize=9;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="675" y="245" as="sourcePoint"/>
         <mxPoint x="890" y="245" as="targetPoint"/>
       </mxGeometry>
     </mxCell>
 
-    <mxCell id="m4r" value="profile created" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
+    <mxCell id="m4r" value="user record ready" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;fontSize=9;" edge="1" parent="1">
       <mxGeometry relative="1" as="geometry">
         <mxPoint x="890" y="270" as="sourcePoint"/>
         <mxPoint x="675" y="270" as="targetPoint"/>

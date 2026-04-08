@@ -5,7 +5,6 @@ import { isScreenshotMode } from "../../lib/screenshotMode";
 import type {
   ComplianceAssessment,
   RemediationTask,
-  ComplianceReport,
   Policy,
 } from "./types";
 
@@ -15,7 +14,6 @@ const STORAGE_KEY = "compliance_guard_data";
 interface StoreData {
   assessments: ComplianceAssessment[];
   tasks: RemediationTask[];
-  reports: ComplianceReport[];
   policies: Policy[];
 }
 
@@ -24,7 +22,7 @@ function loadCache(): StoreData {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch { /* ignore */ }
-  return { assessments: [], tasks: [], reports: [], policies: [] };
+  return { assessments: [], tasks: [], policies: [] };
 }
 
 function saveCache(data: StoreData) {
@@ -78,18 +76,6 @@ function rowToTask(r: Record<string, unknown>): RemediationTask {
   };
 }
 
-function rowToReport(r: Record<string, unknown>): ComplianceReport {
-  return {
-    id: r.id as string,
-    title: r.title as string,
-    type: r.type as string,
-    assessment_id: r.assessment_id as string | undefined,
-    framework: r.framework as string | undefined,
-    content: r.content as ComplianceReport["content"],
-    created_date: r.created_at as string,
-  };
-}
-
 // ── React hook ──
 export function useComplianceStore() {
   const { user } = useAuth();
@@ -109,18 +95,16 @@ export function useComplianceStore() {
     loaded.current = true;
 
     (async () => {
-      const [pRes, aRes, tRes, rRes] = await Promise.all([
+      const [pRes, aRes, tRes] = await Promise.all([
         supabase.from("policies").select("*").order("created_at", { ascending: false }),
         supabase.from("assessments").select("*").order("created_at", { ascending: false }),
         supabase.from("tasks").select("*").order("created_at", { ascending: false }),
-        supabase.from("reports").select("*").order("created_at", { ascending: false }),
       ]);
 
       const fresh: StoreData = {
         policies: (pRes.data ?? []).map(rowToPolicy),
         assessments: (aRes.data ?? []).map(rowToAssessment),
         tasks: (tRes.data ?? []).map(rowToTask),
-        reports: (rRes.data ?? []).map(rowToReport),
       };
 
       setData(fresh);
@@ -250,25 +234,6 @@ export function useComplianceStore() {
     update((d) => ({ ...d, tasks: [] }));
   }, [userId, update]);
 
-  // ── Reports ──
-  const addReport = useCallback(async (r: Omit<ComplianceReport, "id" | "created_date">) => {
-    if (!userId) return "";
-    const { data: row, error } = await supabase
-      .from("reports")
-      .insert({ user_id: userId, title: r.title, type: r.type, assessment_id: r.assessment_id ?? null, framework: r.framework ?? null, content: r.content ?? {} })
-      .select()
-      .single();
-    if (error || !row) { console.error("addReport", error); return ""; }
-    const report = rowToReport(row);
-    update((d) => ({ ...d, reports: [report, ...d.reports] }));
-    return report.id;
-  }, [userId, update]);
-
-  const deleteReport = useCallback(async (id: string) => {
-    await supabase.from("reports").delete().eq("id", id);
-    update((d) => ({ ...d, reports: d.reports.filter((x) => x.id !== id) }));
-  }, [update]);
-
   return {
     ...data,
     addAssessment,
@@ -278,8 +243,6 @@ export function useComplianceStore() {
     updateTask,
     deleteTask,
     deleteAllTasks,
-    addReport,
-    deleteReport,
     addPolicy,
     updatePolicy,
     deletePolicy,

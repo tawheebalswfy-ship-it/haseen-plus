@@ -16,8 +16,7 @@
 8. [Remediation Page](#6-remediation-page)
 9. [Framework Comparison Page](#7-framework-comparison-page)
 10. [Risk Dashboard Page](#8-risk-dashboard-page)
-11. [Reports Page](#9-reports-page)
-12. [End-to-End Data Flow](#end-to-end-data-flow)
+11. [End-to-End Data Flow](#end-to-end-data-flow)
 
 ---
 
@@ -27,22 +26,22 @@ PolicyShield is an AI-powered compliance platform that analyzes organizational s
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **ML Model** | Fine-tuned mBERT (bert-base-multilingual-cased) | Gap detection in policy documents |
+| **ML Model** | Fine-tuned XLM-RoBERTa-base | Gap detection in policy documents |
 | **Backend** | FastAPI on Google Cloud Run | Model inference API |
 | **Frontend** | React 19 + TypeScript + Vite + TailwindCSS | Dashboard & compliance management UI |
-| **Database** | Supabase (PostgreSQL + Storage + Auth) | Persistent data & file storage |
+| **Data Layer** | Supabase (PostgreSQL + Storage + Auth) | Auth-managed identities plus policy, assessment, task, and file storage |
 
 ---
 
 ## ML Model Architecture
 
-### Model: Fine-tuned mBERT
+### Model: Fine-tuned XLM-RoBERTa
 
-- **Base**: `bert-base-multilingual-cased` (~110M parameters)
-- **Custom Head**: `Linear(768 → 256) → ReLU → Dropout(0.3) → Linear(256 → 16) → Sigmoid`
+- **Base**: `xlm-roberta-base` (~279M parameters)
+- **Custom Head**: `Linear(768 → 512) → BatchNorm → ReLU → Dropout → Linear(512 → 256) → ReLU → Dropout → Linear(256 → 16)`
 - **Output**: 16 independent sigmoid probabilities (multi-label classification)
 - **Languages**: English + Arabic
-- **Model Size**: ~681 MB (SafeTensors format)
+- **Model Size**: exported as a SafeTensors bundle for Cloud Run deployment
 
 ### The 16 Gap Labels
 
@@ -79,7 +78,7 @@ The model detects 16 compliance gaps across 2 domains:
 ```
 Document → Chunk (350 words, 50 overlap)
         → Tokenize (max 512 tokens)
-        → mBERT forward pass
+  → XLM-RoBERTa forward pass
         → 16 sigmoid outputs per chunk
         → Max-pool across all chunks
         → Apply threshold (default 0.6)
@@ -122,7 +121,7 @@ Public-facing entry point that introduces PolicyShield to new users. Explains th
 |---------|-------------|
 | **Hero** | Main headline + description + CTA buttons (Sign Up / View Dashboard) |
 | **Statistics Bar** | 16 compliance gaps · <1s analysis time · 2 languages |
-| **Model-Backed Analysis** | Card highlighting mBERT model capabilities and supported domains |
+| **Model-Backed Analysis** | Card highlighting XLM-RoBERTa capabilities and supported domains |
 | **NCA ECC ↔ ISO 27001 Mapping** | 3 visual cards explaining the mapping relationship |
 | **Coverage Domains Grid** | 9 ECC domains with their control counts |
 | **Coming Soon** | Preview of upcoming domains (Network Security, Data Protection, etc.) |
@@ -149,7 +148,7 @@ Layout wrapper providing navigation, sidebar, and header for all dashboard sub-p
 
 | Section | Description |
 |---------|-------------|
-| **Sidebar** | Sticky left navigation with 7 links + language toggle + home link |
+| **Sidebar** | Sticky left navigation with 6 links + language toggle + home link |
 | **Top Header** | Mobile menu toggle + breadcrumb + "NCA ECC · ISO 27001" badge |
 | **Content Area** | Renders the active child page |
 
@@ -161,9 +160,8 @@ Layout wrapper providing navigation, sidebar, and header for all dashboard sub-p
 | 2 | Policies | FileText | `/dashboard/policies` |
 | 3 | Assessments | ClipboardCheck | `/dashboard/assessments` |
 | 4 | Remediation | Wrench | `/dashboard/remediation` |
-| 5 | Framework | GitCompare | `/dashboard/framework` |
+| 5 | Framework Comparison | GitCompare | `/dashboard/framework-comparison` |
 | 6 | Risk Dashboard | AlertTriangle | `/dashboard/risk` |
-| 7 | Reports | BarChart3 | `/dashboard/reports` |
 
 ### State
 - `sidebarOpen` — mobile sidebar toggle
@@ -466,56 +464,6 @@ RISK SCORING:
 
 ---
 
-## 9. Reports Page
-
-**File**: `src/components/compliance/pages/ReportsPage.tsx`
-**Route**: `/dashboard/reports`
-
-### Purpose
-Generate and manage compliance reports in 4 formats. Reports can be viewed, exported as PDF, and shared via public links.
-
-### Report Types
-
-| Type | Icon | Description |
-|------|------|-------------|
-| **Executive** | Briefcase | High-level summary for leadership |
-| **Detailed** | FileText | Comprehensive control-by-control breakdown |
-| **Gap Analysis** | Search | Focus on identified non-compliance gaps |
-| **Remediation Plan** | Tool | Action items and remediation steps |
-
-### UI Sections
-
-| Section | Description |
-|---------|-------------|
-| **Report List** | Cards showing: type, framework, date, score %, share link button, delete |
-| **Generate Dialog** | Select type (4 visual cards), enter title, optionally link to assessment |
-| **Report Detail** | Full report view with: header, share banner, content sections, Export PDF button |
-
-### Report Sharing
-```
-Report created → generate 16-char random share_token
-Share URL: /shared/report/{share_token}
-Copy button → clipboard + toast confirmation
-```
-
-### Report Content Generation
-```
-Select report type + optional assessment
-  ↓
-Template engine generates sections:
-  - Executive Summary
-  - Key Findings
-  - Compliance Overview (from linked assessment)
-  - Detailed Controls Analysis (for Detailed type)
-  - Gap List (for Gap Analysis type)
-  - Remediation Steps (for Remediation Plan type)
-  - Recommendations
-  ↓
-addReport({ title, type, content, assessment_id, share_token })  →  Supabase
-```
-
----
-
 ## End-to-End Data Flow
 
 ### Complete User Journey
@@ -539,7 +487,7 @@ addReport({ title, type, content, assessment_id, share_token })  →  Supabase
 │  POST /analyze  ──────────────────────────────────┐               │
 │     text: "..."                                    ▼               │
 │     threshold: 0.6                        ┌──────────────┐        │
-│                                           │  mBERT Model │        │
+│                                           │ XLM-R Model  │        │
 │     ◄─────── AnalyzeResponse ◄────────────│  16 Sigmoids │        │
 │     { overall_score, gaps_detected,       │  Cloud Run   │        │
 │       password_policy, risk_assessment }  └──────────────┘        │
@@ -576,13 +524,6 @@ addReport({ title, type, content, assessment_id, share_token })  →  Supabase
 │  5×5 heat map derived from non-compliant controls + open tasks    │
 │  Risk scoring: Impact × Likelihood → Critical/High/Medium/Low     │
 └────────────────────────────────────────────────────────────────────┘
-                              ▼
-┌────────────────────────────────────────────────────────────────────┐
-│                     REPORTS PAGE                                    │
-│  Generate reports (Executive/Detailed/Gap Analysis/Remediation)   │
-│  Link to assessment → auto-populate data                          │
-│  Export as PDF · Share via public link                             │
-└────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Data Storage Summary
@@ -592,14 +533,13 @@ addReport({ title, type, content, assessment_id, share_token })  →  Supabase
 | `policies` | title, content, status, analysis_result, category | PoliciesPage |
 | `assessments` | name, framework, controls[], overall_score, comments[] | AssessmentsPage |
 | `tasks` | title, description, priority, status, ai_guidance, comments[] | RemediationPage, AssessmentsPage |
-| `reports` | title, type, content, assessment_id, share_token | ReportsPage |
 | `evidence-files` (Storage) | userId/assessmentId/filename | AssessmentsPage |
 
 ### Technology Integration Map
 
 | Component | Technology | Role |
 |-----------|-----------|------|
-| ML Inference | mBERT on Cloud Run | Gap detection from policy text |
+| ML Inference | XLM-RoBERTa on Cloud Run | Gap detection from policy text |
 | API Client | `src/lib/api.ts` | Calls POST /analyze on Cloud Run |
 | State Management | `src/components/compliance/store.ts` | Supabase CRUD + localStorage cache |
 | Auth | Supabase Auth | User authentication + RLS |

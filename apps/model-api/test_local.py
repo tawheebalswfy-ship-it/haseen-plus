@@ -10,27 +10,42 @@ Requires the model files in ./gap-detector-deploy/ (or ./policy_gap_detector/).
 import json
 import torch
 from safetensors.torch import load_file as load_safetensors_file
-from transformers import BertConfig, BertTokenizer, BertModel
+from transformers import AutoConfig, AutoTokenizer, AutoModel
 import torch.nn as nn
 
 
 # Must match the training notebook
 class GapDetectionModel(nn.Module):
-    def __init__(self, model_source="bert-base-multilingual-cased",
-                 num_gaps=16, dropout_rate=0.3):
+    def __init__(self, model_source="microsoft/mdeberta-v3-base",
+                 num_gaps=16, dropout_rate=0.4, freeze_layers=8):
         super().__init__()
-        self.bert = BertModel(BertConfig.from_pretrained(model_source))
+        self.bert = AutoModel.from_config(AutoConfig.from_pretrained(model_source))
         hidden_size = self.bert.config.hidden_size
+        for param in self.bert.embeddings.parameters():
+            param.requires_grad = False
+        for i in range(freeze_layers):
+            for param in self.bert.encoder.layer[i].parameters():
+                param.requires_grad = False
         self.classifier = nn.Sequential(
-            nn.Linear(hidden_size, 256),
+            nn.Linear(hidden_size, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+            nn.Linear(512, 256),
             nn.ReLU(),
             nn.Dropout(dropout_rate),
             nn.Linear(256, num_gaps),
         )
 
+    def mean_pooling(self, last_hidden_state, attention_mask):
+        mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
+        sum_embeddings = torch.sum(last_hidden_state * mask_expanded, dim=1)
+        sum_mask = torch.clamp(mask_expanded.sum(dim=1), min=1e-9)
+        return sum_embeddings / sum_mask
+
     def forward(self, input_ids, attention_mask):
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-        pooled = outputs.pooler_output
+        pooled = self.mean_pooling(outputs.last_hidden_state, attention_mask)
         return self.classifier(pooled)
 
 
