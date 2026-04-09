@@ -79,7 +79,7 @@ interface ComplianceDashboardProps {
 
 export default function ComplianceDashboard({ children }: ComplianceDashboardProps) {
   const { toggleLanguage, locale, t, dir } = useLanguage();
-  const { signOut, user } = useAuth();
+  const { signOut } = useAuth();
   const { resolved, toggle } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
