@@ -124,6 +124,62 @@ def _fig(doc, caption, width=Inches(6.0)):
 
 def _pb(doc): doc.add_page_break()
 
+def _insert_toc(doc):
+    """Insert a static Table of Contents built from the known report structure."""
+    toc_entries = [
+        (1, "1  Introduction"),
+        (2, "1.1  Background"),
+        (2, "1.2  Problem Definition & Objectives"),
+        (2, "1.3  Project Contribution"),
+        (2, "1.4  Structure of the Project"),
+        (1, "2  Literature Review or Related Work"),
+        (2, "2.1  Summary and Comparison of Studies"),
+        (1, "3  Solution Approach / Methodology"),
+        (2, "3.1  Overall Approach"),
+        (2, "3.2  Methodology Details"),
+        (3, "3.2.1  Technology Stack"),
+        (3, "3.2.2  Data Collection"),
+        (3, "3.2.3  AI Model Development"),
+        (3, "3.2.4  Backend API Development"),
+        (3, "3.2.5  Frontend Web Application"),
+        (3, "3.2.6  Database Design"),
+        (2, "3.3  System Modeling Diagrams"),
+        (2, "3.4  Operational Logic & Scenarios"),
+        (2, "3.5  Prototype Design"),
+        (2, "3.6  Security & Privacy Threat Modeling"),
+        (1, "4  Testing and Evaluation"),
+        (2, "4.1  Dataset Analysis"),
+        (2, "4.2  Model Training Results"),
+        (2, "4.3  Test Set Evaluation"),
+        (2, "4.4  Model Inference Testing"),
+        (2, "4.5  API Testing"),
+        (2, "4.6  Performance Metrics"),
+        (2, "4.7  Compliance Score Validation"),
+        (2, "4.8  Usability Evaluation"),
+        (1, "5  Conclusion"),
+        (2, "5.1  Summary of Achievements in Graduation Project 2"),
+        (2, "5.2  Key Findings"),
+        (2, "5.3  Challenges Encountered"),
+        (2, "5.4  Lessons Learned"),
+        (2, "5.5  Future Work"),
+        (2, "5.6  Final Summary"),
+        (1, "References"),
+    ]
+
+    indent_map = {1: Inches(0), 2: Inches(0.4), 3: Inches(0.8)}
+    font_map  = {1: (True, Pt(12)), 2: (False, Pt(11)), 3: (False, Pt(10))}
+
+    for lvl, title in toc_entries:
+        p = doc.add_paragraph()
+        p.paragraph_format.left_indent = indent_map[lvl]
+        p.paragraph_format.space_before = Pt(2)
+        p.paragraph_format.space_after = Pt(2)
+        bold, size = font_map[lvl]
+        r = p.add_run(title)
+        r.font.name = "Times New Roman"
+        r.font.size = size
+        r.bold = bold
+
 # ── build ────────────────────────────────────────────────────────────
 def build():
     doc = Document()
@@ -270,10 +326,10 @@ def build():
     _pb(doc)
 
     # ════════════════════════════════════════════════════════════════
-    #  TABLE OF CONTENTS  (placeholder)
+    #  TABLE OF CONTENTS
     # ════════════════════════════════════════════════════════════════
     _h(doc, "Contents")
-    _p(doc, "[Generate automatically in Word: References \u2192 Table of Contents]")
+    _insert_toc(doc)
     _pb(doc)
 
     # ════════════════════════════════════════════════════════════════
