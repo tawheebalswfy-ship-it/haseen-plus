@@ -996,64 +996,101 @@ def generate_use_case_diagram() -> None:
 
     panel(draw, (330, 110, 1570, 1180), 'AICG System Boundary', fill=GRAY_100, outline=GRAY_700)
 
-    draw_actor(draw, 210, 340, 'Security\nAnalyst')
-    draw_actor(draw, 210, 760, 'Compliance\nOfficer')
-    draw_actor(draw, 1685, 690, 'IT\nAuditor')
-    draw_actor(draw, 1685, 190, 'Supabase\nAuth')
-    draw_actor(draw, 1685, 440, 'ML API\n(Cloud Run)')
+    # --- Actors ---
+    draw_actor(draw, 170, 340, 'Security\nAnalyst')
+    draw_actor(draw, 170, 760, 'Compliance\nOfficer')
+    draw_actor(draw, 1730, 690, 'IT\nAuditor')
+    draw_actor(draw, 1730, 190, 'Supabase\nAuth')
+    draw_actor(draw, 1730, 440, 'ML API\n(Cloud Run)')
 
-    draw.text((420, 170), 'Access and Profile', fill=GRAY_700, font=FONT_14_B)
-    draw.text((420, 390), 'Policy Analysis', fill=GRAY_700, font=FONT_14_B)
-    draw.text((420, 650), 'Compliance Management', fill=GRAY_700, font=FONT_14_B)
-    draw.text((420, 915), 'Oversight and Collaboration', fill=GRAY_700, font=FONT_14_B)
+    # --- Package labels ---
+    panel(draw, (380, 160, 1540, 300), 'Access and Profile', fill='#edf4ff', outline=ACCENT_BLUE)
+    panel(draw, (380, 345, 1540, 625), 'Policy Analysis', fill='#eef8f0', outline=ACCENT_GREEN)
+    panel(draw, (380, 650, 1540, 810), 'Compliance Management', fill='#f4efff', outline=ACCENT_VIOLET)
+    panel(draw, (380, 850, 1540, 1070), 'Oversight and Collaboration', fill='#fff6e5', outline=ACCENT_AMBER)
 
-    use_case(draw, (450, 200, 700, 280), 'Sign In (Email)', fill=SOFT_BLUE, outline=ACCENT_BLUE)
-    use_case(draw, (760, 200, 1010, 280), 'Manage Account', fill=SOFT_BLUE, outline=ACCENT_BLUE)
-    use_case(draw, (1070, 200, 1320, 280), 'Switch Language\n(AR / EN)', fill=SOFT_BLUE, outline=ACCENT_BLUE)
+    # --- Access and Profile use cases ---
+    use_case(draw, (430, 210, 680, 280), 'Sign In (Email)', fill=SOFT_BLUE, outline=ACCENT_BLUE)
+    use_case(draw, (750, 210, 1000, 280), 'Manage Account', fill=SOFT_BLUE, outline=ACCENT_BLUE)
+    use_case(draw, (1070, 210, 1320, 280), 'Switch Language\n(AR / EN)', fill=SOFT_BLUE, outline=ACCENT_BLUE)
 
-    use_case(draw, (450, 420, 700, 500), 'Submit Policy Text', fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    use_case(draw, (760, 420, 1010, 500), 'Upload Document', fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    use_case(draw, (1070, 420, 1320, 500), 'Analyze Policy', fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    use_case(draw, (1380, 420, 1530, 500), 'Review Results', fill=SOFT_GREEN, outline=ACCENT_GREEN)
-    use_case(draw, (760, 530, 1010, 610), 'View Results and Evidence', fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    # --- Policy Analysis use cases ---
+    use_case(draw, (430, 390, 680, 460), 'Submit Policy Text', fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    use_case(draw, (750, 390, 1000, 460), 'Upload Document', fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    use_case(draw, (1070, 390, 1320, 460), 'Analyze Policy', fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    use_case(draw, (1070, 510, 1320, 580), 'Review Results', fill=SOFT_GREEN, outline=ACCENT_GREEN)
+    use_case(draw, (750, 510, 1000, 580), 'View Results\nand Evidence', fill=SOFT_GREEN, outline=ACCENT_GREEN)
 
-    use_case(draw, (450, 680, 700, 760), 'Manage Policies', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
-    use_case(draw, (760, 680, 1010, 760), 'Run Assessment', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
-    use_case(draw, (1070, 680, 1320, 760), 'Track Remediation', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
-    use_case(draw, (1380, 680, 1530, 760), 'View Framework Mapping', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
+    # --- Compliance Management use cases ---
+    use_case(draw, (430, 690, 680, 770), 'Manage Policies', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
+    use_case(draw, (750, 690, 1000, 770), 'Run Assessment', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
+    use_case(draw, (1070, 690, 1320, 770), 'Track Remediation', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
+    use_case(draw, (1340, 690, 1520, 770), 'View Framework\nMapping', fill=SOFT_VIOLET, outline=ACCENT_VIOLET)
 
-    use_case(draw, (450, 940, 700, 1020), 'View Dashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
-    use_case(draw, (760, 940, 1010, 1020), 'Review Assessments', fill=SOFT_AMBER, outline=ACCENT_AMBER)
-    use_case(draw, (1070, 940, 1320, 1020), 'View Risk Dashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
+    # --- Oversight use cases ---
+    use_case(draw, (430, 920, 680, 1000), 'View Dashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
+    use_case(draw, (750, 920, 1000, 1000), 'Review Assessments', fill=SOFT_AMBER, outline=ACCENT_AMBER)
+    use_case(draw, (1070, 920, 1320, 1000), 'View Risk\nDashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
 
-    poly_arrow(draw, [(280, 420), (450, 240)], ACCENT_BLUE, open_head=True)
-    poly_arrow(draw, [(280, 440), (760, 240)], ACCENT_BLUE, open_head=True)
-    poly_arrow(draw, [(280, 460), (1070, 240)], ACCENT_BLUE, open_head=True)
+    # =========================================================================
+    # Connections — Security Analyst (left side, y≈340)
+    # =========================================================================
+    # Access
+    poly_arrow(draw, [(240, 360), (430, 245)], ACCENT_BLUE, open_head=True)
+    poly_arrow(draw, [(240, 370), (750, 245)], ACCENT_BLUE, open_head=True)
+    poly_arrow(draw, [(240, 380), (1070, 245)], ACCENT_BLUE, open_head=True)
+    # Policy Analysis
+    poly_arrow(draw, [(240, 420), (430, 425)], ACCENT_GREEN, open_head=True)
+    poly_arrow(draw, [(240, 440), (750, 425)], ACCENT_GREEN, open_head=True)
+    poly_arrow(draw, [(240, 460), (750, 545)], ACCENT_GREEN, open_head=True)
 
-    poly_arrow(draw, [(280, 520), (450, 460)], ACCENT_GREEN, open_head=True)
-    poly_arrow(draw, [(280, 540), (760, 460)], ACCENT_GREEN, open_head=True)
-    poly_arrow(draw, [(280, 560), (760, 570)], ACCENT_GREEN, open_head=True)
-    # Route "Review Results" line above system boundary to avoid crossing through ellipses
-    poly_arrow(draw, [(280, 400), (310, 400), (310, 90), (1455, 90), (1455, 420)], ACCENT_GREEN, open_head=True)
+    # =========================================================================
+    # Connections — Compliance Officer (left side, y≈760)
+    # =========================================================================
+    poly_arrow(draw, [(240, 780), (430, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(240, 800), (750, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(240, 820), (1070, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(240, 840), (1340, 730)], ACCENT_VIOLET, open_head=True)
+    # Oversight
+    poly_arrow(draw, [(240, 860), (430, 960)], ACCENT_AMBER, open_head=True)
+    poly_arrow(draw, [(240, 880), (1070, 960)], ACCENT_AMBER, open_head=True)
 
-    poly_arrow(draw, [(280, 900), (450, 720)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(280, 920), (760, 720)], ACCENT_VIOLET, open_head=True)
-    # Route "Track Remediation" line below compliance row to avoid crossing through ellipses
-    poly_arrow(draw, [(280, 960), (380, 960), (380, 800), (1195, 800), (1195, 760)], ACCENT_VIOLET, open_head=True)
-    # Route "View Framework Mapping" line below compliance row
-    poly_arrow(draw, [(280, 980), (400, 980), (400, 810), (1455, 810), (1455, 760)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(280, 990), (450, 980)], ACCENT_AMBER, open_head=True)
-    poly_arrow(draw, [(280, 1010), (1070, 980)], ACCENT_AMBER, open_head=True)
+    # =========================================================================
+    # Connections — IT Auditor (right side, y≈690)
+    # =========================================================================
+    poly_arrow(draw, [(1660, 720), (1320, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(1660, 740), (1000, 960)], ACCENT_AMBER, open_head=True)
+    poly_arrow(draw, [(1660, 760), (1320, 960)], ACCENT_AMBER, open_head=True)
 
-    poly_arrow(draw, [(1620, 800), (1380, 720)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(1620, 820), (760, 980)], ACCENT_AMBER, open_head=True)
-    poly_arrow(draw, [(1620, 240), (1620, 170), (575, 170), (575, 200)], ACCENT_BLUE, open_head=True)
-    poly_arrow(draw, [(1620, 490), (1320, 460)], ACCENT_RED, open_head=True)
+    # =========================================================================
+    # Connections — Supabase Auth (right side, y≈190)
+    # =========================================================================
+    poly_arrow(draw, [(1660, 240), (1660, 160), (555, 160), (555, 210)], ACCENT_BLUE, open_head=True)
 
-    poly_arrow(draw, [(700, 435), (700, 395), (1070, 395), (1070, 420)], GRAY_500, label='includes', label_box=(812, 370, 950, 394), open_head=True)
-    poly_arrow(draw, [(1010, 470), (1040, 470), (1040, 460), (1070, 460)], GRAY_500, label='includes', label_box=(1016, 436, 1132, 458), open_head=True)
-    poly_arrow(draw, [(1195, 500), (885, 530)], GRAY_500, label='produces', label_box=(930, 496, 1045, 524), open_head=True)
-    poly_arrow(draw, [(1010, 720), (1010, 790), (1380, 790), (1380, 760)], GRAY_500, label='feeds', label_box=(1130, 792, 1260, 818), open_head=True)
+    # =========================================================================
+    # Connections — ML API (right side, y≈440)
+    # =========================================================================
+    poly_arrow(draw, [(1660, 480), (1320, 425)], ACCENT_RED, open_head=True)
+
+    # =========================================================================
+    # Stereotype relationships (<<include>>, <<produce>>)
+    # =========================================================================
+    # Submit Policy Text --includes--> Analyze Policy
+    poly_arrow(draw, [(680, 410), (710, 410), (710, 380), (1070, 380), (1070, 395)], GRAY_500, label='includes', label_box=(810, 356, 960, 380), open_head=True)
+    # Upload Document --includes--> Analyze Policy
+    poly_arrow(draw, [(1000, 425), (1030, 425), (1030, 425), (1070, 425)], GRAY_500, label='includes', label_box=(1004, 398, 1090, 418), open_head=True)
+    # Analyze Policy --produces--> Review Results
+    poly_arrow(draw, [(1195, 460), (1195, 510)], GRAY_500, label='produces', label_box=(1120, 466, 1270, 490), open_head=True)
+    # Review Results --produces--> View Results and Evidence
+    poly_arrow(draw, [(1070, 545), (1000, 545)], GRAY_500, label='produces', label_box=(990, 554, 1090, 574), open_head=True)
+    # Run Assessment --feeds--> Track Remediation
+    poly_arrow(draw, [(1000, 730), (1070, 730)], GRAY_500, label='feeds', label_box=(1005, 736, 1080, 756), open_head=True)
+
+    # =========================================================================
+    # Legend
+    # =========================================================================
+    draw.text((380, 1100), 'Solid lines = actor associations  |  Dashed-style labels = UML stereotypes (<<include>>, <<produce>>, <<feed>>)', fill=GRAY_500, font=FONT_11)
+    draw.text((380, 1125), 'All features reflect the deployed AICG web application (React 19 + Supabase + Cloud Run ML API).', fill=GRAY_700, font=FONT_12_B)
 
     save_manual(image, 'fig_3_12_use_case_diagram.png')
 
@@ -1127,7 +1164,7 @@ def generate_sequence_authentication() -> None:
 
 
 def generate_sequence_assessment() -> None:
-    image, draw = canvas(1700, 1060)
+    image, draw = canvas(1700, 1120)
     draw.text((400, 30), 'Sequence — Assessment & Gap Analysis', fill=BLACK, font=FONT_20_B)
 
     x_user, x_page, x_store, x_db, x_stor, x_rem = 120, 340, 560, 780, 1060, 1400
@@ -1138,7 +1175,7 @@ def generate_sequence_assessment() -> None:
     lifeline(draw, x_stor, ':Supabase Storage', '(Buckets)', color_fill=SOFT_VIOLET, color_outline=ACCENT_VIOLET)
     lifeline(draw, x_rem, ':RemediationPage', '(React)', color_fill=SOFT_AMBER, color_outline=ACCENT_AMBER)
 
-    activation_bar(draw, x_page, 210, 940, color_fill='#fff6e5', color_outline=ACCENT_AMBER)
+    activation_bar(draw, x_page, 210, 1000, color_fill='#fff6e5', color_outline=ACCENT_AMBER)
     activation_bar(draw, x_store, 250, 320, color_fill='#eef8f0', color_outline=ACCENT_GREEN)
     activation_bar(draw, x_db, 270, 310, color_fill='#f4efff', color_outline=ACCENT_VIOLET)
 
@@ -1147,35 +1184,35 @@ def generate_sequence_assessment() -> None:
     message_arrow(draw, 280, x_store, x_db, 'INSERT assessments', color=ACCENT_VIOLET)
     message_arrow(draw, 320, x_db, x_page, 'assessmentId', color=ACCENT_VIOLET, open_head=True)
 
-    # Loop frame
-    draw.rounded_rectangle((90, 370, 1180, 610), radius=12, fill=None, outline=ACCENT_RED, width=3)
-    draw.rounded_rectangle((90, 370, 280, 396), radius=8, fill=SOFT_ROSE, outline=ACCENT_RED, width=2)
-    draw_multiline_text(draw, (98, 374, 276, 394), 'loop [for each control]', fill=BLACK, align='center', font_obj=FONT_12_B)
+    # Loop frame — taller label tab and more vertical space before first message
+    draw.rounded_rectangle((90, 380, 1180, 670), radius=12, fill=None, outline=ACCENT_RED, width=3)
+    draw.rounded_rectangle((90, 380, 310, 410), radius=8, fill=SOFT_ROSE, outline=ACCENT_RED, width=2)
+    draw_multiline_text(draw, (98, 384, 306, 408), 'loop [for each control]', fill=BLACK, align='center', font_obj=FONT_12_B)
 
-    activation_bar(draw, x_stor, 440, 490, color_fill='#f4efff', color_outline=ACCENT_VIOLET)
+    activation_bar(draw, x_stor, 500, 550, color_fill='#f4efff', color_outline=ACCENT_VIOLET)
 
-    message_arrow(draw, 400, x_user, x_page, '4. Mark control (compliant / partial / non-compliant)', color=ACCENT_BLUE)
-    message_arrow(draw, 440, x_page, x_stor, '5. Upload evidence file', color=ACCENT_VIOLET)
-    message_arrow(draw, 480, x_stor, x_page, 'file URL', color=ACCENT_VIOLET, open_head=True)
-    message_arrow(draw, 520, x_user, x_page, '6. Add comment to control', color=ACCENT_BLUE)
-    message_arrow(draw, 570, x_page, x_store, 'updateAssessment(id, {controls})', color=ACCENT_GREEN)
+    message_arrow(draw, 450, x_user, x_page, '4. Mark control (compliant / partial / non-compliant)', color=ACCENT_BLUE)
+    message_arrow(draw, 500, x_page, x_stor, '5. Upload evidence file', color=ACCENT_VIOLET)
+    message_arrow(draw, 540, x_stor, x_page, 'file URL', color=ACCENT_VIOLET, open_head=True)
+    message_arrow(draw, 580, x_user, x_page, '6. Add comment to control', color=ACCENT_BLUE)
+    message_arrow(draw, 630, x_page, x_store, 'updateAssessment(id, {controls})', color=ACCENT_GREEN)
 
     # Self-call: calculate score
-    task_box(draw, (270, 640, 420, 680), '7. Calculate\ncompliance score', fill=WHITE, outline=ACCENT_AMBER)
+    task_box(draw, (270, 700, 420, 740), '7. Calculate\ncompliance score', fill=WHITE, outline=ACCENT_AMBER)
 
-    activation_bar(draw, x_store, 710, 780, color_fill='#eef8f0', color_outline=ACCENT_GREEN)
-    activation_bar(draw, x_db, 730, 770, color_fill='#f4efff', color_outline=ACCENT_VIOLET)
+    activation_bar(draw, x_store, 770, 840, color_fill='#eef8f0', color_outline=ACCENT_GREEN)
+    activation_bar(draw, x_db, 790, 830, color_fill='#f4efff', color_outline=ACCENT_VIOLET)
 
-    message_arrow(draw, 720, x_page, x_store, '8. updateAssessment(id, {status: \'completed\', score})', color=ACCENT_GREEN)
-    message_arrow(draw, 750, x_store, x_db, 'UPDATE assessments', color=ACCENT_VIOLET)
+    message_arrow(draw, 780, x_page, x_store, '8. updateAssessment(id, {status: \'completed\', score})', color=ACCENT_GREEN)
+    message_arrow(draw, 810, x_store, x_db, 'UPDATE assessments', color=ACCENT_VIOLET)
 
-    activation_bar(draw, x_rem, 820, 880, color_fill='#fff6e5', color_outline=ACCENT_AMBER)
-    activation_bar(draw, x_store, 860, 890, color_fill='#eef8f0', color_outline=ACCENT_GREEN)
+    activation_bar(draw, x_rem, 880, 940, color_fill='#fff6e5', color_outline=ACCENT_AMBER)
+    activation_bar(draw, x_store, 920, 950, color_fill='#eef8f0', color_outline=ACCENT_GREEN)
 
-    message_arrow(draw, 820, x_page, x_rem, '9. Generate remediation tasks for non-compliant controls', color=ACCENT_RED)
-    message_arrow(draw, 870, x_rem, x_store, 'addTask() per gap → Supabase', color=ACCENT_GREEN)
+    message_arrow(draw, 880, x_page, x_rem, '9. Generate remediation tasks for non-compliant controls', color=ACCENT_RED)
+    message_arrow(draw, 930, x_rem, x_store, 'addTask() per gap → Supabase', color=ACCENT_GREEN)
 
-    message_arrow(draw, 930, x_page, x_user, 'assessment complete', color=ACCENT_AMBER, open_head=True)
+    message_arrow(draw, 990, x_page, x_user, 'assessment complete', color=ACCENT_AMBER, open_head=True)
 
     save_manual(image, 'fig_3_5c_sequence_assessment_gap.png')
 
