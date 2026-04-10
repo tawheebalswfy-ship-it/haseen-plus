@@ -16,7 +16,7 @@ import torch.nn as nn
 
 # Must match the training notebook
 class GapDetectionModel(nn.Module):
-    def __init__(self, model_source="microsoft/mdeberta-v3-base",
+    def __init__(self, model_source="xlm-roberta-base",
                  num_gaps=16, dropout_rate=0.4, freeze_layers=8):
         super().__init__()
         self.bert = AutoModel.from_config(AutoConfig.from_pretrained(model_source))
@@ -75,7 +75,7 @@ def resolve_model_source(config: dict) -> str:
         value = config.get(key)
         if isinstance(value, str) and value.strip():
             return value
-    return "bert-base-multilingual-cased"
+    return "xlm-roberta-base"
 
 
 def load_gap_model_weights(model_dir: str):
@@ -114,10 +114,14 @@ def normalize_state_dict_keys(state_dict):
 
 def validate_gap_checkpoint(state_dict):
     expected_head = {
-        "classifier.0.weight": (256, 768),
-        "classifier.0.bias": (256,),
-        "classifier.3.weight": (len(GAP_LABELS), 256),
-        "classifier.3.bias": (len(GAP_LABELS),),
+        "classifier.0.weight": (512, 768),
+        "classifier.0.bias": (512,),
+        "classifier.1.weight": (512,),        # BatchNorm1d
+        "classifier.1.bias": (512,),           # BatchNorm1d
+        "classifier.4.weight": (256, 512),
+        "classifier.4.bias": (256,),
+        "classifier.7.weight": (len(GAP_LABELS), 256),
+        "classifier.7.bias": (len(GAP_LABELS),),
     }
     missing = [key for key in expected_head if key not in state_dict]
     if missing:
@@ -134,7 +138,7 @@ def validate_gap_checkpoint(state_dict):
                 f"Incompatible checkpoint for {key}: got {actual_shape}, expected {expected_shape}."
             )
 
-tokenizer = BertTokenizer.from_pretrained(MODEL_PATH)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 model = GapDetectionModel(
     model_source=resolve_model_source(config),
     num_gaps=config.get("num_gaps", len(GAP_LABELS)),

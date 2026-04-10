@@ -2,7 +2,7 @@
 ISO Policy Gap Detector — FastAPI Inference Service
 
 Serves a multi-label gap detection model:
-  mBERT → 16 sigmoid outputs (one per compliance gap)
+  XLM-RoBERTa → 16 sigmoid outputs (one per compliance gap)
 
 Pipeline: Document → Chunk → Per-chunk prediction → Aggregate → Report
 
@@ -140,7 +140,7 @@ class GapDetectionModel(nn.Module):
 
     def __init__(
         self,
-        model_source: str = "microsoft/mdeberta-v3-base",
+        model_source: str = "xlm-roberta-base",
         num_gaps: int = 16,
         dropout_rate: float = 0.4,
         freeze_layers: int = 8,
@@ -247,7 +247,7 @@ def resolve_model_source(config: dict) -> str:
         value = config.get(key)
         if isinstance(value, str) and value.strip():
             return value
-    return "microsoft/mdeberta-v3-base"
+    return "xlm-roberta-base"
 
 
 def load_gap_model_weights(model_dir: str) -> dict[str, torch.Tensor]:
