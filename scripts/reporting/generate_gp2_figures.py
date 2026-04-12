@@ -997,9 +997,8 @@ def generate_use_case_diagram() -> None:
     panel(draw, (330, 110, 1570, 1180), 'AICG System Boundary', fill=GRAY_100, outline=GRAY_700)
 
     # --- Actors ---
-    draw_actor(draw, 170, 340, 'Security\nAnalyst')
-    draw_actor(draw, 170, 760, 'Compliance\nOfficer')
-    draw_actor(draw, 1730, 690, 'IT\nAuditor')
+    # Single human actor — the website has one user type with no role distinctions
+    draw_actor(draw, 170, 560, 'User')
     draw_actor(draw, 1730, 190, 'Supabase\nAuth')
     draw_actor(draw, 1730, 440, 'ML API\n(Cloud Run)')
 
@@ -1007,7 +1006,7 @@ def generate_use_case_diagram() -> None:
     panel(draw, (380, 160, 1540, 300), 'Access and Profile', fill='#edf4ff', outline=ACCENT_BLUE)
     panel(draw, (380, 345, 1540, 625), 'Policy Analysis', fill='#eef8f0', outline=ACCENT_GREEN)
     panel(draw, (380, 650, 1540, 810), 'Compliance Management', fill='#f4efff', outline=ACCENT_VIOLET)
-    panel(draw, (380, 850, 1540, 1070), 'Oversight and Collaboration', fill='#fff6e5', outline=ACCENT_AMBER)
+    panel(draw, (380, 850, 1540, 1070), 'Oversight and Reporting', fill='#fff6e5', outline=ACCENT_AMBER)
 
     # --- Access and Profile use cases ---
     use_case(draw, (430, 210, 680, 280), 'Sign In (Email)', fill=SOFT_BLUE, outline=ACCENT_BLUE)
@@ -1033,34 +1032,25 @@ def generate_use_case_diagram() -> None:
     use_case(draw, (1070, 920, 1320, 1000), 'View Risk\nDashboard', fill=SOFT_AMBER, outline=ACCENT_AMBER)
 
     # =========================================================================
-    # Connections — Security Analyst (left side, y≈340)
+    # Connections — User (single actor, left side, y≈560)
     # =========================================================================
-    # Access
-    poly_arrow(draw, [(240, 360), (430, 245)], ACCENT_BLUE, open_head=True)
-    poly_arrow(draw, [(240, 370), (750, 245)], ACCENT_BLUE, open_head=True)
-    poly_arrow(draw, [(240, 380), (1070, 245)], ACCENT_BLUE, open_head=True)
+    # Access and Profile
+    poly_arrow(draw, [(240, 520), (430, 245)], ACCENT_BLUE, open_head=True)
+    poly_arrow(draw, [(240, 530), (750, 245)], ACCENT_BLUE, open_head=True)
+    poly_arrow(draw, [(240, 540), (1070, 245)], ACCENT_BLUE, open_head=True)
     # Policy Analysis
-    poly_arrow(draw, [(240, 420), (430, 425)], ACCENT_GREEN, open_head=True)
-    poly_arrow(draw, [(240, 440), (750, 425)], ACCENT_GREEN, open_head=True)
-    poly_arrow(draw, [(240, 460), (750, 545)], ACCENT_GREEN, open_head=True)
-
-    # =========================================================================
-    # Connections — Compliance Officer (left side, y≈760)
-    # =========================================================================
-    poly_arrow(draw, [(240, 780), (430, 730)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(240, 800), (750, 730)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(240, 820), (1070, 730)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(240, 840), (1340, 730)], ACCENT_VIOLET, open_head=True)
-    # Oversight
-    poly_arrow(draw, [(240, 860), (430, 960)], ACCENT_AMBER, open_head=True)
-    poly_arrow(draw, [(240, 880), (1070, 960)], ACCENT_AMBER, open_head=True)
-
-    # =========================================================================
-    # Connections — IT Auditor (right side, y≈690)
-    # =========================================================================
-    poly_arrow(draw, [(1660, 720), (1320, 730)], ACCENT_VIOLET, open_head=True)
-    poly_arrow(draw, [(1660, 740), (1000, 960)], ACCENT_AMBER, open_head=True)
-    poly_arrow(draw, [(1660, 760), (1320, 960)], ACCENT_AMBER, open_head=True)
+    poly_arrow(draw, [(240, 560), (430, 425)], ACCENT_GREEN, open_head=True)
+    poly_arrow(draw, [(240, 570), (750, 425)], ACCENT_GREEN, open_head=True)
+    poly_arrow(draw, [(240, 580), (750, 545)], ACCENT_GREEN, open_head=True)
+    # Compliance Management
+    poly_arrow(draw, [(240, 600), (430, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(240, 610), (750, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(240, 620), (1070, 730)], ACCENT_VIOLET, open_head=True)
+    poly_arrow(draw, [(240, 630), (1340, 730)], ACCENT_VIOLET, open_head=True)
+    # Oversight and Reporting
+    poly_arrow(draw, [(240, 640), (430, 960)], ACCENT_AMBER, open_head=True)
+    poly_arrow(draw, [(240, 650), (750, 960)], ACCENT_AMBER, open_head=True)
+    poly_arrow(draw, [(240, 660), (1070, 960)], ACCENT_AMBER, open_head=True)
 
     # =========================================================================
     # Connections — Supabase Auth (right side, y≈190)
@@ -1090,7 +1080,7 @@ def generate_use_case_diagram() -> None:
     # Legend
     # =========================================================================
     draw.text((380, 1100), 'Solid lines = actor associations  |  Dashed-style labels = UML stereotypes (<<include>>, <<produce>>, <<feed>>)', fill=GRAY_500, font=FONT_11)
-    draw.text((380, 1125), 'All features reflect the deployed AICG web application (React 19 + Supabase + Cloud Run ML API).', fill=GRAY_700, font=FONT_12_B)
+    draw.text((380, 1125), 'Single "User" actor — the app has one user type with no role distinctions (React 19 + Supabase + Cloud Run ML API).', fill=GRAY_700, font=FONT_12_B)
 
     save_manual(image, 'fig_3_12_use_case_diagram.png')
 

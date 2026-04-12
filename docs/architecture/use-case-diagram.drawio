@@ -12,8 +12,8 @@
       <mxGeometry x="220" y="55" width="740" height="620" as="geometry"/>
     </mxCell>
 
-    <!-- Actor: Compliance Officer -->
-    <mxCell id="actor_co" value="Compliance&#xa;Officer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+    <!-- Actor: User (single role — no role distinction in the app) -->
+    <mxCell id="actor_co" value="User" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
       <mxGeometry x="60" y="300" width="40" height="60" as="geometry"/>
     </mxCell>
 
