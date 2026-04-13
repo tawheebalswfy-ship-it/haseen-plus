@@ -75,7 +75,7 @@ export function Auth() {
       }
 
       if (isForgotPassword) {
-        const redirectTo = `${window.location.origin}/auth/reset-password`;
+        const redirectTo = `${window.location.origin}/reset-password`;
         const { error } = await requestPasswordReset(email, redirectTo);
         if (error) {
           setError(error);
