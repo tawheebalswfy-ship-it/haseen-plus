@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { supabase } from "../lib/supabase";
 import Navbar from "../components/Navbar";
 
 export function Account() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, signingOut } = useAuth();
+  const navigate = useNavigate();
   const { t, locale } = useLanguage();
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name ?? "");
   const [saving, setSaving] = useState(false);
@@ -201,7 +202,7 @@ export function Account() {
 
                 <div className="mt-6 grid gap-3">
                   <Link
-                    to="/auth/reset-password"
+                    to="/auth/forgot-password"
                     className="flex items-center justify-between rounded-2xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 no-underline transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
                   >
                     <span>{t.auth.resetPassword}</span>
@@ -223,10 +224,12 @@ export function Account() {
                   <button
                     onClick={async () => {
                       await signOut();
+                      navigate("/auth/sign-in", { replace: true });
                     }}
+                    disabled={signingOut}
                     className="flex items-center justify-between rounded-2xl border border-red-200 px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/40 dark:text-red-300 dark:hover:bg-red-950/20"
                   >
-                    <span>{t.nav.logout}</span>
+                    <span>{signingOut ? "Signing out..." : t.nav.logout}</span>
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                     </svg>

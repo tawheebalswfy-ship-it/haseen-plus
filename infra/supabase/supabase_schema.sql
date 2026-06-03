@@ -26,9 +26,30 @@ create table public.policies (
 );
 
 alter table public.policies enable row level security;
+alter table public.policies force row level security;
 
-create policy "Users CRUD own policies"
-  on public.policies for all using (auth.uid() = user_id);
+drop policy if exists "Users CRUD own policies" on public.policies;
+drop policy if exists "Users can select own policies" on public.policies;
+drop policy if exists "Users can insert own policies" on public.policies;
+drop policy if exists "Users can update own policies" on public.policies;
+drop policy if exists "Users can delete own policies" on public.policies;
+
+create policy "Users can select own policies"
+  on public.policies for select to authenticated
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own policies"
+  on public.policies for insert to authenticated
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own policies"
+  on public.policies for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own policies"
+  on public.policies for delete to authenticated
+  using (auth.uid() = user_id);
 
 create index idx_policies_user on public.policies(user_id, created_at desc);
 
@@ -47,9 +68,30 @@ create table public.assessments (
 );
 
 alter table public.assessments enable row level security;
+alter table public.assessments force row level security;
 
-create policy "Users CRUD own assessments"
-  on public.assessments for all using (auth.uid() = user_id);
+drop policy if exists "Users CRUD own assessments" on public.assessments;
+drop policy if exists "Users can select own assessments" on public.assessments;
+drop policy if exists "Users can insert own assessments" on public.assessments;
+drop policy if exists "Users can update own assessments" on public.assessments;
+drop policy if exists "Users can delete own assessments" on public.assessments;
+
+create policy "Users can select own assessments"
+  on public.assessments for select to authenticated
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own assessments"
+  on public.assessments for insert to authenticated
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own assessments"
+  on public.assessments for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own assessments"
+  on public.assessments for delete to authenticated
+  using (auth.uid() = user_id);
 
 create index idx_assessments_user on public.assessments(user_id, created_at desc);
 
@@ -72,11 +114,71 @@ create table public.tasks (
 );
 
 alter table public.tasks enable row level security;
+alter table public.tasks force row level security;
 
-create policy "Users CRUD own tasks"
-  on public.tasks for all using (auth.uid() = user_id);
+drop policy if exists "Users CRUD own tasks" on public.tasks;
+drop policy if exists "Users can select own tasks" on public.tasks;
+drop policy if exists "Users can insert own tasks" on public.tasks;
+drop policy if exists "Users can update own tasks" on public.tasks;
+drop policy if exists "Users can delete own tasks" on public.tasks;
+
+create policy "Users can select own tasks"
+  on public.tasks for select to authenticated
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own tasks"
+  on public.tasks for insert to authenticated
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own tasks"
+  on public.tasks for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own tasks"
+  on public.tasks for delete to authenticated
+  using (auth.uid() = user_id);
 
 create index idx_tasks_user on public.tasks(user_id, created_at desc);
+
+-- â”€â”€ 4b. Reports â”€â”€
+create table if not exists public.reports (
+  id          uuid primary key default uuid_generate_v4(),
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  title       text not null,
+  type        text,
+  payload     jsonb not null default '{}'::jsonb,
+  file_url    text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.reports enable row level security;
+alter table public.reports force row level security;
+
+drop policy if exists "Users can select own reports" on public.reports;
+drop policy if exists "Users can insert own reports" on public.reports;
+drop policy if exists "Users can update own reports" on public.reports;
+drop policy if exists "Users can delete own reports" on public.reports;
+
+create policy "Users can select own reports"
+  on public.reports for select to authenticated
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own reports"
+  on public.reports for insert to authenticated
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own reports"
+  on public.reports for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own reports"
+  on public.reports for delete to authenticated
+  using (auth.uid() = user_id);
+
+create index if not exists idx_reports_user on public.reports(user_id, created_at desc);
 
 -- ── 5. Storage Buckets ──
 -- Create a bucket for uploaded policy files
@@ -102,29 +204,37 @@ values (
 on conflict (id) do nothing;
 
 -- Storage policies: users can manage their own files
+drop policy if exists "Users can upload policy files" on storage.objects;
+drop policy if exists "Users can view own policy files" on storage.objects;
+drop policy if exists "Users can delete own policy files" on storage.objects;
+
 create policy "Users can upload policy files"
-  on storage.objects for insert
+  on storage.objects for insert to authenticated
   with check (bucket_id = 'policy-files' and (storage.foldername(name))[1] = auth.uid()::text);
 
 create policy "Users can view own policy files"
-  on storage.objects for select
+  on storage.objects for select to authenticated
   using (bucket_id = 'policy-files' and (storage.foldername(name))[1] = auth.uid()::text);
 
 create policy "Users can delete own policy files"
-  on storage.objects for delete
+  on storage.objects for delete to authenticated
   using (bucket_id = 'policy-files' and (storage.foldername(name))[1] = auth.uid()::text);
 
 -- Evidence files storage policies
+drop policy if exists "Users can upload evidence files" on storage.objects;
+drop policy if exists "Users can view own evidence files" on storage.objects;
+drop policy if exists "Users can delete own evidence files" on storage.objects;
+
 create policy "Users can upload evidence files"
-  on storage.objects for insert
+  on storage.objects for insert to authenticated
   with check (bucket_id = 'evidence-files' and (storage.foldername(name))[1] = auth.uid()::text);
 
 create policy "Users can view own evidence files"
-  on storage.objects for select
+  on storage.objects for select to authenticated
   using (bucket_id = 'evidence-files' and (storage.foldername(name))[1] = auth.uid()::text);
 
 create policy "Users can delete own evidence files"
-  on storage.objects for delete
+  on storage.objects for delete to authenticated
   using (bucket_id = 'evidence-files' and (storage.foldername(name))[1] = auth.uid()::text);
 
 -- ── 6. Updated_at triggers ──
@@ -142,8 +252,32 @@ create trigger set_updated_at before update on public.assessments
   for each row execute procedure public.update_updated_at();
 create trigger set_updated_at before update on public.tasks
   for each row execute procedure public.update_updated_at();
+drop trigger if exists set_updated_at on public.reports;
+create trigger set_updated_at before update on public.reports
+  for each row execute procedure public.update_updated_at();
 
 -- ── Done! ──
 -- After running this, create a .env file with:
 --   VITE_SUPABASE_URL=https://your-project.supabase.co
 --   VITE_SUPABASE_ANON_KEY=your-anon-key
+--
+-- Supabase Auth URL Configuration notes:
+-- Add these URLs in Supabase Dashboard > Authentication > URL Configuration.
+--
+-- Local testing:
+--   Site URL: http://localhost:5173
+--   Redirect URLs:
+--     http://localhost:5173
+--     http://localhost:5173/auth/callback
+--     http://localhost:5173/auth/reset-password
+--     http://localhost:5173/*
+--
+-- Production:
+--   Site URL: http://44.223.40.115
+--   Redirect URLs:
+--     http://44.223.40.115
+--     http://44.223.40.115/auth/callback
+--     http://44.223.40.115/auth/reset-password
+--     http://44.223.40.115/*
+--
+-- Password reset is handled by Supabase Auth; no password-reset SQL is required.

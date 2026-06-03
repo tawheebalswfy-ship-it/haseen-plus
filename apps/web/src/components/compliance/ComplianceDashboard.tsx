@@ -80,7 +80,7 @@ interface ComplianceDashboardProps {
 
 export default function ComplianceDashboard({ children }: ComplianceDashboardProps) {
   const { toggleLanguage, locale, t, dir } = useLanguage();
-  const { signOut } = useAuth();
+  const { signOut, signingOut } = useAuth();
   const { resolved, toggle } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -92,9 +92,9 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
     { name: ct.sidebar.dashboard, path: "/dashboard", icon: navIcons.dashboard },
     { name: ct.sidebar.policies, path: "/dashboard/policies", icon: navIcons.policies },
     { name: ct.sidebar.assessments, path: "/dashboard/assessments", icon: navIcons.assessments },
-    { name: locale === "ar" ? "التقارير" : "Reports", path: "/dashboard/framework-comparison", icon: navIcons.reports },
+    { name: locale === "ar" ? "الأطر" : "Frameworks", path: "/dashboard/framework-comparison", icon: navIcons.reports },
     { name: ct.sidebar.remediation, path: "/dashboard/remediation", icon: navIcons.remediation },
-    { name: locale === "ar" ? "الجدولة" : "Scheduling", path: "/dashboard/risk", icon: navIcons.scheduling },
+    { name: locale === "ar" ? "لوحة المخاطر" : "Risk Dashboard", path: "/dashboard/risk", icon: navIcons.scheduling },
     { name: locale === "ar" ? "الملف الشخصي" : "Profile", path: "/account", icon: navIcons.profile },
   ];
 
@@ -176,12 +176,13 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
             <button
               onClick={async () => {
                 await signOut();
-                navigate("/", { replace: true });
+                navigate("/auth/sign-in", { replace: true });
               }}
+              disabled={signingOut}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-gray-500 hover:text-red-600 hover:bg-red-50 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-white/5 cursor-pointer border-0 bg-transparent"
             >
               {navIcons.signOut}
-              {ct.sidebar.signOut}
+              {signingOut ? "Signing out..." : ct.sidebar.signOut}
             </button>
           </div>
         </div>

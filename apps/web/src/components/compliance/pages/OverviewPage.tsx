@@ -1,34 +1,63 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useComplianceStore } from "../store";
 import { NCA_CONTROLS } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
+import { NCA_FRAMEWORKS as SHARED_NCA_FRAMEWORKS } from "../../../lib/ncaFrameworks";
+import { getPolicyDomainFindings, getPolicyMetrics } from "../../../lib/policyAnalysis";
 
-/* ── NCA Framework metadata shown in the dashboard ── */
-const NCA_FRAMEWORKS = [
-  { key: "ECC", name: "ECC", full: "Essential Cybersecurity Controls", fullAr: "ضوابط الأمن السيبراني الأساسية", color: "#6366f1" },
-  { key: "CSCC", name: "CSCC", full: "Cloud Cybersecurity Controls", fullAr: "ضوابط الأمن السيبراني للحوسبة السحابية", color: "#8b5cf6" },
-  { key: "DCC", name: "DCC", full: "Data Cybersecurity Controls", fullAr: "ضوابط الأمن السيبراني للبيانات", color: "#10b981" },
-  { key: "OTCC", name: "OTCC", full: "Operational Technology Controls", fullAr: "ضوابط الأمن السيبراني للتقنيات التشغيلية", color: "#f59e0b" },
-  { key: "TCC", name: "TCC", full: "Telecom Cybersecurity Controls", fullAr: "ضوابط الأمن السيبراني للاتصالات", color: "#ef4444" },
-];
+const NCA_FRAMEWORKS = SHARED_NCA_FRAMEWORKS;
 
 export default function OverviewPage() {
-  const { assessments, policies } = useComplianceStore();
+  const { assessments, policies, loading, error } = useComplianceStore();
   const { t, locale } = useLanguage();
   const navigate = useNavigate();
   const isRtl = locale === "ar";
   const c = t.compliance.overview;
 
   const completedAssessments = assessments.filter((a) => a.status === "completed");
-  const averageScore =
-    completedAssessments.length > 0
-      ? Math.round(
-          completedAssessments.reduce((sum, a) => sum + (a.overall_score || 0), 0) /
-            completedAssessments.length
-        )
-      : 0;
-  const analyzedPolicies = policies.filter((p) => p.status === "analyzed").length;
-  const policiesWithGaps = policies.filter((p) => p.compliance_score && p.compliance_score < 80).length;
+  const metrics = getPolicyMetrics(policies);
+  const averageScore = metrics.averageComplianceScore;
+  const analyzedPolicies = metrics.policiesAnalyzed;
+  const gapsIdentified = metrics.gapsIdentified;
+  const domainFindings = getPolicyDomainFindings(policies, locale);
+
+  useEffect(() => {
+    if (!import.meta.env.DEV || loading || error) return;
+    console.info("[dashboard] metrics", {
+      totalPolicies: metrics.totalPolicies,
+      policiesAnalyzed: metrics.policiesAnalyzed,
+      gapsIdentified: metrics.gapsIdentified,
+      averageComplianceScore: metrics.averageComplianceScore,
+      normalizedPolicyScores: policies.map((policy) => ({
+        id: policy.id,
+        status: policy.status,
+        compliance_score: policy.compliance_score,
+      })),
+    });
+  }, [error, loading, metrics.averageComplianceScore, metrics.gapsIdentified, metrics.policiesAnalyzed, metrics.totalPolicies, policies]);
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-400 border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading compliance data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/40 dark:bg-red-950/20">
+          <h1 className="text-lg font-semibold text-red-700 dark:text-red-300">Could not load dashboard data</h1>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   // Per-framework latest scores
   const frameworkScores: Record<string, { score: number; controls: number } | null> = {};
@@ -53,6 +82,11 @@ export default function OverviewPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{c.title}</h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{c.subtitle}</p>
+        {policies.length > 0 && analyzedPolicies === 0 && (
+          <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-200">
+            Policies uploaded but not analyzed yet.
+          </p>
+        )}
       </div>
 
       {/* ── Stat Cards ── */}
@@ -115,8 +149,8 @@ export default function OverviewPage() {
         >
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{isRtl ? "الثغرات المحددة" : "Gaps Identified"}</p>
-            <p className="mt-1 text-3xl font-bold text-red-500">{policiesWithGaps}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{isRtl ? "سياسات تحتاج اهتماماً" : "Policies need attention"}</p>
+            <p className="mt-1 text-3xl font-bold text-red-500">{gapsIdentified}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{isRtl ? "ثغرات من السياسات المحللة" : "From analyzed policies"}</p>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-600/10 text-red-500 dark:bg-red-400/10 dark:text-red-400 flex-shrink-0">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -190,6 +224,55 @@ export default function OverviewPage() {
             })}
           </div>
         </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <h3 className="font-semibold text-gray-900 dark:text-white mb-5">
+          {isRtl ? "تغطية مجالات السياسات" : "Policy Domain Coverage"}
+        </h3>
+        {domainFindings.length === 0 ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Domain-level analysis will appear after a policy with domain findings is analyzed.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {domainFindings.map((domain) => {
+              const color = domain.status === "compliant"
+                ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-300"
+                : domain.status === "partial"
+                  ? "text-amber-700 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-300"
+                  : domain.status === "non_compliant"
+                    ? "text-red-700 bg-red-50 dark:bg-red-900/20 dark:text-red-300"
+                    : "text-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-gray-300";
+              return (
+                <div key={domain.id} className="rounded-xl border border-gray-100 p-4 dark:border-gray-800">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{domain.label}</p>
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        {domain.policies.length} {isRtl ? "سياسات" : "policies"} آ· {domain.gapCount} {isRtl ? "ثغرات" : "gaps"}
+                      </p>
+                    </div>
+                    <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase ${color}`}>
+                      {domain.status.replace("_", " ")}
+                    </span>
+                  </div>
+                  {domain.score !== undefined && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <div className="h-1.5 flex-1 rounded-full bg-gray-100 dark:bg-gray-800">
+                        <div className="h-1.5 rounded-full bg-gray-500" style={{ width: `${domain.score}%` }} />
+                      </div>
+                      <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{domain.score}%</span>
+                    </div>
+                  )}
+                  {domain.findings[0] && (
+                    <p className="mt-3 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{domain.findings[0]}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

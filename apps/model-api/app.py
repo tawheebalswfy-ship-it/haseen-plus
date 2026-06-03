@@ -90,6 +90,59 @@ DEFAULT_GAP_LABELS = [
     "GAP_RA_005", "GAP_RA_006", "GAP_RA_007", "GAP_RA_008",
 ]
 
+POLICY_DOMAINS = {
+    "password_policy": {
+        "prefix": "GAP_PP_",
+        "keywords": ["password", "mfa", "multi-factor", "authentication", "lockout", "credential"],
+        "fallback_label": "GAP_PP_004",
+    },
+    "risk_assessment": {
+        "prefix": "GAP_RA_",
+        "keywords": ["risk assessment", "risk management", "risk register", "likelihood", "impact", "risk"],
+        "fallback_label": "GAP_RA_001",
+    },
+    "access_control": {
+        "prefix": "GAP_AC_",
+        "keywords": ["access", "access review", "privilege", "permission", "authorization"],
+        "fallback_label": "GAP_AC_001",
+    },
+    "asset_management": {
+        "prefix": "GAP_AM_",
+        "keywords": ["asset inventory", "asset", "inventory", "classification"],
+        "fallback_label": "GAP_AM_001",
+    },
+    "business_continuity": {
+        "prefix": "GAP_BC_",
+        "keywords": ["business continuity", "bcp", "continuity", "disaster recovery", "backup"],
+        "fallback_label": "GAP_BC_001",
+    },
+    "data_protection": {
+        "prefix": "GAP_DP_",
+        "keywords": ["encryption", "encrypt", "data protection", "sensitive data", "data"],
+        "fallback_label": "GAP_DP_001",
+    },
+    "incident_response": {
+        "prefix": "GAP_IR_",
+        "keywords": ["incident response", "incident", "response plan"],
+        "fallback_label": "GAP_IR_001",
+    },
+    "log_monitoring": {
+        "prefix": "GAP_LM_",
+        "keywords": ["log monitoring", "logs", "logging", "monitoring", "siem"],
+        "fallback_label": "GAP_LM_001",
+    },
+    "third_party_security": {
+        "prefix": "GAP_TP_",
+        "keywords": ["third party", "third-party", "vendor", "vendors", "supplier", "suppliers", "vendor assessment"],
+        "fallback_label": "GAP_TP_001",
+    },
+    "vuln_management": {
+        "prefix": "GAP_VM_",
+        "keywords": ["vulnerability", "vulnerabilities", "vuln", "scan", "patch"],
+        "fallback_label": "GAP_VM_001",
+    },
+}
+
 GAP_DESCRIPTIONS = {
     "GAP_PP_001": "Weak password complexity requirements",
     "GAP_PP_002": "Inadequate password expiration policy",
@@ -331,6 +384,13 @@ def get_domain_gap_ids(domain: str) -> list[str]:
             if isinstance(labels, list) and all(isinstance(label, str) for label in labels):
                 return labels
 
+    domain_config = POLICY_DOMAINS.get(domain)
+    if domain_config:
+        prefix = domain_config["prefix"]
+        matching = [label for label in get_model_gap_labels() if label.startswith(prefix)]
+        if matching:
+            return matching
+
     if domain == "password_policy":
         return DEFAULT_GAP_LABELS[:8]
     if domain == "risk_assessment":
@@ -346,6 +406,31 @@ def get_gap_description(gap_id: str) -> str:
             if isinstance(description, str):
                 return description
     return DEFAULT_GAP_DESCRIPTIONS.get(gap_id, gap_id)
+
+
+def get_gap_domain(gap_id: str) -> str:
+    for domain, domain_config in POLICY_DOMAINS.items():
+        if gap_id.startswith(domain_config["prefix"]):
+            return domain
+    if gap_id.startswith("GAP_PP_"):
+        return "password_policy"
+    if gap_id.startswith("GAP_RA_"):
+        return "risk_assessment"
+    return "unknown"
+
+
+def get_gap_severity(gap_id: str) -> str:
+    weight = get_severity_weight(gap_id)
+    if weight >= 4:
+        return "high"
+    if weight >= 2:
+        return "medium"
+    return "low"
+
+
+def get_gap_recommendation(gap_id: str) -> str:
+    domain = get_gap_domain(gap_id).replace("_", " ")
+    return f"Implement and document controls for {domain}: {get_gap_description(gap_id)}."
 
 
 def get_severity_weight(gap_id: str) -> int:
@@ -459,21 +544,52 @@ _RA_KEYWORDS = [
 
 
 def detect_domains(text: str) -> list[str]:
-    """Detect which policy domains are discussed in the document text.
-
-    Password-policy detection requires 1+ keyword match (primary domain).
-    Risk-assessment detection requires 2+ *distinct* keyword matches to
-    prevent false triggers from casual mentions like
-    "No risk assessment performed."
-    """
+    """Detect which policy domains are discussed in the document text."""
     lower = text.lower()
     domains: list[str] = []
-    if any(kw in lower for kw in _PP_KEYWORDS):
-        domains.append("password_policy")
-    ra_hits = sum(1 for kw in _RA_KEYWORDS if kw in lower)
-    if ra_hits >= 2:
-        domains.append("risk_assessment")
+    for domain, domain_config in POLICY_DOMAINS.items():
+        if any(keyword in lower for keyword in domain_config["keywords"]):
+            domains.append(domain)
     return domains
+
+
+NEGATION_PATTERNS = [
+    r"\bno\s+{keyword}\b",
+    r"\bno\s+\w+\s+{keyword}\b",
+    r"\bdoes\s+not\s+\w*\s*{keyword}\b",
+    r"\bdo\s+not\s+\w*\s*{keyword}\b",
+    r"\bdoesn't\s+\w*\s*{keyword}\b",
+    r"\bwithout\s+{keyword}\b",
+    r"\bnot\s+\w*\s*{keyword}\b",
+]
+
+
+def detect_explicit_negative_gaps(text: str, labels: list[str]) -> set[str]:
+    """Detect explicit non-compliance statements as a conservative fallback."""
+    lower = text.lower()
+    label_set = set(labels)
+    detected: set[str] = set()
+
+    for domain, domain_config in POLICY_DOMAINS.items():
+        matched = False
+        for keyword in domain_config["keywords"]:
+            escaped = re.escape(keyword)
+            if any(re.search(pattern.format(keyword=escaped), lower) for pattern in NEGATION_PATTERNS):
+                matched = True
+                break
+        if not matched:
+            continue
+
+        fallback_label = domain_config["fallback_label"]
+        if fallback_label in label_set:
+            detected.add(fallback_label)
+            continue
+
+        domain_labels = get_domain_gap_ids(domain)
+        if domain_labels:
+            detected.add(domain_labels[0])
+
+    return detected
 
 
 # ---------------------------------------------------------------------------
@@ -561,29 +677,51 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     # 3. Aggregate: max probability across chunks for each gap
     aggregated = {}
     labels = get_model_gap_labels()
+    explicit_negative_gaps = detect_explicit_negative_gaps(text, labels)
     for gap_id in labels:
         max_prob = max(cr[gap_id] for cr in chunk_results)
         gap_threshold = per_label_thresholds.get(gap_id, threshold)
+        detected = max_prob >= gap_threshold or gap_id in explicit_negative_gaps
         aggregated[gap_id] = {
             "probability": round(max_prob, 4),
-            "detected": max_prob >= gap_threshold,
+            "detected": detected,
+            "threshold": round(float(gap_threshold), 4),
+            "source": "explicit_negative_text" if gap_id in explicit_negative_gaps and max_prob < gap_threshold else "model",
         }
 
-    # 4. Detect applicable domains and build report only for those domains
+    top_predictions = sorted(
+        ((gap_id, data["probability"], data["threshold"], data["detected"]) for gap_id, data in aggregated.items()),
+        key=lambda item: item[1],
+        reverse=True,
+    )[:10]
+    logger.info("Analyze text length=%d preview=%r", len(text), text[:200])
+    logger.info("Top gap predictions=%s", top_predictions)
+
+    # 4. Detect applicable domains and build report for all represented domains
     domains = detect_domains(text)
-    pp_applicable = "password_policy" in domains or len(domains) == 0
-    ra_applicable = "risk_assessment" in domains or len(domains) == 0
+    if not domains:
+        domains = sorted({get_gap_domain(gap_id) for gap_id in labels if get_gap_domain(gap_id) != "unknown"})
 
-    password_policy = build_domain_result(
-        get_domain_gap_ids("password_policy"), aggregated, pp_applicable
-    )
-    risk_assessment = build_domain_result(
-        get_domain_gap_ids("risk_assessment"), aggregated, ra_applicable
-    )
+    domain_results = {
+        domain: build_domain_result(get_domain_gap_ids(domain), aggregated, domain in domains)
+        for domain in POLICY_DOMAINS
+        if get_domain_gap_ids(domain)
+    }
 
-    pp_gaps = password_policy["gaps_detected"]
-    ra_gaps = risk_assessment["gaps_detected"]
-    all_gaps = pp_gaps + ra_gaps
+    all_gaps = [gap_id for gap_id, data in aggregated.items() if data["detected"]]
+    detected_gap_details = [
+        {
+            "label": gap_id,
+            "gap_id": gap_id,
+            "domain": get_gap_domain(gap_id),
+            "severity": get_gap_severity(gap_id),
+            "confidence": aggregated[gap_id]["probability"],
+            "recommendation": get_gap_recommendation(gap_id),
+            "description": get_gap_description(gap_id),
+            "source": aggregated[gap_id]["source"],
+        }
+        for gap_id in all_gaps
+    ]
 
     # Compliance level (derived from gap count)
     if len(all_gaps) == 0:
@@ -593,30 +731,49 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     else:
         compliance = "partially_compliant"
 
-    # Overall score: confidence-weighted penalty across applicable domains only
-    applicable_gaps = []
-    if pp_applicable:
-        applicable_gaps.extend(get_domain_gap_ids("password_policy"))
-    if ra_applicable:
-        applicable_gaps.extend(get_domain_gap_ids("risk_assessment"))
+    simple_gap_score = max(0, 100 - len(all_gaps) * 5)
+    if all_gaps:
+        score = round(simple_gap_score / 100, 4)
+    else:
+        score = 1.0
 
-    total_weight = sum(get_severity_weight(g) for g in applicable_gaps) or 1
-    weighted_penalty = sum(
-        get_severity_weight(g) * float(aggregated[g]["probability"])
-        for g in all_gaps
-    )
-    score = round(max(0.0, 1.0 - weighted_penalty / total_weight), 4)
+    domains_payload = {
+        domain: {
+            "gap_count": result["gap_count"],
+            "score": result["score"],
+            "status": "Needs Attention" if result["gap_count"] else "No Gaps Detected",
+            "gaps": result["details"],
+        }
+        for domain, result in domain_results.items()
+        if domain in domains or result["gap_count"] > 0
+    }
 
     return {
         "overall_compliance": compliance,
         "overall_score": score,
+        "score": round(score * 100),
+        "compliance_score": round(score * 100),
+        "compliance_status": "Fully Compliant" if compliance == "compliant" else "Non-Compliant" if compliance == "non_compliant" else "Partially Compliant",
         "gap_count": len(all_gaps),
         "num_chunks": len(chunks),
         "domains_detected": domains,
-        "password_policy": password_policy,
-        "risk_assessment": risk_assessment,
+        "password_policy": domain_results.get("password_policy", build_domain_result([], aggregated, False)),
+        "risk_assessment": domain_results.get("risk_assessment", build_domain_result([], aggregated, False)),
+        "domains": domains_payload,
+        "detected_gaps": detected_gap_details,
+        "gaps": detected_gap_details,
+        "gap_labels": all_gaps,
+        "recommendations": [gap["recommendation"] for gap in detected_gap_details],
         "all_gap_probabilities": {
             g: aggregated[g]["probability"] for g in labels
+        },
+        "predictions": {
+            g: {
+                "probability": aggregated[g]["probability"],
+                "threshold": aggregated[g]["threshold"],
+                "detected": aggregated[g]["detected"],
+            }
+            for g in labels
         },
     }
 
@@ -760,16 +917,36 @@ class DomainResult(BaseModel):
     details: list[GapDetail]
 
 
+class DetectedGap(BaseModel):
+    label: str
+    gap_id: str
+    domain: str
+    severity: str
+    confidence: float
+    recommendation: str
+    description: str
+    source: str = "model"
+
+
 class AnalyzeResponse(BaseModel):
     overall_compliance: str
     overall_score: float
+    score: int
+    compliance_score: int
+    compliance_status: str
     gap_count: int
     num_chunks: int
     inference_time_ms: float
     domains_detected: list[str]
     password_policy: DomainResult
     risk_assessment: DomainResult
+    domains: dict[str, dict]
+    detected_gaps: list[DetectedGap]
+    gaps: list[DetectedGap]
+    gap_labels: list[str]
+    recommendations: list[str]
     all_gap_probabilities: dict[str, float]
+    predictions: dict[str, dict]
 
 
 class HealthResponse(BaseModel):

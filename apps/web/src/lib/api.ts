@@ -7,14 +7,17 @@
  * per-chunk prediction, and aggregation server-side.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
 const API_KEY = import.meta.env.VITE_API_KEY as string;
 
-if (!API_BASE_URL) {
-  console.warn(
-    "Missing VITE_API_BASE_URL. " +
-    "Policy classification API will not work. " +
-    "Add VITE_API_BASE_URL to your .env file."
+export function apiUrl(path: string) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE_URL}${normalizedPath}`;
+}
+
+if (import.meta.env.DEV && !API_BASE_URL) {
+  console.info(
+    "VITE_API_URL is empty. API requests will use relative /analyze and /health paths."
   );
 }
 if (!API_KEY) {
@@ -29,6 +32,11 @@ if (!API_KEY) {
 
 export interface GapDetail {
   gap_id: string;
+  label?: string;
+  domain?: string;
+  severity?: string;
+  recommendation?: string;
+  source?: string;
   description: string;
   confidence: number;
 }
@@ -43,13 +51,22 @@ export interface DomainResult {
 export interface AnalyzeResponse {
   overall_compliance: "compliant" | "partially_compliant" | "non_compliant";
   overall_score: number;
+  score?: number;
+  compliance_score?: number;
+  compliance_status?: string;
   gap_count: number;
   num_chunks: number;
   inference_time_ms: number;
   domains_detected: string[];
   password_policy: DomainResult;
   risk_assessment: DomainResult;
+  domains?: Record<string, { gap_count: number; score: number; status: string; gaps: GapDetail[] }>;
+  detected_gaps?: GapDetail[];
+  gaps?: GapDetail[];
+  gap_labels?: string[];
+  recommendations?: string[];
   all_gap_probabilities: Record<string, number>;
+  predictions?: Record<string, { probability: number; threshold: number; detected: boolean }>;
 }
 
 export interface HealthResponse {
@@ -64,12 +81,6 @@ export interface HealthResponse {
 // ── API client ──
 
 class PolicyClassifierAPI {
-  private baseUrl: string;
-
-  constructor(baseUrl: string = API_BASE_URL) {
-    this.baseUrl = baseUrl;
-  }
-
   private get headers(): Record<string, string> {
     const h: Record<string, string> = { "Content-Type": "application/json" };
     if (API_KEY) h["X-API-Key"] = API_KEY;
@@ -78,7 +89,7 @@ class PolicyClassifierAPI {
 
   /** Check API health status */
   async checkHealth(): Promise<HealthResponse> {
-    const response = await fetch(`${this.baseUrl}/health`, {
+    const response = await fetch(apiUrl("/health"), {
       headers: this.headers,
     });
     if (!response.ok) {
@@ -94,8 +105,16 @@ class PolicyClassifierAPI {
   async analyzeDocument(text: string, threshold?: number): Promise<AnalyzeResponse> {
     const body: Record<string, unknown> = { text };
     if (threshold !== undefined) body.threshold = threshold;
+    if (import.meta.env.DEV) {
+      console.info("[api] analyze request", {
+        url: apiUrl("/analyze"),
+        textLength: text.length,
+        preview: text.slice(0, 200),
+        threshold,
+      });
+    }
 
-    const response = await fetch(`${this.baseUrl}/analyze`, {
+    const response = await fetch(apiUrl("/analyze"), {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify(body),
@@ -106,7 +125,16 @@ class PolicyClassifierAPI {
       throw new Error(error.detail || "Analysis failed");
     }
 
-    return response.json();
+    const data = await response.json();
+    if (import.meta.env.DEV) {
+      console.info("[api] analyze response", {
+        score: data.score ?? data.compliance_score ?? data.overall_score,
+        gapCount: data.gap_count,
+        detectedGaps: data.detected_gaps?.length ?? data.gaps?.length,
+        domains: data.domains_detected,
+      });
+    }
+    return data;
   }
 }
 

@@ -54,12 +54,34 @@ const RELATIONSHIP_STYLES = {
 
 export default function FrameworkComparisonPage() {
   const { t, locale } = useLanguage();
-  const { assessments } = useComplianceStore();
+  const { assessments, loading, error } = useComplianceStore();
   const c = t.compliance.frameworkComparison;
   const cc = t.compliance.common;
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDomain, setFilterDomain] = useState("all");
   const [filterRelation, setFilterRelation] = useState("all");
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-400 border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading framework data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/40 dark:bg-red-950/20">
+          <h1 className="text-lg font-semibold text-red-700 dark:text-red-300">Could not load framework data</h1>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const domains = [...new Set(ECC_ISO_MAPPING.map((m) => m.eccDomain))];
 

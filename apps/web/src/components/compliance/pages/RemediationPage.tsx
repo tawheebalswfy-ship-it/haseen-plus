@@ -3,12 +3,13 @@ import { useComplianceStore } from "../store";
 import { NCA_CONTROLS, GAP_NAMES_AR, NCA_CONTROL_NAMES_AR } from "../types";
 import type { RemediationTask, Comment } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
+import { buildGapTasksFromPolicies, getAnalyzedPolicies } from "../../../lib/policyAnalysis";
 
 const PRIORITIES: RemediationTask["priority"][] = ["critical", "high", "medium", "low"];
 const STATUSES: RemediationTask["status"][] = ["open", "in_progress", "completed", "deferred"];
 
 export default function RemediationPage() {
-  const { tasks, addTask, updateTask, deleteTask, deleteAllTasks, assessments } = useComplianceStore();
+  const { tasks, loading, error, addTask, updateTask, deleteTask, deleteAllTasks, assessments, policies } = useComplianceStore();
   const { t, locale } = useLanguage();
   const c = t.compliance.remediation;
   const cc = t.compliance.common;
@@ -24,6 +25,28 @@ export default function RemediationPage() {
   const [autoGenAssessment, setAutoGenAssessment] = useState("");
   const [genMsg, setGenMsg] = useState("");
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-400 border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading remediation tasks...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/40 dark:bg-red-950/20">
+          <h1 className="text-lg font-semibold text-red-700 dark:text-red-300">Could not load remediation data</h1>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   /** Translate a findings string like "Gaps: GAP_PP_005: Missing PAM (84%)" to Arabic */
   const translateFindings = (findings: string): string => {
@@ -79,16 +102,18 @@ export default function RemediationPage() {
     return m[s] || s;
   };
 
-  const filtered = tasks
+  const policyGapTasks = tasks.length === 0 ? buildGapTasksFromPolicies(policies) : [];
+  const visibleTasks = tasks.length > 0 ? tasks : policyGapTasks;
+  const filtered = visibleTasks
     .filter((t) => filterStatus === "all" || t.status === filterStatus)
     .filter((t) => filterPriority === "all" || t.priority === filterPriority);
 
   const stats = {
-    total: tasks.length,
-    open: tasks.filter((t) => t.status === "open").length,
-    inProgress: tasks.filter((t) => t.status === "in_progress").length,
-    completed: tasks.filter((t) => t.status === "completed").length,
-    critical: tasks.filter((t) => t.priority === "critical").length,
+    total: visibleTasks.length,
+    open: visibleTasks.filter((t) => t.status === "open").length,
+    inProgress: visibleTasks.filter((t) => t.status === "in_progress").length,
+    completed: visibleTasks.filter((t) => t.status === "completed").length,
+    critical: visibleTasks.filter((t) => t.priority === "critical").length,
   };
 
   const priorityColor = (p: string) => {
@@ -290,14 +315,17 @@ export default function RemediationPage() {
 
       {/* Task List */}
       <div className="space-y-3">
-        {filtered.map((task) => (
+        {filtered.map((task) => {
+          const isSuggestion = task.id.startsWith("policy-gap-");
+          return (
           <div key={task.id} className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div
               className="p-4 flex items-center gap-4 cursor-pointer"
               onClick={() => setExpandedId(expandedId === task.id ? null : task.id)}
             >
               <button
-                onClick={(e) => { e.stopPropagation(); cycleStatus(task); }}
+                onClick={(e) => { e.stopPropagation(); if (!isSuggestion) cycleStatus(task); }}
+                disabled={isSuggestion}
                 className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center cursor-pointer bg-transparent ${
                   task.status === "completed"
                     ? "border-gray-500 bg-gray-500"
@@ -320,6 +348,13 @@ export default function RemediationPage() {
                 {task.description && (
                   <p className="text-xs text-gray-500 mt-0.5 truncate dark:text-gray-400">{translateDesc(task.description)}</p>
                 )}
+                {(task.related_policy || task.domain || task.recommended_action) && (
+                  <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                    {task.related_policy && <span>Policy: {task.related_policy}</span>}
+                    {task.domain && <span>Domain: {task.domain.replace(/_/g, " ")}</span>}
+                    {task.recommended_action && <span>Action: {task.recommended_action}</span>}
+                  </div>
+                )}
               </div>
               <span className={`text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0 ${priorityColor(task.priority)}`}>
                 {translatePriority(task.priority)}
@@ -328,7 +363,9 @@ export default function RemediationPage() {
                 {translateStatus(task.status)}
               </span>
               {task.due_date && (
-                <span className="text-xs text-gray-400 flex-shrink-0 hidden md:inline-block">{new Date(task.due_date).toLocaleDateString()}</span>
+                <span className="text-xs text-gray-400 flex-shrink-0 hidden md:inline-block">
+                  {task.due_date === "Suggested" ? "Suggested" : new Date(task.due_date).toLocaleDateString()}
+                </span>
               )}
               <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${expandedId === task.id ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -451,7 +488,7 @@ export default function RemediationPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  {STATUSES.map((s) => (
+                  {!isSuggestion && STATUSES.map((s) => (
                     <button
                       key={s}
                       onClick={() => updateTask(task.id, { status: s })}
@@ -466,20 +503,26 @@ export default function RemediationPage() {
                   ))}
                   <button
                     onClick={() => deleteTask(task.id)}
+                    disabled={isSuggestion}
                     className="ml-auto px-3 py-1.5 rounded-lg text-xs text-red-500 hover:bg-red-50 cursor-pointer border border-red-200 bg-white dark:bg-gray-800 dark:border-red-900 dark:hover:bg-red-900/20"
                   >
-                    {cc.delete}
+                    {isSuggestion ? "Suggested" : cc.delete}
                   </button>
                 </div>
               </div>
             )}
           </div>
-        ))}
+        );
+        })}
       </div>
 
       {filtered.length === 0 && (
         <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <p className="text-gray-500 dark:text-gray-400">{c.noTasks}</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {getAnalyzedPolicies(policies).length > 0
+              ? "No remediation tasks required. Current analyzed policies show strong compliance."
+              : c.noTasks}
+          </p>
         </div>
       )}
 

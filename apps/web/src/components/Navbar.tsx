@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
 import BrandLogo from "./BrandLogo";
 
 export default function Navbar() {
   const { t, toggleLanguage } = useLanguage();
-  const { user, signOut } = useAuth();
+  const { user, signOut, signingOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur-xl dark:border-gray-800 dark:bg-gray-950/90">
@@ -67,10 +68,14 @@ export default function Navbar() {
                 {(user.user_metadata?.full_name ?? user.email ?? 'U').charAt(0).toUpperCase()}
               </Link>
               <button
-                onClick={() => signOut()}
+                onClick={async () => {
+                  await signOut();
+                  navigate("/auth/sign-in", { replace: true });
+                }}
+                disabled={signingOut}
                 className="cursor-pointer rounded-full px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 border-0 bg-transparent dark:text-gray-300 dark:hover:bg-gray-800"
               >
-                {t.nav.logout}
+                {signingOut ? "Signing out..." : t.nav.logout}
               </button>
             </div>
           )}

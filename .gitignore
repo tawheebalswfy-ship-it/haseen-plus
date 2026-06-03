@@ -38,3 +38,17 @@ ml/models/**/*.bin
 apps/web/dist
 
 *.log
+
+# Large ML artifacts
+ml.zip
+*.zip
+*.pt
+ml/models/
+
+# Local env/build files
+.env.local
+apps/web/.env.local
+node_modules/
+dist/
+apps/web/dist/
+

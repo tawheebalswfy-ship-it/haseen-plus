@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import BrandLogo, { BRAND_TAGLINE } from "../components/BrandLogo";
+import { supabase } from "../lib/supabase";
 
 type AuthMode = "sign-in" | "sign-up" | "forgot-password" | "reset-password";
 type SuccessState = "sign-up" | "forgot-password" | "password-updated" | null;
@@ -32,6 +33,7 @@ export function Auth() {
     signIn,
     signUp,
     requestPasswordReset,
+    resendConfirmation,
     updatePassword,
     user,
     loading: authLoading,
@@ -46,6 +48,30 @@ export function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<SuccessState>(null);
+  const [successEmail, setSuccessEmail] = useState("");
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const [resetLinkChecked, setResetLinkChecked] = useState(false);
+
+  useEffect(() => {
+    if (!isResetPassword) return;
+    let active = true;
+
+    (async () => {
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error && active) setError("This password reset link is invalid or expired. Please request a new reset link.");
+      } else {
+        await supabase.auth.getSession();
+      }
+      if (active) setResetLinkChecked(true);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [isResetPassword]);
 
   if (!authLoading && user && !isResetPassword) {
     return <Navigate to="/dashboard" replace />;
@@ -70,17 +96,19 @@ export function Auth() {
         if (error) {
           setError(error);
         } else {
+          setSuccessEmail(email);
           setSuccess("sign-up");
         }
         return;
       }
 
       if (isForgotPassword) {
-        const redirectTo = `${window.location.origin}/reset-password`;
+        const redirectTo = `${window.location.origin}/auth/reset-password`;
         const { error } = await requestPasswordReset(email, redirectTo);
         if (error) {
           setError(error);
         } else {
+          setSuccessEmail(email);
           setSuccess("forgot-password");
         }
         return;
@@ -92,8 +120,8 @@ export function Auth() {
           return;
         }
 
-        if (password.length < 6) {
-          setError(t.auth.passwordMinLength);
+        if (password.length < 8) {
+          setError("Password must be at least 8 characters.");
           return;
         }
 
@@ -127,9 +155,9 @@ export function Auth() {
       ? t.auth.passwordUpdatedTitle
       : t.auth.checkEmail;
     const successDescription = success === "sign-up"
-      ? t.auth.confirmationSent
+      ? "Please check your email to confirm your account."
       : success === "forgot-password"
-        ? t.auth.passwordResetSent
+        ? "Password reset link sent. Please check your email."
         : t.auth.passwordUpdatedDescription;
     const nextPath = success === "password-updated" ? "/dashboard" : "/auth/sign-in";
     const nextLabel = success === "password-updated" ? t.auth.continueToDashboard : t.auth.backToSignIn;
@@ -144,12 +172,29 @@ export function Auth() {
           </div>
           <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">{successTitle}</h2>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">{successDescription}</p>
-          <button
-            onClick={() => navigate(nextPath, { replace: true })}
+          {success === "sign-up" && (
+            <div className="mb-5">
+              {resendMessage && (
+                <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">{resendMessage}</p>
+              )}
+              <button
+                onClick={async () => {
+                  setResendMessage(null);
+                  const { error } = await resendConfirmation(successEmail || email);
+                  setResendMessage(error || "Confirmation email resent. Please check your inbox.");
+                }}
+                className="cursor-pointer rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              >
+                Resend confirmation email
+              </button>
+            </div>
+          )}
+          <Link
+            to={nextPath}
             className="cursor-pointer border-0 bg-transparent text-sm font-medium text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
             {nextLabel}
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -258,7 +303,7 @@ export function Auth() {
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{subtitle}</p>
             </div>
 
-            {isResetPassword && !user ? (
+            {isResetPassword && !user && resetLinkChecked ? (
               <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-900/40 dark:bg-amber-950/20">
                 <div className="mb-4 inline-flex rounded-full bg-amber-100 p-3 dark:bg-amber-900/40">
                   <svg className="h-6 w-6 text-amber-700 dark:text-amber-300" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -351,7 +396,7 @@ export function Auth() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="••••••••"
-                          minLength={6}
+                          minLength={isResetPassword ? 8 : 6}
                           className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all focus:border-[#0a4c6e] focus:ring-2 focus:ring-[#0a4c6e]/20 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-[#0d6a5c] dark:focus:ring-[#0d6a5c]/20 rtl:pl-4 rtl:pr-10"
                         />
                       </div>
@@ -375,7 +420,7 @@ export function Auth() {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder={t.auth.confirmPasswordPlaceholder}
-                          minLength={6}
+                          minLength={8}
                           className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all focus:border-[#0a4c6e] focus:ring-2 focus:ring-[#0a4c6e]/20 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-[#0d6a5c] dark:focus:ring-[#0d6a5c]/20 rtl:pl-4 rtl:pr-10"
                         />
                       </div>
@@ -443,6 +488,59 @@ export function Auth() {
             )}
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function AuthCallback() {
+  const navigate = useNavigate();
+  const [message, setMessage] = useState("Confirming your email...");
+
+  useEffect(() => {
+    let active = true;
+
+    (async () => {
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      const errorDescription = url.searchParams.get("error_description") || url.searchParams.get("error");
+
+      if (errorDescription) {
+        if (active) setMessage("This confirmation link is invalid or expired. Please request a new confirmation email.");
+        return;
+      }
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          if (active) setMessage("This confirmation link is invalid or expired. Please request a new confirmation email.");
+          return;
+        }
+      } else {
+        await supabase.auth.getSession();
+      }
+
+      if (active) {
+        setMessage("Email confirmed. Redirecting to dashboard...");
+        setTimeout(() => navigate("/dashboard", { replace: true }), 700);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <h1 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">Email Confirmation</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{message}</p>
+        {message.includes("invalid") || message.includes("expired") ? (
+          <Link to="/auth/sign-in" className="mt-6 inline-flex text-sm font-medium text-gray-600 dark:text-gray-300">
+            Back to sign in
+          </Link>
+        ) : null}
       </div>
     </div>
   );

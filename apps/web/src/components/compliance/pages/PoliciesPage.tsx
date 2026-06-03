@@ -9,7 +9,7 @@ import { getPolicyFileUrl, uploadPolicyFile } from "../../../lib/storage";
 import { useAuth } from "../../../contexts/AuthContext";
 
 export default function PoliciesPage() {
-  const { policies, addPolicy, updatePolicy, deletePolicy } = useComplianceStore();
+  const { policies, loading, error, addPolicy, updatePolicy, deletePolicy } = useComplianceStore();
   const { user } = useAuth();
   const { t, locale } = useLanguage();
   const c = t.compliance.policies;
@@ -30,17 +30,50 @@ export default function PoliciesPage() {
   const [pastedText, setPastedText] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStep, setUploadStep] = useState<"idle" | "extracting" | "uploading" | "analyzing" | "done" | "error">("idle");
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [expandedPolicy, setExpandedPolicy] = useState<string | null>(null);
   const [textViewPolicy, setTextViewPolicy] = useState<{ title: string; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = policies.filter((p) => filterStatus === "all" || p.status === filterStatus);
 
+  const collectGaps = (result: AnalyzeResponse): GapDetail[] => {
+    const fromResponse = result.detected_gaps ?? result.gaps;
+    if (Array.isArray(fromResponse) && fromResponse.length > 0) {
+      return fromResponse.map((gap) => ({
+        ...gap,
+        gap_id: gap.gap_id ?? gap.label ?? "GAP_UNKNOWN",
+      }));
+    }
+
+    const domainGaps = Object.values(result.domains ?? {}).flatMap((domain) => domain.gaps ?? []);
+    if (domainGaps.length > 0) {
+      return domainGaps.map((gap) => ({
+        ...gap,
+        gap_id: gap.gap_id ?? gap.label ?? "GAP_UNKNOWN",
+      }));
+    }
+
+    return [
+      ...(result.password_policy?.details ?? []),
+      ...(result.risk_assessment?.details ?? []),
+    ];
+  };
+
+  const getResultScorePercent = (result: AnalyzeResponse): number => {
+    if (typeof result.compliance_score === "number") return result.compliance_score;
+    if (typeof result.score === "number") return result.score;
+    const gapCount = result.detected_gaps?.length ?? result.gaps?.length ?? result.gap_count ?? 0;
+    const score = Math.round(result.overall_score * 100);
+    return gapCount > 0 && score === 100 ? Math.max(0, 100 - gapCount * 5) : score;
+  };
+
   const resetUploader = () => {
     setNewTitle("");
     setSelectedFile(null);
     setPastedText("");
     setUploadStep("idle");
+    setUploadError(null);
     setIsUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -70,12 +103,22 @@ export default function PoliciesPage() {
   }, [newTitle]);
 
   const handleUploadAndAnalyze = async () => {
-    if (!newTitle.trim()) return;
-    if (!selectedFile && !pastedText.trim()) return;
+    setUploadError(null);
+
+    if (!newTitle.trim()) {
+      setUploadError("Enter a policy title before analyzing.");
+      return;
+    }
+
+    if (!selectedFile && !pastedText.trim()) {
+      setUploadError("Select a policy file or paste policy text before analyzing.");
+      return;
+    }
 
     setIsUploading(true);
     let policyText = pastedText.trim();
     let fileUrl: string | undefined;
+    let shouldCloseUploader = false;
 
     try {
       // Step 1: Extract text from file using pdf.js / docx parser
@@ -117,24 +160,30 @@ export default function PoliciesPage() {
         const result: AnalyzeResponse = await policyClassifierAPI.analyzeDocument(policyText);
 
         // Collect all gaps from both domains
-        const allGaps: GapDetail[] = [
-          ...result.password_policy.details,
-          ...result.risk_assessment.details,
-        ];
+        const allGaps = collectGaps(result);
+        const scorePercent = getResultScorePercent(result);
 
         await updatePolicy(policyId, {
           status: "analyzed",
-          compliance_score: Math.round(result.overall_score * 100),
+          compliance_score: scorePercent,
           category: getComplianceLabel(result.overall_compliance),
           analysis_result: {
             overall_compliance: result.overall_compliance,
             overall_score: result.overall_score,
+            score: result.score,
+            compliance_score: scorePercent,
+            compliance_status: result.compliance_status,
             gap_count: result.gap_count,
             num_chunks: result.num_chunks,
             inference_time_ms: result.inference_time_ms,
             domains_detected: result.domains_detected,
+            domains: result.domains,
             password_policy: result.password_policy,
             risk_assessment: result.risk_assessment,
+            detected_gaps: result.detected_gaps,
+            gap_labels: result.gap_labels,
+            recommendations: result.recommendations,
+            predictions: result.predictions,
             all_gap_probabilities: result.all_gap_probabilities,
             gaps_detected: allGaps,
             text_length: policyText.length,
@@ -143,19 +192,26 @@ export default function PoliciesPage() {
         });
 
         setUploadStep("done");
+        shouldCloseUploader = true;
       } catch {
         // Classification failed but policy is saved
         await updatePolicy(policyId, { status: "uploaded" });
+        setUploadError("Analysis failed. The policy was saved, but no analysis result was returned.");
         setUploadStep("error");
       }
     } catch {
+      setUploadError("Could not upload or analyze this policy. Check the file or pasted text and try again.");
       setUploadStep("error");
     }
 
-    setTimeout(() => {
-      setShowUploader(false);
-      resetUploader();
-    }, 1500);
+    if (shouldCloseUploader) {
+      setTimeout(() => {
+        setShowUploader(false);
+        resetUploader();
+      }, 1500);
+    } else {
+      setIsUploading(false);
+    }
   };
 
   /** Re-analyze an existing policy — uses stored extracted text if available */
@@ -168,24 +224,30 @@ export default function PoliciesPage() {
 
       const result: AnalyzeResponse = await policyClassifierAPI.analyzeDocument(textToAnalyze);
 
-      const allGaps: GapDetail[] = [
-        ...result.password_policy.details,
-        ...result.risk_assessment.details,
-      ];
+      const allGaps = collectGaps(result);
+      const scorePercent = getResultScorePercent(result);
 
       await updatePolicy(policyId, {
         status: "analyzed",
-        compliance_score: Math.round(result.overall_score * 100),
+        compliance_score: scorePercent,
         category: getComplianceLabel(result.overall_compliance),
         analysis_result: {
           overall_compliance: result.overall_compliance,
           overall_score: result.overall_score,
+          score: result.score,
+          compliance_score: scorePercent,
+          compliance_status: result.compliance_status,
           gap_count: result.gap_count,
           num_chunks: result.num_chunks,
           inference_time_ms: result.inference_time_ms,
           domains_detected: result.domains_detected,
+          domains: result.domains,
           password_policy: result.password_policy,
           risk_assessment: result.risk_assessment,
+          detected_gaps: result.detected_gaps,
+          gap_labels: result.gap_labels,
+          recommendations: result.recommendations,
+          predictions: result.predictions,
           all_gap_probabilities: result.all_gap_probabilities,
           gaps_detected: allGaps,
           text_length: textToAnalyze.length,
@@ -223,6 +285,28 @@ export default function PoliciesPage() {
     }
     window.open(url, "_blank", "noopener,noreferrer");
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-[24px] border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-400 border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading policies...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-[24px] border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/40 dark:bg-red-950/20">
+          <h1 className="text-lg font-semibold text-red-700 dark:text-red-300">Could not load policies</h1>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -615,6 +699,12 @@ export default function PoliciesPage() {
                     </>
                   )}
                 </div>
+              </div>
+            )}
+
+            {uploadError && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
+                {uploadError}
               </div>
             )}
 

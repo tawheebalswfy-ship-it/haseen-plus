@@ -96,7 +96,7 @@ VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 
 # FastAPI Gap Detector — local or Cloud Run URL
-VITE_API_BASE_URL=http://localhost:8080
+VITE_API_URL=http://localhost:8080
 VITE_API_KEY=your-api-key
 ```
 
@@ -185,7 +185,7 @@ npm run dev:model-api
 npm run dev:web
 ```
 
-Set `VITE_API_BASE_URL=http://localhost:8080` in `apps/web/.env` to connect the frontend to the local API.
+Set `VITE_API_URL=http://localhost:8080` in `apps/web/.env` to connect the frontend to the local API.
 
 ---
 

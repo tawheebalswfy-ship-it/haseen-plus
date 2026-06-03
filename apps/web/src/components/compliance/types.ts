@@ -17,6 +17,9 @@ export interface ComplianceAssessment {
   framework: string;
   status: "draft" | "in_progress" | "completed";
   overall_score: number;
+  policy_status?: string;
+  detected_domains?: string[];
+  findings?: string[];
   results?: ControlResult[];
   comments?: Comment[];
   created_date: string;
@@ -41,6 +44,9 @@ export interface RemediationTask {
   description: string;
   control_id?: string;
   assessment_id?: string;
+  related_policy?: string;
+  domain?: string;
+  recommended_action?: string;
   priority: "critical" | "high" | "medium" | "low";
   status: "open" | "in_progress" | "completed" | "deferred";
   assigned_to?: string;
@@ -111,11 +117,7 @@ export interface NCAControl {
   priority: "critical" | "high" | "medium" | "low";
 }
 
-export const FRAMEWORK_COLORS: Record<string, string> = {
-  ECC: "#374151",
-};
-
-export const FRAMEWORKS = ["ECC"] as const;
+export { FRAMEWORK_COLORS } from "../../lib/ncaFrameworks";
 
 /**
  * Maps detected policy domains to the ECC controls they can meaningfully assess.

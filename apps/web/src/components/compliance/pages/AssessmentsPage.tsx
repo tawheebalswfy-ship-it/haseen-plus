@@ -7,9 +7,11 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 import type { GapDetail } from "../../../lib/api";
 import { useAuth } from "../../../contexts/AuthContext";
 import { uploadEvidenceFile, getEvidenceFileUrl, deleteEvidenceFile, downloadEvidenceFile } from "../../../lib/storage";
+import { buildPolicyAssessments } from "../../../lib/policyAnalysis";
+import { formatPolicyDomain } from "../../../config/policyDomains";
 
 export default function AssessmentsPage() {
-  const { assessments, policies, addAssessment, updateAssessment, deleteAssessment, addTask } = useComplianceStore();
+  const { assessments, policies, loading, error, addAssessment, updateAssessment, deleteAssessment, addTask } = useComplianceStore();
   const { user } = useAuth();
   const { t, locale } = useLanguage();
   const c = t.compliance.assessments;
@@ -36,7 +38,32 @@ export default function AssessmentsPage() {
   const [previewEvidence, setPreviewEvidence] = useState<{ name: string; url: string; type: string } | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
-  const detail = assessments.find((a) => a.id === detailId);
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-[24px] border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-400 border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading assessments...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-[24px] border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/40 dark:bg-red-950/20">
+          <h1 className="text-lg font-semibold text-red-700 dark:text-red-300">Could not load assessments</h1>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const policyAssessments = assessments.length === 0 ? buildPolicyAssessments(policies) : [];
+  const displayAssessments = assessments.length > 0 ? assessments : policyAssessments;
+  const detail = displayAssessments.find((a) => a.id === detailId);
+  const isPolicyDerivedDetail = Boolean(detail?.id.startsWith("policy-"));
 
   const translateFindings = (findings: string | undefined): string => {
     if (!findings) return "—";
@@ -371,25 +398,43 @@ export default function AssessmentsPage() {
               Framework: <span className="font-semibold" style={{ color: FRAMEWORK_COLORS[detail.framework] }}>{detail.framework}</span>
               {" · "}{c.created}: {new Date(detail.created_date).toLocaleDateString()}
             </p>
+            {isPolicyDerivedDetail && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {detail.policy_status && (
+                  <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                    {detail.policy_status}
+                  </span>
+                )}
+                {(detail.detected_domains || []).map((domain) => (
+                  <span key={domain} className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                    {formatPolicyDomain(domain, locale)}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3 mt-4 sm:mt-0">
-            <button
-              onClick={generateTasksFromGaps}
-              className="inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 cursor-pointer border-0"
-            >
-              {c.generateTasks}
-            </button>
-            <button
-              onClick={() => {
-                if (window.confirm(c.confirmDelete)) {
-                  deleteAssessment(detail.id);
-                  setDetailId(null);
-                }
-              }}
-              className="inline-flex items-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 cursor-pointer border-0"
-            >
-              {c.deleteAssessment}
-            </button>
+            {!isPolicyDerivedDetail && (
+              <>
+                <button
+                  onClick={generateTasksFromGaps}
+                  className="inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 cursor-pointer border-0"
+                >
+                  {c.generateTasks}
+                </button>
+                <button
+                  onClick={() => {
+                    if (window.confirm(c.confirmDelete)) {
+                      deleteAssessment(detail.id);
+                      setDetailId(null);
+                    }
+                  }}
+                  className="inline-flex items-center rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 cursor-pointer border-0"
+                >
+                  {c.deleteAssessment}
+                </button>
+              </>
+            )}
             <div className="text-3xl font-bold" style={{ color: detail.overall_score >= 70 ? "#6b7280" : detail.overall_score >= 40 ? "#f59e0b" : "#ef4444" }}>
               {detail.overall_score}%
             </div>
@@ -647,9 +692,9 @@ export default function AssessmentsPage() {
 
       {/* Assessment Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {assessments.map((a) => (
+        {displayAssessments.map((a) => (
           <div key={a.id} onClick={() => setDetailId(a.id)} className="relative rounded-[24px] border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-all cursor-pointer dark:border-gray-800 dark:bg-gray-900 group">
-            <button
+            {!a.id.startsWith("policy-") && <button
               onClick={(e) => { e.stopPropagation(); if (window.confirm(c.confirmDelete)) deleteAssessment(a.id); }}
               className="absolute top-3 right-3 p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border-0 bg-transparent"
               title={c.deleteAssessment}
@@ -657,13 +702,26 @@ export default function AssessmentsPage() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
               </svg>
-            </button>
+            </button>}
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: FRAMEWORK_COLORS[a.framework] }}>{a.framework}</span>
               <span className="text-2xl font-bold" style={{ color: a.overall_score >= 70 ? "#6b7280" : a.overall_score >= 40 ? "#f59e0b" : "#ef4444" }}>{a.overall_score}%</span>
             </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{a.name}</h3>
+            {a.policy_status && <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{a.policy_status}</p>}
+            {(a.detected_domains?.length || 0) > 0 && (
+              <div className="mb-3 flex flex-wrap gap-1.5">
+                {a.detected_domains!.slice(0, 4).map((domain) => (
+                  <span key={domain} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                    {formatPolicyDomain(domain, locale)}
+                  </span>
+                ))}
+              </div>
+            )}
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{a.results?.length || 0} {c.controlsAssessed}</p>
+            {a.findings?.[0] && (
+              <p className="mb-3 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{a.findings[0]}</p>
+            )}
             <div className="flex gap-1.5">
               {["compliant", "partial", "non_compliant"].map((s) => {
                 const count = a.results?.filter((r) => r.status === s).length || 0;
@@ -676,7 +734,7 @@ export default function AssessmentsPage() {
         ))}
       </div>
 
-      {assessments.length === 0 && (
+      {displayAssessments.length === 0 && (
         <div className="rounded-[24px] border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <div className="mx-auto mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-gray-300 dark:text-gray-600">ASSESSMENTS</div>
           <p className="text-gray-500 dark:text-gray-400">{c.noAssessments}</p>

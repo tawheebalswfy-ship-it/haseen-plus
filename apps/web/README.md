@@ -50,11 +50,11 @@ Create `apps/web/.env` with:
 ```env
 VITE_SUPABASE_URL=<provided>
 VITE_SUPABASE_ANON_KEY=<provided>
-VITE_API_BASE_URL=<provided>
+VITE_API_URL=<provided>
 VITE_API_KEY=<provided>
 ```
 
-`VITE_API_BASE_URL` should point to the model API, which exposes `GET /health` and `POST /analyze`.
+Leave `VITE_API_URL` empty when the deployed frontend is served behind Nginx proxying `GET /health` and `POST /analyze`. Set it only when the frontend must call a separate backend origin during local development.
 
 ## Database Setup
 

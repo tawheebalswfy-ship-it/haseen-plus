@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useComplianceStore } from "../store";
 import { FRAMEWORK_COLORS, NCA_CONTROLS } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
+import { buildPolicyAssessments, getAnalyzedPolicies, getPolicyGaps } from "../../../lib/policyAnalysis";
 
 type RiskCell = { impact: number; likelihood: number; count: number; items: string[] };
 
@@ -31,10 +33,32 @@ function riskColor(level: string) {
 }
 
 export default function RiskDashboardPage() {
-  const { assessments, tasks } = useComplianceStore();
+  const { assessments, tasks, policies, loading, error } = useComplianceStore();
   const { t } = useLanguage();
   const c = t.compliance.risk;
   const [selectedCell, setSelectedCell] = useState<RiskCell | null>(null);
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-[24px] border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-400 border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading risk data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-[24px] border border-red-200 bg-red-50 p-8 text-center shadow-sm dark:border-red-900/40 dark:bg-red-950/20">
+          <h1 className="text-lg font-semibold text-red-700 dark:text-red-300">Could not load risk data</h1>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const IMPACT_LABELS = [c.negligible, c.minor, c.moderate, c.major, c.catastrophic];
   const LIKELIHOOD_LABELS = [c.rare, c.unlikely, c.possible, c.likely, c.almostCertain];
@@ -42,8 +66,10 @@ export default function RiskDashboardPage() {
   // Generate risk items from assessments and tasks
   const riskItems: { name: string; impact: number; likelihood: number; framework?: string }[] = [];
 
+  const riskAssessments = assessments.length > 0 ? assessments : buildPolicyAssessments(policies);
+
   // From non-compliant controls
-  assessments.forEach((a) => {
+  riskAssessments.forEach((a) => {
     (a.results || []).forEach((r) => {
       if (r.status === "non_compliant") {
         const ctrl = (NCA_CONTROLS[a.framework] || []).find((c) => c.id === r.control_id);
@@ -76,6 +102,8 @@ export default function RiskDashboardPage() {
     });
   });
 
+  const analyzedPolicies = getAnalyzedPolicies(policies);
+  const policyGapCount = analyzedPolicies.reduce((sum, policy) => sum + getPolicyGaps(policy).length, 0);
   const hasRealData = riskItems.length > 0;
 
   // Build 5x5 grid
@@ -104,7 +132,7 @@ export default function RiskDashboardPage() {
 
   // ECC risk summary
   const eccItems = riskItems.filter((r) => "framework" in r && r.framework === "ECC");
-  const eccAssessments = assessments.filter((a) => a.framework === "ECC");
+  const eccAssessments = riskAssessments.filter((a) => a.framework === "ECC");
   const eccLatest = eccAssessments[eccAssessments.length - 1];
   const eccRisk = {
     framework: "ECC",
@@ -128,11 +156,13 @@ export default function RiskDashboardPage() {
           <div className="mx-auto mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-gray-300 dark:text-gray-600">RISK</div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{c.title}</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
-            Run an ECC assessment with analyzed policies to populate the risk heat map with real compliance data.
+            {analyzedPolicies.length > 0 && policyGapCount === 0
+              ? "No risk gaps detected from analyzed policies."
+              : "Upload and analyze policies to populate the risk heat map with real compliance data."}
           </p>
-          <a href="/dashboard/assessments" className="inline-flex items-center rounded-full bg-gray-900 dark:bg-white px-4 py-2 text-sm font-semibold text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 no-underline">
-            Run Assessment
-          </a>
+          <Link to="/dashboard/policies?open=true" className="inline-flex items-center rounded-full bg-gray-900 dark:bg-white px-4 py-2 text-sm font-semibold text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 no-underline">
+            Upload Policy
+          </Link>
         </div>
       ) : (
       <>
