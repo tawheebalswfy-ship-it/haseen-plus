@@ -36,3 +36,5 @@ ml/models/**/*.pt
 ml/models/**/*.pth
 ml/models/**/*.bin
 apps/web/dist
+
+*.log
