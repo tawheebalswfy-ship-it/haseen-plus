@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import BrandLogo, { BRAND_TAGLINE } from "../components/BrandLogo";
 
 type AuthMode = "sign-in" | "sign-up" | "forgot-password" | "reset-password";
 type SuccessState = "sign-up" | "forgot-password" | "password-updated" | null;
@@ -207,10 +208,9 @@ export function Auth() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
         <div className="relative z-10 flex max-w-sm flex-col items-center px-10 text-center">
-          <img src="/logo.png" alt="AICG Logo" className="mb-6 h-20 w-20" />
-          <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">AICG</h1>
-          <p className="mb-8 text-sm leading-relaxed text-gray-400">
-            AI-Powered Compliance Guard for Adherence with Cybersecurity Authority Regulations in KSA
+          <BrandLogo className="mb-6 px-5 py-4" imageClassName="h-20 max-w-64" />
+          <p className="mb-8 text-sm font-medium leading-relaxed text-gray-300">
+            {BRAND_TAGLINE}
           </p>
 
           <div className="flex w-full flex-col gap-4 text-left">
@@ -248,7 +248,7 @@ export function Auth() {
             </svg>
             {t.nav.home}
           </Link>
-          <img src="/logo.png" alt="AICG" className="h-8 w-8 lg:hidden" />
+          <BrandLogo compact className="px-2 py-1 lg:hidden" imageClassName="h-7 max-w-24" />
         </div>
 
         <div className="flex flex-1 items-center justify-center px-6 py-8 sm:px-10">

@@ -5,7 +5,7 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 import { policyClassifierAPI, getComplianceLabel, getComplianceColor } from "../../../lib/api";
 import type { AnalyzeResponse, GapDetail } from "../../../lib/api";
 import { extractTextFromFile } from "../../../lib/extract";
-import { supabase } from "../../../lib/supabase";
+import { getPolicyFileUrl, uploadPolicyFile } from "../../../lib/storage";
 import { useAuth } from "../../../contexts/AuthContext";
 
 export default function PoliciesPage() {
@@ -86,25 +86,18 @@ export default function PoliciesPage() {
           throw new Error("Could not extract text from file");
         }
 
-        // Step 1b: Upload original file to Supabase Storage
+        // Step 1b: Upload original file to private Supabase Storage
         setUploadStep("uploading");
         try {
-          const ext = selectedFile.name.split(".").pop() || "pdf";
-          const filePath = `${user?.id ?? "anon"}/${crypto.randomUUID()}.${ext}`;
-          const { error: uploadError } = await supabase.storage
-            .from("policy-files")
-            .upload(filePath, selectedFile, {
-              contentType: selectedFile.type || "application/octet-stream",
-              upsert: false,
-            });
+          if (!user?.id) {
+            throw new Error("User session is required to upload a policy file");
+          }
+          const { path, error: uploadError } = await uploadPolicyFile(user.id, selectedFile);
 
           if (!uploadError) {
-            const { data: urlData } = supabase.storage
-              .from("policy-files")
-              .getPublicUrl(filePath);
-            fileUrl = urlData?.publicUrl;
+            fileUrl = path;
           } else {
-            console.warn("File upload to storage failed (continuing without):", uploadError.message);
+            console.warn("File upload to storage failed (continuing without):", uploadError);
           }
         } catch (storageErr) {
           console.warn("Storage upload error (continuing):", storageErr);
@@ -221,6 +214,15 @@ export default function PoliciesPage() {
   };
 
   const canUpload = newTitle.trim() && (selectedFile || pastedText.trim()) && !isUploading;
+
+  const openPolicyFile = async (filePath: string) => {
+    const { url, error } = await getPolicyFileUrl(filePath);
+    if (error || !url) {
+      console.error("Failed to create signed policy file URL:", error);
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -463,6 +465,14 @@ export default function PoliciesPage() {
                       {locale === "ar" ? "عرض النص" : "View Text"}
                     </button>
                   )}
+                  {policy.file_url && (
+                    <button
+                      onClick={() => openPolicyFile(policy.file_url as string)}
+                      className="text-gray-500 hover:text-gray-700 cursor-pointer border-0 bg-transparent dark:text-gray-400"
+                    >
+                      Open File
+                    </button>
+                  )}
                   {policy.status !== "analyzing" && (
                     <button
                       onClick={() => handleReanalyze(policy.id, policy.title)}
@@ -667,7 +677,7 @@ export default function PoliciesPage() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".pdf,.docx,.txt,.csv,.md"
+                  accept=".pdf,.docx,.txt,.csv"
                   className="hidden"
                   onChange={handleFileSelect}
                 />

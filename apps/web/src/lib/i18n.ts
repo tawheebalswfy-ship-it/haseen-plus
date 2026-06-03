@@ -323,7 +323,7 @@ export const translations = {
     },
     footer: {
       description:
-        "AI-Powered Compliance Guard for Adherence with Cybersecurity Authority Regulations in Saudi Arabia.",
+        "Compliance at its Smartest.",
       product: "Product",
       company: "Company",
       documentation: "API Documentation",
@@ -344,8 +344,8 @@ export const translations = {
       sendResetLink: "Send Reset Link",
       resetPassword: "Reset Password",
       resetPasswordSubtitle: "Choose a new password for your account.",
-      signInSubtitle: "Sign in to your AICG account",
-      signUpSubtitle: "Create your AICG account",
+      signInSubtitle: "Sign in to your Haseen Plus+ account",
+      signUpSubtitle: "Create your Haseen Plus+ account",
       fullName: "Full Name",
       fullNamePlaceholder: "Enter your full name",
       email: "Email",
@@ -720,7 +720,7 @@ export const translations = {
     },
     footer: {
       description:
-        "حارس الامتثال المدعوم بالذكاء الاصطناعي للالتزام بأنظمة هيئة الأمن السيبراني في المملكة العربية السعودية.",
+        "Compliance at its Smartest.",
       product: "المنتج",
       company: "الشركة",
       documentation: "وثائق API",
@@ -741,8 +741,8 @@ export const translations = {
       sendResetLink: "إرسال رابط إعادة التعيين",
       resetPassword: "إعادة تعيين كلمة المرور",
       resetPasswordSubtitle: "اختر كلمة مرور جديدة لحسابك.",
-      signInSubtitle: "سجّل الدخول إلى حسابك في AICG",
-      signUpSubtitle: "أنشئ حسابك في AICG",
+      signInSubtitle: "سجّل الدخول إلى حسابك في Haseen Plus+",
+      signUpSubtitle: "أنشئ حسابك في Haseen Plus+",
       fullName: "الاسم الكامل",
       fullNamePlaceholder: "أدخل اسمك الكامل",
       email: "البريد الإلكتروني",

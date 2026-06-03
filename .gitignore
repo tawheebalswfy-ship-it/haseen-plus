@@ -6,6 +6,7 @@ iso-policy-project/
 .env.*
 !.env.example
 !.env.*.example
+apps/web/env
 
 # Node
 node_modules/
@@ -34,3 +35,4 @@ ml/models/**/*.safetensors
 ml/models/**/*.pt
 ml/models/**/*.pth
 ml/models/**/*.bin
+apps/web/dist

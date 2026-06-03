@@ -83,7 +83,7 @@ MODEL_PATH = resolve_model_path()
 MAX_LENGTH = 512
 API_KEY = os.getenv("API_KEY", "")
 
-GAP_LABELS = [
+DEFAULT_GAP_LABELS = [
     "GAP_PP_001", "GAP_PP_002", "GAP_PP_003", "GAP_PP_004",
     "GAP_PP_005", "GAP_PP_006", "GAP_PP_007", "GAP_PP_008",
     "GAP_RA_001", "GAP_RA_002", "GAP_RA_003", "GAP_RA_004",
@@ -109,7 +109,9 @@ GAP_DESCRIPTIONS = {
     "GAP_RA_008": "Missing integration with project management",
 }
 
-SEVERITY_WEIGHTS = {
+DEFAULT_GAP_DESCRIPTIONS = GAP_DESCRIPTIONS
+
+DEFAULT_SEVERITY_WEIGHTS = {
     "GAP_PP_001": 3, "GAP_PP_002": 2, "GAP_PP_003": 2, "GAP_PP_004": 4,
     "GAP_PP_005": 4, "GAP_PP_006": 3, "GAP_PP_007": 2, "GAP_PP_008": 2,
     "GAP_RA_001": 4, "GAP_RA_002": 3, "GAP_RA_003": 3, "GAP_RA_004": 3,
@@ -310,7 +312,47 @@ def normalize_state_dict_keys(state_dict: dict[str, torch.Tensor]) -> dict[str, 
     return normalized
 
 
-def validate_gap_checkpoint(state_dict: dict[str, torch.Tensor]) -> None:
+def get_config_gap_labels(config: dict | None) -> list[str]:
+    labels = config.get("gap_labels") if config else None
+    if isinstance(labels, list) and labels and all(isinstance(label, str) for label in labels):
+        return labels
+    return DEFAULT_GAP_LABELS
+
+
+def get_model_gap_labels() -> list[str]:
+    return get_config_gap_labels(model_config)
+
+
+def get_domain_gap_ids(domain: str) -> list[str]:
+    if model_config:
+        domain_groups = model_config.get("domain_groups")
+        if isinstance(domain_groups, dict):
+            labels = domain_groups.get(domain)
+            if isinstance(labels, list) and all(isinstance(label, str) for label in labels):
+                return labels
+
+    if domain == "password_policy":
+        return DEFAULT_GAP_LABELS[:8]
+    if domain == "risk_assessment":
+        return DEFAULT_GAP_LABELS[8:]
+    return []
+
+
+def get_gap_description(gap_id: str) -> str:
+    if model_config:
+        descriptions = model_config.get("gap_descriptions")
+        if isinstance(descriptions, dict):
+            description = descriptions.get(gap_id)
+            if isinstance(description, str):
+                return description
+    return DEFAULT_GAP_DESCRIPTIONS.get(gap_id, gap_id)
+
+
+def get_severity_weight(gap_id: str) -> int:
+    return DEFAULT_SEVERITY_WEIGHTS.get(gap_id, 1)
+
+
+def validate_gap_checkpoint(state_dict: dict[str, torch.Tensor], expected_num_gaps: int) -> None:
     """Fail fast with a useful error if the uploaded artifact is not the gap detector."""
     # Enhanced model head: 768→512→256→16
     expected_head = {
@@ -320,8 +362,8 @@ def validate_gap_checkpoint(state_dict: dict[str, torch.Tensor]) -> None:
         "classifier.1.bias": (512,),           # BatchNorm1d
         "classifier.4.weight": (256, 512),
         "classifier.4.bias": (256,),
-        "classifier.7.weight": (len(GAP_LABELS), 256),
-        "classifier.7.bias": (len(GAP_LABELS),),
+        "classifier.7.weight": (expected_num_gaps, 256),
+        "classifier.7.bias": (expected_num_gaps,),
     }
 
     missing = [key for key in expected_head if key not in state_dict]
@@ -449,7 +491,12 @@ def predict_chunk(text: str) -> dict[str, float]:
     )
     logits = gap_model(inputs["input_ids"], inputs["attention_mask"])
     probs = torch.sigmoid(logits).squeeze(0).cpu().numpy()
-    return {gap: round(float(probs[i]), 4) for i, gap in enumerate(GAP_LABELS)}
+    labels = get_model_gap_labels()
+    if len(probs) != len(labels):
+        raise RuntimeError(
+            f"Model output dimension mismatch: got {len(probs)} probabilities for {len(labels)} labels"
+        )
+    return {gap: round(float(probs[i]), 4) for i, gap in enumerate(labels)}
 
 
 def build_domain_result(
@@ -466,9 +513,9 @@ def build_domain_result(
         }
 
     detected_gaps = [g for g in gap_ids if aggregated[g]["detected"]]
-    domain_weight_total = sum(SEVERITY_WEIGHTS[g] for g in gap_ids)
+    domain_weight_total = sum(get_severity_weight(g) for g in gap_ids)
     weighted_penalty = sum(
-        SEVERITY_WEIGHTS[g] * float(aggregated[g]["probability"])
+        get_severity_weight(g) * float(aggregated[g]["probability"])
         for g in detected_gaps
     )
     domain_score = round(max(0.0, 1.0 - weighted_penalty / domain_weight_total), 4)
@@ -480,7 +527,7 @@ def build_domain_result(
         "details": [
             {
                 "gap_id": g,
-                "description": GAP_DESCRIPTIONS[g],
+                "description": get_gap_description(g),
                 "confidence": aggregated[g]["probability"],
             }
             for g in detected_gaps
@@ -513,7 +560,8 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
 
     # 3. Aggregate: max probability across chunks for each gap
     aggregated = {}
-    for gap_id in GAP_LABELS:
+    labels = get_model_gap_labels()
+    for gap_id in labels:
         max_prob = max(cr[gap_id] for cr in chunk_results)
         gap_threshold = per_label_thresholds.get(gap_id, threshold)
         aggregated[gap_id] = {
@@ -526,8 +574,12 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     pp_applicable = "password_policy" in domains or len(domains) == 0
     ra_applicable = "risk_assessment" in domains or len(domains) == 0
 
-    password_policy = build_domain_result(GAP_LABELS[:8], aggregated, pp_applicable)
-    risk_assessment = build_domain_result(GAP_LABELS[8:], aggregated, ra_applicable)
+    password_policy = build_domain_result(
+        get_domain_gap_ids("password_policy"), aggregated, pp_applicable
+    )
+    risk_assessment = build_domain_result(
+        get_domain_gap_ids("risk_assessment"), aggregated, ra_applicable
+    )
 
     pp_gaps = password_policy["gaps_detected"]
     ra_gaps = risk_assessment["gaps_detected"]
@@ -544,13 +596,13 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     # Overall score: confidence-weighted penalty across applicable domains only
     applicable_gaps = []
     if pp_applicable:
-        applicable_gaps.extend(GAP_LABELS[:8])
+        applicable_gaps.extend(get_domain_gap_ids("password_policy"))
     if ra_applicable:
-        applicable_gaps.extend(GAP_LABELS[8:])
+        applicable_gaps.extend(get_domain_gap_ids("risk_assessment"))
 
-    total_weight = sum(SEVERITY_WEIGHTS[g] for g in applicable_gaps) or 1
+    total_weight = sum(get_severity_weight(g) for g in applicable_gaps) or 1
     weighted_penalty = sum(
-        SEVERITY_WEIGHTS[g] * float(aggregated[g]["probability"])
+        get_severity_weight(g) * float(aggregated[g]["probability"])
         for g in all_gaps
     )
     score = round(max(0.0, 1.0 - weighted_penalty / total_weight), 4)
@@ -564,7 +616,7 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
         "password_policy": password_policy,
         "risk_assessment": risk_assessment,
         "all_gap_probabilities": {
-            g: aggregated[g]["probability"] for g in GAP_LABELS
+            g: aggregated[g]["probability"] for g in labels
         },
     }
 
@@ -589,6 +641,14 @@ async def lifespan(app: FastAPI):
     with open(config_path, "r", encoding="utf-8") as f:
         model_config = json.load(f)
 
+    configured_labels = get_config_gap_labels(model_config)
+    configured_num_gaps = int(model_config.get("num_gaps", len(configured_labels)))
+    if configured_num_gaps != len(configured_labels):
+        raise ValueError(
+            "Model config mismatch: "
+            f"num_gaps={configured_num_gaps}, gap_labels={len(configured_labels)}"
+        )
+
     # Load tokenizer
     logger.info("Loading tokenizer from %s …", MODEL_PATH)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
@@ -598,13 +658,14 @@ async def lifespan(app: FastAPI):
     logger.info("Loading gap detection model…")
     gap_model = GapDetectionModel(
         model_source=resolve_model_source(model_config),
-        num_gaps=model_config.get("num_gaps", len(GAP_LABELS)),
+        num_gaps=configured_num_gaps,
         dropout_rate=model_config.get("dropout_rate", 0.3),
+        freeze_layers=model_config.get("freeze_layers", 8),
     )
     state_dict = load_gap_model_weights(MODEL_PATH)
     state_dict = extract_model_state_dict(state_dict)
     state_dict = normalize_state_dict_keys(state_dict)
-    validate_gap_checkpoint(state_dict)
+    validate_gap_checkpoint(state_dict, configured_num_gaps)
     try:
         gap_model.load_state_dict(state_dict, assign=True)
     except TypeError:
@@ -617,7 +678,7 @@ async def lifespan(app: FastAPI):
     total = time.time() - start
     logger.info(
         "Model loaded ✓ — %d gap labels — startup: %.2f seconds",
-        model_config.get("num_gaps", len(GAP_LABELS)),
+        configured_num_gaps,
         total,
     )
 
@@ -740,8 +801,8 @@ def health():
         model_loaded=gap_model is not None,
         model_path=MODEL_PATH,
         model_type="gap_detection_multilabel",
-        num_gaps=len(GAP_LABELS),
-        gap_labels=GAP_LABELS,
+        num_gaps=len(get_model_gap_labels()),
+        gap_labels=get_model_gap_labels(),
     )
 
 

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
+import BrandLogo, { BRAND_NAME } from "./BrandLogo";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -10,11 +11,8 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           {/* Brand */}
           <div className="flex items-center gap-2.5">
-            <Link to="/" className="flex items-center gap-2 no-underline">
-              <img src="/logo.png" alt="AICG" className="h-7 w-7" />
-              <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-                AICG
-              </span>
+            <Link to="/" className="flex items-center no-underline">
+              <BrandLogo compact className="px-2.5 py-1.5" />
             </Link>
           </div>
 
@@ -29,7 +27,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="text-xs text-gray-400 dark:text-gray-500">
-            &copy; {new Date().getFullYear()} AICG. {t.footer.rights}
+            &copy; {new Date().getFullYear()} {BRAND_NAME}. {t.footer.rights}
           </p>
         </div>
       </div>

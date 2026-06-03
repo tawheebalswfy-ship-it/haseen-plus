@@ -25,9 +25,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isScreenshotMode()) {
       setSession(null);
       setUser({
-        id: "aicg-demo-user",
-        email: "report-demo@aicg.sa",
-        user_metadata: { full_name: "AICG Demo User" },
+        id: "haseen-plus-demo-user",
+        email: "report-demo@haseenplus.sa",
+        user_metadata: { full_name: "Haseen Plus+ Demo User" },
         app_metadata: {},
         aud: "authenticated",
         created_at: new Date().toISOString(),

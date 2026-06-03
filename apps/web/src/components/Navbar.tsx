@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
+import BrandLogo from "./BrandLogo";
 
 export default function Navbar() {
   const { t, toggleLanguage } = useLanguage();
@@ -12,11 +13,8 @@ export default function Navbar() {
         {/* Logo */}
 
         
-        <Link to="/" className="flex items-center gap-2 no-underline">
-          <img src="/logo.png" alt="AICG" className="h-7 w-7" />
-          <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-            AICG
-          </span>
+        <Link to="/" className="flex items-center no-underline">
+          <BrandLogo compact className="px-2.5 py-1.5" />
         </Link>
 
         {/* Nav Links */}

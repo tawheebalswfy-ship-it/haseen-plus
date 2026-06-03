@@ -566,7 +566,7 @@ export default function AssessmentsPage() {
                 )}
               </div>
             ))}
-            <input ref={evidenceRef} type="file" accept=".pdf,.doc,.docx,.txt,.csv,.xlsx,.png,.jpg,.jpeg,.gif,.webp,.svg" className="hidden" onChange={(e) => evidenceControl && handleEvidenceUpload(evidenceControl, e)} />
+            <input ref={evidenceRef} type="file" accept=".pdf,.docx,.txt,.csv,.xlsx,.png,.jpg,.jpeg,.gif" className="hidden" onChange={(e) => evidenceControl && handleEvidenceUpload(evidenceControl, e)} />
           </div>
         )}
 

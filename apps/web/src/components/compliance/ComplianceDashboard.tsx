@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
+import BrandLogo from "../BrandLogo";
 
 const navIcons = {
   dashboard: (
@@ -123,10 +124,7 @@ export default function ComplianceDashboard({ children }: ComplianceDashboardPro
         <div className="flex h-full flex-col bg-gray-50 border-e border-gray-200 dark:border-gray-800 dark:bg-gray-950">
           {/* Logo area */}
           <div className="flex h-16 items-center gap-2.5 px-5">
-            <img src="/logo.png" alt="AICG" className="h-8 w-8 rounded-lg" />
-            <span className="text-sm font-bold tracking-tight text-gray-900 dark:text-white">
-              AICG
-            </span>
+            <BrandLogo compact className="px-2 py-1" imageClassName="h-7 max-w-24" />
             <button
               className="lg:hidden ms-auto p-1 rounded text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer border-0 bg-transparent"
               onClick={() => setSidebarOpen(false)}
