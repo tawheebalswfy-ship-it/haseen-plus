@@ -27,7 +27,97 @@
   },
   "layer_norm_eps": 1e-12,
   "max_position_embeddings": 512,
+  "model_name": "xlm-roberta-base",
   "model_type": "bert",
+  "num_gaps": 32,
+  "gap_labels": [
+    "GAP_AC_001",
+    "GAP_AC_002",
+    "GAP_AM_001",
+    "GAP_AM_002",
+    "GAP_BC_001",
+    "GAP_BC_002",
+    "GAP_DP_001",
+    "GAP_DP_002",
+    "GAP_IR_001",
+    "GAP_IR_002",
+    "GAP_LM_001",
+    "GAP_LM_002",
+    "GAP_PP_001",
+    "GAP_PP_002",
+    "GAP_PP_003",
+    "GAP_PP_004",
+    "GAP_PP_005",
+    "GAP_PP_006",
+    "GAP_PP_007",
+    "GAP_PP_008",
+    "GAP_RA_001",
+    "GAP_RA_002",
+    "GAP_RA_003",
+    "GAP_RA_004",
+    "GAP_RA_005",
+    "GAP_RA_006",
+    "GAP_RA_007",
+    "GAP_RA_008",
+    "GAP_TP_001",
+    "GAP_TP_002",
+    "GAP_VM_001",
+    "GAP_VM_002"
+  ],
+  "domain_groups": {
+    "access_control": [
+      "GAP_AC_001",
+      "GAP_AC_002"
+    ],
+    "asset_management": [
+      "GAP_AM_001",
+      "GAP_AM_002"
+    ],
+    "business_continuity": [
+      "GAP_BC_001",
+      "GAP_BC_002"
+    ],
+    "data_protection": [
+      "GAP_DP_001",
+      "GAP_DP_002"
+    ],
+    "incident_response": [
+      "GAP_IR_001",
+      "GAP_IR_002"
+    ],
+    "log_management": [
+      "GAP_LM_001",
+      "GAP_LM_002"
+    ],
+    "password_policy": [
+      "GAP_PP_001",
+      "GAP_PP_002",
+      "GAP_PP_003",
+      "GAP_PP_004",
+      "GAP_PP_005",
+      "GAP_PP_006",
+      "GAP_PP_007",
+      "GAP_PP_008"
+    ],
+    "risk_assessment": [
+      "GAP_RA_001",
+      "GAP_RA_002",
+      "GAP_RA_003",
+      "GAP_RA_004",
+      "GAP_RA_005",
+      "GAP_RA_006",
+      "GAP_RA_007",
+      "GAP_RA_008"
+    ],
+    "third_party": [
+      "GAP_TP_001",
+      "GAP_TP_002"
+    ],
+    "vulnerability_management": [
+      "GAP_VM_001",
+      "GAP_VM_002"
+    ]
+  },
   "num_attention_heads": 12,
   "num_hidden_layers": 12,
   "pad_token_id": 0,
