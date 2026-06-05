@@ -13,6 +13,27 @@ export interface PolicyDomainFinding {
   policies: string[];
 }
 
+export interface DomainCoverage {
+  id: string;
+  label: string;
+  assessed: boolean;
+  status: "compliant" | "needs_attention" | "not_assessed";
+  score?: number;
+  gapCount: number;
+  gaps: GapDetail[];
+}
+
+export interface NormalizedPolicyAnalysis {
+  score: number;
+  complianceStatus: "Compliant" | "Partially Compliant" | "Non-Compliant";
+  gapCount: number;
+  gaps: GapDetail[];
+  domains: DomainCoverage[];
+  affectedDomains: string[];
+  assessedDomains: string[];
+  recommendations: string[];
+}
+
 export function normalizeScore(score?: number | null): number {
   if (typeof score !== "number" || Number.isNaN(score)) return 0;
   const percent = score <= 1 ? score * 100 : score;
@@ -23,9 +44,241 @@ export function getAnalyzedPolicies(policies: Policy[]): Policy[] {
   return policies.filter((policy) => policy.status === "analyzed");
 }
 
+function getAnalysisRecord(policyOrAnalysis: Policy | Record<string, unknown> | undefined): Record<string, unknown> | undefined {
+  if (!policyOrAnalysis) return undefined;
+  const maybePolicy = policyOrAnalysis as Policy;
+  return (maybePolicy.analysis_result as Record<string, unknown> | undefined) ?? (policyOrAnalysis as Record<string, unknown>);
+}
+
+export function mapGapLabelToDomain(label?: string): string | undefined {
+  if (!label) return undefined;
+  const normalized = label.trim().toUpperCase();
+  const prefixMap: Record<string, string> = {
+    GAP_PP_: "password_policy",
+    GAP_RA_: "risk_assessment",
+    GAP_AC_: "access_control",
+    GAP_AM_: "asset_management",
+    GAP_BC_: "business_continuity",
+    GAP_DP_: "data_protection",
+    GAP_IR_: "incident_response",
+    GAP_LM_: "log_monitoring",
+    GAP_TP_: "third_party_security",
+    GAP_VM_: "vuln_management",
+  };
+  return Object.entries(prefixMap).find(([prefix]) => normalized.startsWith(prefix))?.[1];
+}
+
+function normalizeGap(raw: unknown, fallbackDomain?: string): GapDetail | undefined {
+  if (typeof raw === "string") {
+    const gapId = raw;
+    return {
+      gap_id: gapId,
+      label: gapId,
+      domain: fallbackDomain ?? mapGapLabelToDomain(gapId),
+      description: gapId,
+      confidence: 0,
+    };
+  }
+  if (!raw || typeof raw !== "object") return undefined;
+  const source = raw as Record<string, unknown>;
+  const gapId = String(source.gap_id ?? source.label ?? source.id ?? "").trim();
+  if (!gapId) return undefined;
+  const confidence = typeof source.confidence === "number"
+    ? source.confidence
+    : typeof source.probability === "number" ? source.probability : 0;
+  const domain = typeof source.domain === "string" ? source.domain : fallbackDomain ?? mapGapLabelToDomain(gapId);
+  return {
+    ...(source as Partial<GapDetail>),
+    gap_id: gapId,
+    label: typeof source.label === "string" ? source.label : gapId,
+    domain,
+    severity: typeof source.severity === "string" ? source.severity : undefined,
+    recommendation: typeof source.recommendation === "string" ? source.recommendation : undefined,
+    source: typeof source.source === "string" ? source.source : undefined,
+    description: String(source.description ?? source.title ?? gapId),
+    confidence,
+  };
+}
+
+export function extractAllGaps(policyOrAnalysis: Policy | Record<string, unknown> | undefined): GapDetail[] {
+  const result = getAnalysisRecord(policyOrAnalysis);
+  if (!result) return [];
+
+  const gaps = new Map<string, GapDetail>();
+  const addGap = (raw: unknown, fallbackDomain?: string) => {
+    const gap = normalizeGap(raw, fallbackDomain);
+    if (!gap) return;
+    const key = gap.gap_id;
+    const current = gaps.get(key);
+    if (!current || gap.confidence >= current.confidence) gaps.set(key, gap);
+  };
+
+  for (const key of ["detected_gaps", "gaps", "gaps_detected", "gap_labels"]) {
+    const value = result[key];
+    if (Array.isArray(value)) value.forEach((item) => addGap(item));
+  }
+
+  const domains = result.domains;
+  if (domains && typeof domains === "object") {
+    for (const [domainId, domainValue] of Object.entries(domains as Record<string, unknown>)) {
+      if (!domainValue || typeof domainValue !== "object") continue;
+      const domain = domainValue as Record<string, unknown>;
+      if (Array.isArray(domain.gaps)) domain.gaps.forEach((item) => addGap(item, domainId));
+      if (Array.isArray(domain.details)) domain.details.forEach((item) => addGap(item, domainId));
+      if (Array.isArray(domain.gaps_detected)) domain.gaps_detected.forEach((item) => addGap(item, domainId));
+    }
+  }
+
+  for (const domain of POLICY_DOMAINS) {
+    const value = result[domain.id];
+    if (!value || typeof value !== "object") continue;
+    const domainResult = value as Record<string, unknown>;
+    if (Array.isArray(domainResult.details)) domainResult.details.forEach((item) => addGap(item, domain.id));
+    if (Array.isArray(domainResult.gaps)) domainResult.gaps.forEach((item) => addGap(item, domain.id));
+    if (Array.isArray(domainResult.gaps_detected)) domainResult.gaps_detected.forEach((item) => addGap(item, domain.id));
+  }
+
+  return Array.from(gaps.values());
+}
+
+export function deriveComplianceStatus(
+  score: number,
+  gaps: GapDetail[] | number,
+  affectedDomains?: string[] | number,
+): NormalizedPolicyAnalysis["complianceStatus"] {
+  const gapCount = Array.isArray(gaps) ? gaps.length : gaps;
+  const affectedDomainCount = Array.isArray(affectedDomains) ? affectedDomains.length : affectedDomains ?? 0;
+  if (score === 0 || affectedDomainCount >= 8 || gapCount >= 12) return "Non-Compliant";
+  if (score === 100 && gapCount === 0) return "Compliant";
+  return "Partially Compliant";
+}
+
+export function deriveDomainScore(gapCount: number, assessed: boolean): number | undefined {
+  if (!assessed) return undefined;
+  if (gapCount <= 0) return 100;
+  if (gapCount === 1) return 85;
+  if (gapCount === 2) return 70;
+  return Math.max(40, 100 - gapCount * 15);
+}
+
+function normalizeBackendStatus(status: unknown): NormalizedPolicyAnalysis["complianceStatus"] | undefined {
+  if (typeof status !== "string") return undefined;
+  const value = status.toLowerCase().replace(/[_-]+/g, " ");
+  if (value === "compliant" || value === "fully compliant") return "Compliant";
+  if (value === "partially compliant" || value === "partial compliant") return "Partially Compliant";
+  if (value === "non compliant" || value === "noncompliant") return "Non-Compliant";
+  return undefined;
+}
+
+export function deriveDomainCoverage(policyOrAnalysis: Policy | Record<string, unknown> | undefined, locale: string = "en"): DomainCoverage[] {
+  const result = getAnalysisRecord(policyOrAnalysis);
+  const gaps = extractAllGaps(policyOrAnalysis);
+  const overallScore = normalizeScore(
+    typeof result?.compliance_score === "number"
+      ? result.compliance_score
+      : typeof result?.score === "number"
+        ? result.score
+        : typeof result?.overall_score === "number" ? result.overall_score : undefined
+  );
+  const gapsByDomain = new Map<string, GapDetail[]>();
+  for (const gap of gaps) {
+    const domain = gap.domain ?? mapGapLabelToDomain(gap.gap_id);
+    if (!domain) continue;
+    if (!gapsByDomain.has(domain)) gapsByDomain.set(domain, []);
+    gapsByDomain.get(domain)!.push(gap);
+  }
+
+  const assessed = new Set<string>();
+  const detected = result?.domains_detected;
+  if (Array.isArray(detected)) {
+    detected.forEach((domain) => {
+      if (typeof domain === "string" && POLICY_DOMAIN_BY_ID[domain]) assessed.add(domain);
+    });
+  }
+  if (result?.domains && typeof result.domains === "object") {
+    Object.entries(result.domains as Record<string, unknown>).forEach(([domainId, value]) => {
+      if (!POLICY_DOMAIN_BY_ID[domainId] || !value || typeof value !== "object") return;
+      const domainValue = value as Record<string, unknown>;
+      if (domainValue.assessed === true || domainValue.status !== "Not Assessed") assessed.add(domainId);
+      const gapCount = typeof domainValue.gap_count === "number" ? domainValue.gap_count : 0;
+      const status = typeof domainValue.status === "string" ? domainValue.status.toLowerCase() : "";
+      if (gapCount > 0 || status.includes("needs attention")) assessed.add(domainId);
+    });
+  }
+  const affected = result?.affected_domains;
+  if (Array.isArray(affected)) {
+    affected.forEach((domain) => {
+      if (typeof domain === "string" && POLICY_DOMAIN_BY_ID[domain]) assessed.add(domain);
+    });
+  }
+  gapsByDomain.forEach((_, domainId) => assessed.add(domainId));
+
+  return POLICY_DOMAINS.map((domain) => {
+    const domainResult = result?.domains && typeof result.domains === "object"
+      ? (result.domains as Record<string, Record<string, unknown> | undefined>)[domain.id]
+      : undefined;
+    const legacyDomain = result?.[domain.id] as Record<string, unknown> | undefined;
+    const rawScore = domainResult?.score ?? legacyDomain?.score;
+    const domainGaps = gapsByDomain.get(domain.id) ?? [];
+    const reportedGapCount = typeof domainResult?.gap_count === "number"
+      ? domainResult.gap_count
+      : typeof legacyDomain?.gap_count === "number" ? legacyDomain.gap_count : 0;
+    const affectedDomains = Array.isArray(result?.affected_domains) ? result.affected_domains : [];
+    const domainMarkedAffected = affectedDomains.includes(domain.id);
+    const statusText = typeof domainResult?.status === "string" ? domainResult.status.toLowerCase() : "";
+    const fallbackAffected = domainMarkedAffected || statusText.includes("needs attention");
+    const gapCount = Math.max(reportedGapCount, domainGaps.length, fallbackAffected ? 1 : 0);
+    const isAssessed = assessed.has(domain.id);
+    const score = overallScore === 0 && gapCount > 0
+      ? 0
+      : gapCount > 0
+      ? deriveDomainScore(gapCount, isAssessed)
+      : typeof rawScore === "number" ? normalizeScore(rawScore) : deriveDomainScore(gapCount, isAssessed);
+    return {
+      id: domain.id,
+      label: formatPolicyDomain(domain.id, locale),
+      assessed: isAssessed,
+      status: !isAssessed ? "not_assessed" : gapCount > 0 ? "needs_attention" : "compliant",
+      score,
+      gapCount,
+      gaps: domainGaps,
+    };
+  });
+}
+
+export function normalizePolicyAnalysis(policy: Policy, locale: string = "en"): NormalizedPolicyAnalysis {
+  const result = policy.analysis_result;
+  const gaps = extractAllGaps(policy);
+  const rawScore = result?.compliance_score ?? result?.score ?? policy.compliance_score ?? result?.overall_score;
+  const score = normalizeScore(typeof rawScore === "number" ? rawScore : undefined);
+  const gapCount = gaps.length;
+  const backendStatus = normalizeBackendStatus(result?.compliance_status ?? result?.overall_compliance ?? policy.category);
+  const recommendations = Array.isArray(result?.recommendations)
+    ? result.recommendations.filter((item): item is string => typeof item === "string")
+    : gaps.map((gap) => gap.recommendation).filter((item): item is string => typeof item === "string");
+  const domains = deriveDomainCoverage(policy, locale);
+  const affectedDomains = domains.filter((domain) => domain.gapCount > 0).map((domain) => domain.id);
+  const derivedStatus = deriveComplianceStatus(score, gapCount, affectedDomains);
+  const normalizedGapCount = Math.max(
+    gapCount,
+    typeof result?.gap_count === "number" ? result.gap_count : 0,
+    affectedDomains.length > 0 && score === 0 ? affectedDomains.length : 0
+  );
+  return {
+    score,
+    complianceStatus: derivedStatus === "Non-Compliant" ? "Non-Compliant" : backendStatus ?? derivedStatus,
+    gapCount: normalizedGapCount,
+    gaps,
+    domains,
+    affectedDomains,
+    assessedDomains: domains.filter((domain) => domain.assessed).map((domain) => domain.id),
+    recommendations,
+  };
+}
+
 export function getPolicyDomains(policy: Policy): string[] {
   const result = policy.analysis_result;
-  const domains = new Set<string>();
+  const domains = new Set(deriveDomainCoverage(policy).filter((domain) => domain.assessed).map((domain) => domain.id));
   const addDomain = (value: unknown) => {
     if (typeof value !== "string") return;
     const normalized = value.trim().toLowerCase().replace(/[\s-]+/g, "_");
@@ -36,49 +289,17 @@ export function getPolicyDomains(policy: Policy): string[] {
   const detected = result?.domains_detected;
   if (Array.isArray(detected)) detected.forEach(addDomain);
 
-  if (result) {
-    Object.keys(result).forEach(addDomain);
-    for (const domain of POLICY_DOMAINS) {
-      const domainResult = result[domain.id];
-      if (domainResult && typeof domainResult === "object") domains.add(domain.id);
-    }
-  }
-
-  getPolicyGaps(policy).forEach((gap) => detectDomainFromText(`${gap.gap_id} ${gap.description}`)?.forEach((id) => domains.add(id)));
+  getPolicyGaps(policy).forEach((gap) => {
+    const domain = gap.domain ?? mapGapLabelToDomain(gap.gap_id);
+    if (domain) domains.add(domain);
+    detectDomainFromText(`${gap.gap_id} ${gap.description}`)?.forEach((id) => domains.add(id));
+  });
 
   return Array.from(domains);
 }
 
 export function getPolicyGaps(policy: Policy): GapDetail[] {
-  const result = policy.analysis_result;
-  if (!result) return [];
-
-  const gaps = new Map<string, GapDetail>();
-  const addGap = (gap: unknown) => {
-    if (!gap || typeof gap !== "object") return;
-    const g = gap as Partial<GapDetail>;
-    if (!g.gap_id) return;
-    const current = gaps.get(g.gap_id);
-    const next: GapDetail = {
-      gap_id: g.gap_id,
-      description: g.description ?? g.gap_id,
-      confidence: typeof g.confidence === "number" ? g.confidence : 0,
-    };
-    if (!current || next.confidence > current.confidence) gaps.set(next.gap_id, next);
-  };
-
-  const flatGaps = result.gaps_detected;
-  if (Array.isArray(flatGaps)) flatGaps.forEach(addGap);
-
-  for (const key of POLICY_DOMAINS.map((domain) => domain.id)) {
-    const domainResult = result[key];
-    if (domainResult && typeof domainResult === "object") {
-      const details = (domainResult as Record<string, unknown>).details;
-      if (Array.isArray(details)) details.forEach(addGap);
-    }
-  }
-
-  return Array.from(gaps.values());
+  return extractAllGaps(policy);
 }
 
 function detectDomainFromText(text: string): string[] {
@@ -134,24 +355,20 @@ export function getPolicyDomainFindings(policies: Policy[], locale: string = "en
     return next;
   };
 
-  for (const policy of analyzed) {
-    const domains = getPolicyDomains(policy);
-    const gaps = getPolicyGaps(policy);
-    for (const domainId of domains) {
-      const item = ensure(domainId);
-      if (!item.policies.includes(policy.title)) item.policies.push(policy.title);
-      const score = getDomainScore(policy, domainId);
-      if (score !== undefined) item.score = item.score === undefined ? score : Math.round((item.score + score) / 2);
-    }
+  if (analyzed.length > 0) {
+    POLICY_DOMAINS.forEach((domain) => ensure(domain.id));
+  }
 
-    for (const gap of gaps) {
-      const gapDomains = detectDomainFromText(`${gap.gap_id} ${gap.description}`);
-      for (const domainId of gapDomains) {
-        const item = ensure(domainId);
-        if (!item.policies.includes(policy.title)) item.policies.push(policy.title);
-        item.gapCount += 1;
-        item.findings.push(`${gap.gap_id}: ${gap.description}`);
-      }
+  for (const policy of analyzed) {
+    const normalized = normalizePolicyAnalysis(policy, locale);
+    for (const domain of normalized.domains) {
+      const domainId = domain.id;
+      const item = ensure(domainId);
+      if (domain.assessed && !item.policies.includes(policy.title)) item.policies.push(policy.title);
+      const score = domain.score ?? getDomainScore(policy, domainId);
+      if (score !== undefined) item.score = item.score === undefined ? score : Math.round((item.score + score) / 2);
+      if (domain.gapCount > 0) item.gapCount += domain.gapCount;
+      domain.gaps.forEach((gap) => item.findings.push(`${gap.gap_id}: ${gap.description}`));
     }
   }
 
@@ -165,8 +382,6 @@ export function getPolicyDomainFindings(policies: Policy[], locale: string = "en
 }
 
 export function getPolicyGapCount(policy: Policy): number {
-  const resultCount = policy.analysis_result?.gap_count;
-  if (typeof resultCount === "number") return resultCount;
   return getPolicyGaps(policy).length;
 }
 
@@ -186,8 +401,11 @@ export function getPolicyMetrics(policies: Policy[]) {
 
 export function buildPolicyAssessment(policy: Policy): ComplianceAssessment {
   const controls = NCA_CONTROLS.ECC || [];
-  const domains = new Set(getPolicyDomains(policy));
-  const gaps = getPolicyGaps(policy);
+  const normalized = normalizePolicyAnalysis(policy);
+  const affectedDomains = normalized.domains.filter((domain) => domain.gapCount > 0).map((domain) => domain.id);
+  const assessedDomains = normalized.domains.filter((domain) => domain.assessed).map((domain) => domain.id);
+  const domains = new Set([...affectedDomains, ...assessedDomains]);
+  const gaps = normalized.gaps;
   const gapsPerControl = new Map<string, GapDetail[]>();
   const coverableControlIds = new Set<string>();
 
@@ -252,7 +470,7 @@ export function buildPolicyAssessment(policy: Policy): ComplianceAssessment {
     status: "completed",
     overall_score: normalizeScore(policy.compliance_score),
     policy_status: policy.category,
-    detected_domains: getPolicyDomains(policy),
+    detected_domains: [...affectedDomains, ...assessedDomains.filter((domain) => !affectedDomains.includes(domain))],
     findings: gaps.map((gap) => `${gap.gap_id}: ${gap.description}`),
     results,
     comments: [],
@@ -270,16 +488,18 @@ export function buildGapTasksFromPolicies(policies: Policy[]): RemediationTask[]
       const controlId = GAP_CONTROL_MAP[gap.gap_id];
       const control = (NCA_CONTROLS.ECC || []).find((item) => item.id === controlId);
       const policyScore = normalizeScore(policy.compliance_score);
-      const domain = detectDomainFromText(`${gap.gap_id} ${gap.description}`)[0] || getPolicyDomains(policy)[0];
+      const domain = gap.domain ?? mapGapLabelToDomain(gap.gap_id) ?? detectDomainFromText(`${gap.gap_id} ${gap.description}`)[0] ?? getPolicyDomains(policy)[0];
+      const domainLabel = domain ? formatPolicyDomain(domain, "en") : "Undetected";
+      const domainPhrase = domainLabel.toLowerCase();
       const priority: RemediationTask["priority"] =
         policyScore < 60 || gap.confidence >= 0.85 ? "high"
           : policyScore < 85 || gap.confidence >= 0.6 ? "medium"
             : "low";
-      const recommendedAction = `Address ${gap.gap_id}: ${gap.description}`;
+      const recommendedAction = `Address ${domainPhrase} gap: ${gap.gap_id}: ${gap.description}`;
       return {
         id: `policy-gap-${policy.id}-${gap.gap_id}`,
-        title: `Remediate ${formatPolicyDomain(domain || "policy", "en")}`,
-        description: `Related policy: ${policy.title}. Domain: ${domain ? formatPolicyDomain(domain, "en") : "Undetected"}. ${recommendedAction}. Due date: Suggested.`,
+        title: `Remediate ${domainLabel}`,
+        description: `Related policy: ${policy.title}. Domain: ${domainLabel}. Action: ${recommendedAction}. Due date: Suggested.`,
         control_id: controlId,
         related_policy: policy.title,
         domain,

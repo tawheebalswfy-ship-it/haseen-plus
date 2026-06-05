@@ -2,13 +2,9 @@
 ISO Policy Gap Detector — FastAPI Inference Service
 
 Serves a multi-label gap detection model:
-  XLM-RoBERTa → 16 sigmoid outputs (one per compliance gap)
+  XLM-RoBERTa → multi-label sigmoid outputs (one per compliance gap)
 
 Pipeline: Document → Chunk → Per-chunk prediction → Aggregate → Report
-
-Gaps cover two NCA ECC-2:2024 domains:
-  - Password Policy (ECC 2-2): GAP_PP_001–008
-  - Risk Assessment (ECC 1-5): GAP_RA_001–008
 
 Optimized for CPU deployment (Google Cloud Run).
 """
@@ -555,6 +551,7 @@ def detect_domains(text: str) -> list[str]:
 
 NEGATION_PATTERNS = [
     r"\bno\s+{keyword}\b",
+    r"\bno\s+{keyword}s\b",
     r"\bno\s+\w+\s+{keyword}\b",
     r"\bdoes\s+not\s+\w*\s*{keyword}\b",
     r"\bdo\s+not\s+\w*\s*{keyword}\b",
@@ -563,31 +560,134 @@ NEGATION_PATTERNS = [
     r"\bnot\s+\w*\s*{keyword}\b",
 ]
 
+EXPLICIT_NEGATIVE_DOMAIN_PHRASES = {
+    "password_policy": [
+        "no password policy",
+        "no mfa",
+        "mfa is not required",
+        "multi-factor authentication is not required",
+        "no account lockout",
+        "no privileged access management",
+    ],
+    "risk_assessment": [
+        "no risk assessment",
+        "no risk management",
+        "no risk register",
+        "no likelihood scale",
+        "no impact scale",
+    ],
+    "access_control": [
+        "no access review",
+        "no access control",
+        "does not review access",
+        "does not perform access review",
+        "access requests may be approved verbally",
+        "users may share accounts",
+        "shared accounts",
+        "privileged accounts are used for daily work",
+        "access reviews are not performed",
+        "terminated users may retain access",
+        "user access is not reviewed",
+        "no role-based access control",
+    ],
+    "asset_management": [
+        "no asset inventory",
+        "no inventory",
+        "does not maintain an asset inventory",
+    ],
+    "business_continuity": [
+        "no backups",
+        "no backup",
+        "no business continuity",
+        "no disaster recovery",
+        "backup testing is not documented",
+    ],
+    "data_protection": [
+        "no encryption",
+        "does not encrypt sensitive data",
+        "does not encrypt data",
+        "no data classification",
+    ],
+    "incident_response": [
+        "no incident response",
+        "no incident response plan",
+        "does not respond to incidents",
+    ],
+    "log_monitoring": [
+        "no log monitoring",
+        "does not collect logs",
+        "does not monitor logs",
+        "no logging",
+    ],
+    "third_party_security": [
+        "no vendor security review",
+        "does not assess vendors",
+        "no supplier security review",
+        "no third party security",
+        "vendors are selected mainly by cost",
+        "security assessments are not required",
+        "contracts may not include security clauses",
+        "vendor access is not reviewed",
+        "offboarding is not documented",
+        "vendors are not assessed",
+        "supplier security requirements are not included",
+    ],
+    "vuln_management": [
+        "no vulnerability scanning",
+        "does not perform vulnerability scanning",
+        "no patching",
+        "no vulnerability management",
+        "vulnerability scans are occasional",
+        "vulnerability scanning is not performed",
+        "patch timelines are not defined",
+        "critical vulnerabilities may remain open indefinitely",
+        "exceptions are not documented",
+        "risk acceptance is not required",
+        "no vulnerability register",
+        "patches are not tracked",
+    ],
+}
 
-def detect_explicit_negative_gaps(text: str, labels: list[str]) -> set[str]:
-    """Detect explicit non-compliance statements as a conservative fallback."""
-    lower = text.lower()
+
+def get_domain_fallback_gap(domain: str, labels: list[str]) -> str | None:
     label_set = set(labels)
+    domain_config = POLICY_DOMAINS.get(domain)
+    if domain_config:
+        fallback_label = domain_config["fallback_label"]
+        if fallback_label in label_set:
+            return fallback_label
+
+    domain_labels = get_domain_gap_ids(domain)
+    return domain_labels[0] if domain_labels else None
+
+
+def detect_explicit_negative_domains(text: str) -> set[str]:
+    """Detect clear domain-level statements that controls do not exist."""
+    lower = text.lower()
     detected: set[str] = set()
 
+    for domain, phrases in EXPLICIT_NEGATIVE_DOMAIN_PHRASES.items():
+        if any(phrase in lower for phrase in phrases):
+            detected.add(domain)
+
     for domain, domain_config in POLICY_DOMAINS.items():
-        matched = False
         for keyword in domain_config["keywords"]:
             escaped = re.escape(keyword)
             if any(re.search(pattern.format(keyword=escaped), lower) for pattern in NEGATION_PATTERNS):
-                matched = True
+                detected.add(domain)
                 break
-        if not matched:
-            continue
 
-        fallback_label = domain_config["fallback_label"]
-        if fallback_label in label_set:
-            detected.add(fallback_label)
-            continue
+    return detected
 
-        domain_labels = get_domain_gap_ids(domain)
-        if domain_labels:
-            detected.add(domain_labels[0])
+
+def detect_explicit_negative_gaps(text: str, labels: list[str]) -> set[str]:
+    """Detect explicit non-compliance statements as a conservative fallback."""
+    detected: set[str] = set()
+
+    for domain in detect_explicit_negative_domains(text):
+        fallback_gap = get_domain_fallback_gap(domain, labels)
+        if fallback_gap:
+            detected.add(fallback_gap)
 
     return detected
 
@@ -620,12 +720,22 @@ def build_domain_result(
     aggregated: dict[str, dict[str, float | bool]],
     applicable: bool,
 ) -> dict:
+    if not gap_ids:
+        return {
+            "gaps_detected": [],
+            "gap_count": 0,
+            "score": 1.0,
+            "details": [],
+            "assessed": False,
+        }
+
     if not applicable:
         return {
             "gaps_detected": [],
             "gap_count": 0,
             "score": 1.0,
             "details": [],
+            "assessed": False,
         }
 
     detected_gaps = [g for g in gap_ids if aggregated[g]["detected"]]
@@ -643,12 +753,34 @@ def build_domain_result(
         "details": [
             {
                 "gap_id": g,
+                "label": g,
+                "domain": get_gap_domain(g),
+                "severity": get_gap_severity(g),
                 "description": get_gap_description(g),
+                "recommendation": get_gap_recommendation(g),
                 "confidence": aggregated[g]["probability"],
             }
             for g in detected_gaps
         ],
+        "assessed": True,
     }
+
+
+def derive_compliance_score(gap_count: int, affected_domain_count: int, total_domains: int) -> tuple[int, str, str]:
+    if affected_domain_count >= min(8, total_domains) or gap_count >= 12:
+        return 0, "non_compliant", "Non-Compliant"
+    if gap_count == 0:
+        return 100, "compliant", "Compliant"
+    return max(1, 100 - gap_count * 5), "partially_compliant", "Partially Compliant"
+
+
+def derive_compliance(score: int, gap_count: int, affected_domain_count: int = 0, total_domains: int | None = None) -> tuple[str, str]:
+    domain_total = total_domains or len(POLICY_DOMAINS)
+    if score == 0 or affected_domain_count >= min(8, domain_total) or gap_count >= 12:
+        return "non_compliant", "Non-Compliant"
+    if score == 100 and gap_count == 0:
+        return "compliant", "Compliant"
+    return "partially_compliant", "Partially Compliant"
 
 
 def analyze_document(text: str, threshold: float = 0.6) -> dict:
@@ -677,6 +809,7 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     # 3. Aggregate: max probability across chunks for each gap
     aggregated = {}
     labels = get_model_gap_labels()
+    explicit_negative_domains = detect_explicit_negative_domains(text)
     explicit_negative_gaps = detect_explicit_negative_gaps(text, labels)
     for gap_id in labels:
         max_prob = max(cr[gap_id] for cr in chunk_results)
@@ -698,7 +831,7 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     logger.info("Top gap predictions=%s", top_predictions)
 
     # 4. Detect applicable domains and build report for all represented domains
-    domains = detect_domains(text)
+    domains = sorted(set(detect_domains(text)) | explicit_negative_domains)
     if not domains:
         domains = sorted({get_gap_domain(gap_id) for gap_id in labels if get_gap_domain(gap_id) != "unknown"})
 
@@ -709,6 +842,8 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
     }
 
     all_gaps = [gap_id for gap_id, data in aggregated.items() if data["detected"]]
+    affected_domains = sorted({get_gap_domain(gap_id) for gap_id in all_gaps if get_gap_domain(gap_id) != "unknown"})
+    classification_affected_domains = sorted(set(affected_domains) | explicit_negative_domains)
     detected_gap_details = [
         {
             "label": gap_id,
@@ -723,37 +858,41 @@ def analyze_document(text: str, threshold: float = 0.6) -> dict:
         for gap_id in all_gaps
     ]
 
-    # Compliance level (derived from gap count)
-    if len(all_gaps) == 0:
-        compliance = "compliant"
-    elif len(all_gaps) >= 6:
-        compliance = "non_compliant"
-    else:
-        compliance = "partially_compliant"
-
-    simple_gap_score = max(0, 100 - len(all_gaps) * 5)
-    if all_gaps:
-        score = round(simple_gap_score / 100, 4)
-    else:
-        score = 1.0
+    score_percent, compliance, compliance_status = derive_compliance_score(
+        gap_count=len(all_gaps),
+        affected_domain_count=len(classification_affected_domains),
+        total_domains=len(POLICY_DOMAINS),
+    )
+    score = round(score_percent / 100, 4)
 
     domains_payload = {
         domain: {
             "gap_count": result["gap_count"],
-            "score": result["score"],
-            "status": "Needs Attention" if result["gap_count"] else "No Gaps Detected",
+            "score": 0.0 if score_percent == 0 and result["gap_count"] else result["score"],
+            "status": "Not Assessed" if not result.get("assessed") else "Needs Attention" if result["gap_count"] else "Compliant",
+            "assessed": bool(result.get("assessed")),
             "gaps": result["details"],
         }
         for domain, result in domain_results.items()
-        if domain in domains or result["gap_count"] > 0
     }
+
+    logger.info(
+        "Analyze selected_gap_labels=%s affected_domains=%s classification_affected_domains=%s detected_gap_count=%d returned_score=%d returned_compliance_status=%s returned_domain_keys=%s",
+        all_gaps,
+        affected_domains,
+        classification_affected_domains,
+        len(detected_gap_details),
+        score_percent,
+        compliance_status,
+        sorted(domains_payload.keys()),
+    )
 
     return {
         "overall_compliance": compliance,
         "overall_score": score,
-        "score": round(score * 100),
-        "compliance_score": round(score * 100),
-        "compliance_status": "Fully Compliant" if compliance == "compliant" else "Non-Compliant" if compliance == "non_compliant" else "Partially Compliant",
+        "score": score_percent,
+        "compliance_score": score_percent,
+        "compliance_status": compliance_status,
         "gap_count": len(all_gaps),
         "num_chunks": len(chunks),
         "domains_detected": domains,
@@ -906,6 +1045,10 @@ class AnalyzeRequest(BaseModel):
 
 class GapDetail(BaseModel):
     gap_id: str
+    label: str | None = None
+    domain: str | None = None
+    severity: str | None = None
+    recommendation: str | None = None
     description: str
     confidence: float
 
@@ -1000,9 +1143,22 @@ def analyze(req: AnalyzeRequest, _: None = Depends(verify_api_key)):
     if gap_model is None:
         raise HTTPException(503, "Model not loaded")
 
+    if not req.text.strip():
+        raise HTTPException(400, "Policy text is empty. Upload TXT/PDF or paste readable policy text.")
+
+    logger.info("Analyze request received text_length=%d preview=%r", len(req.text), req.text[:200])
+
     start = time.perf_counter()
     result = analyze_document(req.text, threshold=req.threshold)
     elapsed = (time.perf_counter() - start) * 1000
+
+    logger.info(
+        "Analyze response gap_count=%d returned_score=%s compliance_status=%s domains_keys=%s",
+        result["gap_count"],
+        result["score"],
+        result["compliance_status"],
+        sorted(result["domains"].keys()),
+    )
 
     return AnalyzeResponse(inference_time_ms=round(elapsed, 2), **result)
 

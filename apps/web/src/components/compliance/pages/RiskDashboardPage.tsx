@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { useComplianceStore } from "../store";
 import { FRAMEWORK_COLORS, NCA_CONTROLS } from "../types";
 import { useLanguage } from "../../../contexts/LanguageContext";
-import { buildPolicyAssessments, getAnalyzedPolicies, getPolicyGaps } from "../../../lib/policyAnalysis";
+import { buildPolicyAssessments, getAnalyzedPolicies, getPolicyGaps, normalizePolicyAnalysis } from "../../../lib/policyAnalysis";
+import { formatPolicyDomain } from "../../../config/policyDomains";
 
 type RiskCell = { impact: number; likelihood: number; count: number; items: string[] };
+type RiskItem = { name: string; impact: number; likelihood: number; framework?: string };
 
 /** Deterministic hash for stable risk placement (no Math.random) */
 function stableHash(s: string): number {
@@ -63,35 +65,69 @@ export default function RiskDashboardPage() {
   const IMPACT_LABELS = [c.negligible, c.minor, c.moderate, c.major, c.catastrophic];
   const LIKELIHOOD_LABELS = [c.rare, c.unlikely, c.possible, c.likely, c.almostCertain];
 
-  // Generate risk items from assessments and tasks
-  const riskItems: { name: string; impact: number; likelihood: number; framework?: string }[] = [];
+  // Generate risk items from analyzed policy gaps first. This preserves one
+  // heatmap item per detected gap instead of collapsing multiple gaps by control.
+  const riskItems: RiskItem[] = [];
+  const analyzedPolicies = getAnalyzedPolicies(policies);
+
+  analyzedPolicies.forEach((policy) => {
+    const normalized = normalizePolicyAnalysis(policy);
+    normalized.gaps.forEach((gap) => {
+      const domain = gap.domain || normalized.assessedDomains[0] || "policy";
+      const severityImpact: Record<string, number> = { critical: 5, high: 4, medium: 3, low: 2 };
+      const confidence = gap.confidence <= 1 ? gap.confidence : gap.confidence / 100;
+      riskItems.push({
+        name: `${gap.gap_id}: ${gap.description} (${policy.title}, ${formatPolicyDomain(domain)})`,
+        impact: severityImpact[gap.severity || "medium"] ?? 3,
+        likelihood: Math.min(5, Math.max(1, Math.ceil(confidence * 5) || (2 + stableHash(gap.gap_id) % 3))),
+        framework: "ECC",
+      });
+    });
+  });
 
   const riskAssessments = assessments.length > 0 ? assessments : buildPolicyAssessments(policies);
 
-  // From non-compliant controls
-  riskAssessments.forEach((a) => {
-    (a.results || []).forEach((r) => {
-      if (r.status === "non_compliant") {
-        const ctrl = (NCA_CONTROLS[a.framework] || []).find((c) => c.id === r.control_id);
-        const priorityImpact: Record<string, number> = { critical: 5, high: 4, medium: 3, low: 2 };
-        riskItems.push({
-          name: `${r.control_id}: ${r.control_name}`,
-          impact: priorityImpact[ctrl?.priority || "high"],
-          likelihood: 3 + (stableHash(r.control_id) % 3), // 3-5 deterministic
-          framework: a.framework,
-        });
-      } else if (r.status === "partial") {
-        const ctrl = (NCA_CONTROLS[a.framework] || []).find((c) => c.id === r.control_id);
-        const priorityImpact: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
-        riskItems.push({
-          name: `${r.control_id}: ${r.control_name}`,
-          impact: priorityImpact[ctrl?.priority || "medium"],
-          likelihood: 1 + (stableHash(r.control_id) % 3), // 1-3 deterministic
-          framework: a.framework,
-        });
-      }
+  // Assessment-derived risks are a fallback for older data with no stored gaps.
+  if (riskItems.length === 0) {
+    riskAssessments.forEach((a) => {
+      (a.results || []).forEach((r) => {
+        if (r.status === "non_compliant") {
+          const ctrl = (NCA_CONTROLS[a.framework] || []).find((c) => c.id === r.control_id);
+          const priorityImpact: Record<string, number> = { critical: 5, high: 4, medium: 3, low: 2 };
+          riskItems.push({
+            name: `${r.control_id}: ${r.control_name}`,
+            impact: priorityImpact[ctrl?.priority || "high"],
+            likelihood: 3 + (stableHash(r.control_id) % 3),
+            framework: a.framework,
+          });
+        } else if (r.status === "partial") {
+          const ctrl = (NCA_CONTROLS[a.framework] || []).find((c) => c.id === r.control_id);
+          const priorityImpact: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
+          riskItems.push({
+            name: `${r.control_id}: ${r.control_name}`,
+            impact: priorityImpact[ctrl?.priority || "medium"],
+            likelihood: 1 + (stableHash(r.control_id) % 3),
+            framework: a.framework,
+          });
+        }
+      });
     });
-  });
+  }
+
+  if (import.meta.env.DEV) {
+    analyzedPolicies.forEach((policy) => {
+      const normalized = normalizePolicyAnalysis(policy);
+      console.info("[risk-dashboard] policy risk data", {
+        policyId: policy.id,
+        policyName: policy.title,
+        analysisKeys: Object.keys(policy.analysis_result ?? {}),
+        backendGapCount: policy.analysis_result?.gap_count,
+        renderedGapsCount: normalized.gaps.length,
+        renderedRiskItemsCount: riskItems.filter((item) => item.name.includes(policy.title)).length,
+        renderedDomainCount: normalized.domains.length,
+      });
+    });
+  }
 
   // From critical/high tasks
   tasks.filter((tk) => tk.status !== "completed" && (tk.priority === "critical" || tk.priority === "high")).forEach((tk) => {
@@ -102,7 +138,6 @@ export default function RiskDashboardPage() {
     });
   });
 
-  const analyzedPolicies = getAnalyzedPolicies(policies);
   const policyGapCount = analyzedPolicies.reduce((sum, policy) => sum + getPolicyGaps(policy).length, 0);
   const hasRealData = riskItems.length > 0;
 

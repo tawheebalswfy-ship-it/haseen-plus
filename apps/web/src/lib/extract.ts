@@ -4,6 +4,7 @@
  */
 
 import * as pdfjsLib from "pdfjs-dist";
+import { strFromU8, unzipSync } from "fflate";
 
 // Use the CDN-hosted worker to avoid bundling the 1.3 MB worker file
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
@@ -31,36 +32,50 @@ export async function extractTextFromPdf(file: File): Promise<string> {
 
 export async function extractTextFromDocx(file: File): Promise<string> {
   const buf = await file.arrayBuffer();
-  const bytes = new Uint8Array(buf);
-  const str = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
-
-  // A .docx is a ZIP; find <w:body> then extract <w:t> tags
-  const bodyStart = str.indexOf("<w:body");
-  if (bodyStart === -1) {
-    return str
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 30000);
+  let files: Record<string, Uint8Array>;
+  try {
+    files = unzipSync(new Uint8Array(buf));
+  } catch {
+    throw new Error("DOCX text could not be extracted. Please upload TXT/PDF or paste the text.");
   }
 
-  const bodyEnd = str.indexOf("</w:body>", bodyStart);
-  const bodyXml = str.slice(bodyStart, bodyEnd > 0 ? bodyEnd : undefined);
+  const documentXml = files["word/document.xml"];
+  if (!documentXml) {
+    throw new Error("DOCX text could not be extracted. Please upload TXT/PDF or paste the text.");
+  }
+
+  const bodyXml = strFromU8(documentXml);
 
   const parts: string[] = [];
-  const tPattern = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+  const tPattern = /<w:t[^>]*>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\/>|<\/w:p>/g;
   let m: RegExpExecArray | null;
   while ((m = tPattern.exec(bodyXml)) !== null) {
-    if (m[1]) parts.push(m[1]);
+    if (m[0] === "<w:tab/>") parts.push("\t");
+    else if (m[0] === "<w:br/>" || m[0] === "</w:p>") parts.push("\n");
+    else if (m[1]) {
+      parts.push(
+        m[1]
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&quot;/g, '"')
+          .replace(/&apos;/g, "'")
+      );
+    }
   }
 
-  return parts.length > 0
-    ? parts.join(" ")
-    : bodyXml
-        .replace(/<[^>]+>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim()
-        .slice(0, 30000);
+  const text = parts
+    .join("")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+
+  if (!text) {
+    throw new Error("DOCX text could not be extracted. Please upload TXT/PDF or paste the text.");
+  }
+
+  return text;
 }
 
 // ── Plain text extraction ──────────────────────────────────

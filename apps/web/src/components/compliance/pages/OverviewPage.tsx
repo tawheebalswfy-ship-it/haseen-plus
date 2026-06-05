@@ -19,6 +19,13 @@ export default function OverviewPage() {
   const metrics = getPolicyMetrics(policies);
   const averageScore = metrics.averageComplianceScore;
   const analyzedPolicies = metrics.policiesAnalyzed;
+  const assessmentCount = assessments.length > 0 ? assessments.length : analyzedPolicies;
+  const completedAssessmentCount = completedAssessments.length > 0 ? completedAssessments.length : analyzedPolicies;
+  const assessmentLabel = assessments.length > 0
+    ? `${completedAssessments.length} ${c.xCompleted}`
+    : analyzedPolicies > 0
+      ? isRtl ? "مشتقة من السياسات" : "policy-derived"
+      : `${completedAssessments.length} ${c.xCompleted}`;
   const gapsIdentified = metrics.gapsIdentified;
   const domainFindings = getPolicyDomainFindings(policies, locale);
 
@@ -27,6 +34,8 @@ export default function OverviewPage() {
     console.info("[dashboard] metrics", {
       totalPolicies: metrics.totalPolicies,
       policiesAnalyzed: metrics.policiesAnalyzed,
+      assessmentCount,
+      completedAssessmentCount,
       gapsIdentified: metrics.gapsIdentified,
       averageComplianceScore: metrics.averageComplianceScore,
       normalizedPolicyScores: policies.map((policy) => ({
@@ -35,7 +44,7 @@ export default function OverviewPage() {
         compliance_score: policy.compliance_score,
       })),
     });
-  }, [error, loading, metrics.averageComplianceScore, metrics.gapsIdentified, metrics.policiesAnalyzed, metrics.totalPolicies, policies]);
+  }, [assessmentCount, completedAssessmentCount, error, loading, metrics.averageComplianceScore, metrics.gapsIdentified, metrics.policiesAnalyzed, metrics.totalPolicies, policies]);
 
   if (loading) {
     return (
@@ -115,8 +124,8 @@ export default function OverviewPage() {
         >
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{c.assessments}</p>
-            <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">{assessments.length}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{completedAssessments.length} {c.xCompleted}</p>
+            <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">{assessmentCount}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{assessmentLabel}</p>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 flex-shrink-0">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

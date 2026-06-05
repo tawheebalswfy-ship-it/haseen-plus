@@ -7,7 +7,7 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 import type { GapDetail } from "../../../lib/api";
 import { useAuth } from "../../../contexts/AuthContext";
 import { uploadEvidenceFile, getEvidenceFileUrl, deleteEvidenceFile, downloadEvidenceFile } from "../../../lib/storage";
-import { buildPolicyAssessments } from "../../../lib/policyAnalysis";
+import { buildPolicyAssessments, normalizePolicyAnalysis } from "../../../lib/policyAnalysis";
 import { formatPolicyDomain } from "../../../config/policyDomains";
 
 export default function AssessmentsPage() {
@@ -103,32 +103,11 @@ export default function AssessmentsPage() {
     const allGaps: GapDetail[] = [];
 
     for (const p of analyzedPolicies) {
-      const ar = p.analysis_result as Record<string, unknown> | undefined;
-      if (!ar) continue;
-
-      // Read domains_detected from new analysis result
-      if (Array.isArray(ar.domains_detected)) {
-        for (const d of ar.domains_detected as string[]) detectedDomains.add(d);
-      }
-
-      // Collect gaps from domain-level results
-      const ppResult = ar.password_policy as Record<string, unknown> | undefined;
-      const raResult = ar.risk_assessment as Record<string, unknown> | undefined;
-      if (ppResult && Array.isArray(ppResult.details)) {
-        allGaps.push(...(ppResult.details as GapDetail[]));
-      }
-      if (raResult && Array.isArray(raResult.details)) {
-        allGaps.push(...(raResult.details as GapDetail[]));
-      }
-
-      // Also check flat gaps_detected array (backwards compatibility)
-      if (Array.isArray(ar.gaps_detected)) {
-        for (const g of ar.gaps_detected as GapDetail[]) {
-          if (!allGaps.some(existing => existing.gap_id === g.gap_id)) {
-            allGaps.push(g);
-          }
-        }
-      }
+      const normalized = normalizePolicyAnalysis(p, locale);
+      normalized.assessedDomains.forEach((domain) => detectedDomains.add(domain));
+      normalized.gaps.forEach((gap) => {
+        if (!allGaps.some((existing) => existing.gap_id === gap.gap_id)) allGaps.push(gap);
+      });
     }
 
     // Deduplicate gaps (keep highest confidence per gap_id)
@@ -692,7 +671,10 @@ export default function AssessmentsPage() {
 
       {/* Assessment Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {displayAssessments.map((a) => (
+        {displayAssessments.map((a) => {
+          const hasPolicyGaps = (a.findings?.length || 0) > 0;
+          const shownDomains = a.detected_domains || [];
+          return (
           <div key={a.id} onClick={() => setDetailId(a.id)} className="relative rounded-[24px] border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-all cursor-pointer dark:border-gray-800 dark:bg-gray-900 group">
             {!a.id.startsWith("policy-") && <button
               onClick={(e) => { e.stopPropagation(); if (window.confirm(c.confirmDelete)) deleteAssessment(a.id); }}
@@ -709,13 +691,20 @@ export default function AssessmentsPage() {
             </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{a.name}</h3>
             {a.policy_status && <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{a.policy_status}</p>}
-            {(a.detected_domains?.length || 0) > 0 && (
-              <div className="mb-3 flex flex-wrap gap-1.5">
-                {a.detected_domains!.slice(0, 4).map((domain) => (
+            {shownDomains.length > 0 && (
+              <div className="mb-3">
+                {hasPolicyGaps && (
+                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                    Affected domains
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-1.5">
+                {shownDomains.slice(0, 4).map((domain) => (
                   <span key={domain} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                     {formatPolicyDomain(domain, locale)}
                   </span>
                 ))}
+                </div>
               </div>
             )}
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{a.results?.length || 0} {c.controlsAssessed}</p>
@@ -731,7 +720,8 @@ export default function AssessmentsPage() {
             </div>
             <p className="text-xs text-gray-400 mt-3">{new Date(a.created_date).toLocaleDateString()}</p>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {displayAssessments.length === 0 && (

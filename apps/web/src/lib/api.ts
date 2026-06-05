@@ -60,7 +60,7 @@ export interface AnalyzeResponse {
   domains_detected: string[];
   password_policy: DomainResult;
   risk_assessment: DomainResult;
-  domains?: Record<string, { gap_count: number; score: number; status: string; gaps: GapDetail[] }>;
+  domains?: Record<string, { gap_count: number; score: number; status: string; assessed?: boolean; gaps: GapDetail[] }>;
   detected_gaps?: GapDetail[];
   gaps?: GapDetail[];
   gap_labels?: string[];
@@ -145,7 +145,7 @@ export const policyClassifierAPI = new PolicyClassifierAPI();
 
 /** Map overall_compliance to a display color name */
 export function getComplianceColor(compliance: string): string {
-  if (compliance === "compliant" || compliance.includes("Fully")) return "gray";
+  if (compliance === "compliant" || compliance.includes("Compliant") && !compliance.includes("Non") && !compliance.includes("Partial")) return "gray";
   if (compliance === "partially_compliant" || compliance.includes("Partial")) return "amber";
   if (compliance === "non_compliant" || compliance.includes("Non")) return "red";
   return "gray";
@@ -161,9 +161,10 @@ export function getComplianceIcon(compliance: string): string {
 
 /** Map API compliance value to human-readable label */
 export function getComplianceLabel(compliance: string): string {
-  if (compliance === "compliant") return "Fully Compliant";
+  if (compliance === "compliant") return "Compliant";
   if (compliance === "partially_compliant") return "Partially Compliant";
   if (compliance === "non_compliant") return "Non-Compliant";
+  if (compliance === "Fully Compliant") return "Compliant";
   return compliance;
 }
 

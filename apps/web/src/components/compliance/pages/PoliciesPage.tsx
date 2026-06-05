@@ -7,6 +7,7 @@ import type { AnalyzeResponse, GapDetail } from "../../../lib/api";
 import { extractTextFromFile } from "../../../lib/extract";
 import { getPolicyFileUrl, uploadPolicyFile } from "../../../lib/storage";
 import { useAuth } from "../../../contexts/AuthContext";
+import { deriveComplianceStatus, normalizePolicyAnalysis, normalizeScore } from "../../../lib/policyAnalysis";
 
 export default function PoliciesPage() {
   const { policies, loading, error, addPolicy, updatePolicy, deletePolicy } = useComplianceStore();
@@ -37,35 +38,65 @@ export default function PoliciesPage() {
 
   const filtered = policies.filter((p) => filterStatus === "all" || p.status === filterStatus);
 
-  const collectGaps = (result: AnalyzeResponse): GapDetail[] => {
-    const fromResponse = result.detected_gaps ?? result.gaps;
-    if (Array.isArray(fromResponse) && fromResponse.length > 0) {
-      return fromResponse.map((gap) => ({
-        ...gap,
-        gap_id: gap.gap_id ?? gap.label ?? "GAP_UNKNOWN",
-      }));
-    }
-
-    const domainGaps = Object.values(result.domains ?? {}).flatMap((domain) => domain.gaps ?? []);
-    if (domainGaps.length > 0) {
-      return domainGaps.map((gap) => ({
-        ...gap,
-        gap_id: gap.gap_id ?? gap.label ?? "GAP_UNKNOWN",
-      }));
-    }
-
-    return [
-      ...(result.password_policy?.details ?? []),
-      ...(result.risk_assessment?.details ?? []),
-    ];
+  const getResultScorePercent = (result: AnalyzeResponse): number => {
+    return normalizeScore(result.compliance_score ?? result.score ?? result.overall_score);
   };
 
-  const getResultScorePercent = (result: AnalyzeResponse): number => {
-    if (typeof result.compliance_score === "number") return result.compliance_score;
-    if (typeof result.score === "number") return result.score;
-    const gapCount = result.detected_gaps?.length ?? result.gaps?.length ?? result.gap_count ?? 0;
-    const score = Math.round(result.overall_score * 100);
-    return gapCount > 0 && score === 100 ? Math.max(0, 100 - gapCount * 5) : score;
+  const buildStoredAnalysis = (result: AnalyzeResponse, policyText: string, extractedText?: string) => {
+    const analysisRecord = result as unknown as Record<string, unknown>;
+    const normalized = normalizePolicyAnalysis({
+      id: "preview",
+      title: newTitle || "Policy",
+      status: "analyzed",
+      compliance_score: getResultScorePercent(result),
+      analysis_result: analysisRecord,
+      created_date: new Date().toISOString(),
+    });
+    const scorePercent = normalized.score;
+    const status = normalizePolicyAnalysis({
+      id: "preview-status",
+      title: newTitle || "Policy",
+      status: "analyzed",
+      compliance_score: scorePercent,
+      analysis_result: analysisRecord,
+      created_date: new Date().toISOString(),
+    }).complianceStatus || deriveComplianceStatus(scorePercent, normalized.gaps);
+    if (import.meta.env.DEV) {
+      console.info("[policy-analysis] store analysis", {
+        policyName: newTitle,
+        analysisKeys: Object.keys(analysisRecord),
+        backendGapCount: result.gap_count,
+        renderedGapsCount: normalized.gaps.length,
+        renderedDomainCount: normalized.domains.length,
+      });
+    }
+    return {
+      scorePercent,
+      category: status,
+      analysis: {
+        overall_compliance: result.overall_compliance,
+        overall_score: result.overall_score,
+        score: result.score,
+        compliance_score: scorePercent,
+        compliance_status: status,
+        gap_count: normalized.gaps.length,
+        num_chunks: result.num_chunks,
+        inference_time_ms: result.inference_time_ms,
+        domains_detected: result.domains_detected,
+        domains: result.domains,
+        password_policy: result.password_policy,
+        risk_assessment: result.risk_assessment,
+        detected_gaps: normalized.gaps,
+        gaps: normalized.gaps,
+        gap_labels: normalized.gaps.map((gap) => gap.gap_id),
+        recommendations: result.recommendations,
+        predictions: result.predictions,
+        all_gap_probabilities: result.all_gap_probabilities,
+        gaps_detected: normalized.gaps,
+        text_length: policyText.length,
+        extracted_text: extractedText ?? policyText.slice(0, 30000),
+      },
+    };
   };
 
   const resetUploader = () => {
@@ -124,9 +155,19 @@ export default function PoliciesPage() {
       // Step 1: Extract text from file using pdf.js / docx parser
       if (selectedFile) {
         setUploadStep("extracting");
-        policyText = await extractTextFromFile(selectedFile);
+        try {
+          policyText = await extractTextFromFile(selectedFile);
+        } catch (extractErr) {
+          if (selectedFile.name.toLowerCase().endsWith(".docx")) {
+            throw new Error("DOCX text could not be extracted. Please upload TXT/PDF or paste the text.");
+          }
+          throw extractErr;
+        }
         if (!policyText.trim()) {
-          throw new Error("Could not extract text from file");
+          if (selectedFile.name.toLowerCase().endsWith(".docx")) {
+            throw new Error("DOCX text could not be extracted. Please upload TXT/PDF or paste the text.");
+          }
+          throw new Error("Could not extract readable text from file. Please upload TXT/PDF or paste the text.");
         }
 
         // Step 1b: Upload original file to private Supabase Storage
@@ -159,36 +200,13 @@ export default function PoliciesPage() {
       try {
         const result: AnalyzeResponse = await policyClassifierAPI.analyzeDocument(policyText);
 
-        // Collect all gaps from both domains
-        const allGaps = collectGaps(result);
-        const scorePercent = getResultScorePercent(result);
+        const stored = buildStoredAnalysis(result, policyText);
 
         await updatePolicy(policyId, {
           status: "analyzed",
-          compliance_score: scorePercent,
-          category: getComplianceLabel(result.overall_compliance),
-          analysis_result: {
-            overall_compliance: result.overall_compliance,
-            overall_score: result.overall_score,
-            score: result.score,
-            compliance_score: scorePercent,
-            compliance_status: result.compliance_status,
-            gap_count: result.gap_count,
-            num_chunks: result.num_chunks,
-            inference_time_ms: result.inference_time_ms,
-            domains_detected: result.domains_detected,
-            domains: result.domains,
-            password_policy: result.password_policy,
-            risk_assessment: result.risk_assessment,
-            detected_gaps: result.detected_gaps,
-            gap_labels: result.gap_labels,
-            recommendations: result.recommendations,
-            predictions: result.predictions,
-            all_gap_probabilities: result.all_gap_probabilities,
-            gaps_detected: allGaps,
-            text_length: policyText.length,
-            extracted_text: policyText.slice(0, 30000),
-          },
+          compliance_score: stored.scorePercent,
+          category: stored.category,
+          analysis_result: stored.analysis,
         });
 
         setUploadStep("done");
@@ -199,8 +217,8 @@ export default function PoliciesPage() {
         setUploadError("Analysis failed. The policy was saved, but no analysis result was returned.");
         setUploadStep("error");
       }
-    } catch {
-      setUploadError("Could not upload or analyze this policy. Check the file or pasted text and try again.");
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Could not upload or analyze this policy. Check the file or pasted text and try again.");
       setUploadStep("error");
     }
 
@@ -222,37 +240,17 @@ export default function PoliciesPage() {
       const storedText = (policy?.analysis_result as Record<string, unknown> | undefined)?.extracted_text as string | undefined;
       const textToAnalyze = storedText || title;
 
+      if (!textToAnalyze.trim() || textToAnalyze === title) {
+        throw new Error("No extracted policy text is available for re-analysis.");
+      }
       const result: AnalyzeResponse = await policyClassifierAPI.analyzeDocument(textToAnalyze);
-
-      const allGaps = collectGaps(result);
-      const scorePercent = getResultScorePercent(result);
+      const stored = buildStoredAnalysis(result, textToAnalyze, storedText);
 
       await updatePolicy(policyId, {
         status: "analyzed",
-        compliance_score: scorePercent,
-        category: getComplianceLabel(result.overall_compliance),
-        analysis_result: {
-          overall_compliance: result.overall_compliance,
-          overall_score: result.overall_score,
-          score: result.score,
-          compliance_score: scorePercent,
-          compliance_status: result.compliance_status,
-          gap_count: result.gap_count,
-          num_chunks: result.num_chunks,
-          inference_time_ms: result.inference_time_ms,
-          domains_detected: result.domains_detected,
-          domains: result.domains,
-          password_policy: result.password_policy,
-          risk_assessment: result.risk_assessment,
-          detected_gaps: result.detected_gaps,
-          gap_labels: result.gap_labels,
-          recommendations: result.recommendations,
-          predictions: result.predictions,
-          all_gap_probabilities: result.all_gap_probabilities,
-          gaps_detected: allGaps,
-          text_length: textToAnalyze.length,
-          extracted_text: storedText,
-        },
+        compliance_score: stored.scorePercent,
+        category: stored.category,
+        analysis_result: stored.analysis,
       });
     } catch {
       await updatePolicy(policyId, { status: "uploaded" });
@@ -345,6 +343,7 @@ export default function PoliciesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((policy) => {
           const details = policy.analysis_result as Record<string, unknown> | undefined;
+          const normalized = normalizePolicyAnalysis(policy, locale);
           const isExpanded = expandedPolicy === policy.id;
 
           return (
@@ -393,7 +392,7 @@ export default function PoliciesPage() {
                     className="text-xs text-gray-600 hover:text-gray-700 dark:text-gray-400 cursor-pointer border-0 bg-transparent font-medium mb-2"
                   >
                     {isExpanded ? "▾" : "▸"} {c.viewDetails}
-                    {details.gap_count != null && ` (${details.gap_count as number} gaps)`}
+                    {` (${normalized.gapCount} gaps)`}
                   </button>
                   {isExpanded && (
                     <div className="mt-2 p-3 bg-gray-50 rounded-lg text-xs space-y-3 dark:bg-gray-800/50">
@@ -402,8 +401,8 @@ export default function PoliciesPage() {
                         <div className="flex justify-between">
                           <span className="text-gray-500 dark:text-gray-400">{c.complianceLabel}:</span>
                           {(() => {
-                            const color = getComplianceColor(String(details.overall_compliance ?? ""));
-                            const label = getComplianceLabel(String(details.overall_compliance ?? ""));
+                            const color = getComplianceColor(normalized.complianceStatus);
+                            const label = getComplianceLabel(normalized.complianceStatus);
                             const colorMap: Record<string, string> = {
                               green: "text-green-600 dark:text-green-400",
                               amber: "text-amber-600 dark:text-amber-400",
@@ -419,13 +418,13 @@ export default function PoliciesPage() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 dark:text-gray-400">Score:</span>
-                          <span className="font-semibold text-gray-900 dark:text-white">{Math.round((details.overall_score as number) * 100)}%</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{normalized.score}%</span>
                         </div>
-                        {Array.isArray(details.domains_detected) && (details.domains_detected as string[]).length > 0 && (
+                        {normalized.assessedDomains.length > 0 && (
                           <div className="flex justify-between">
                             <span className="text-gray-500 dark:text-gray-400">Domains:</span>
                             <span className="font-semibold text-gray-700 dark:text-gray-300">
-                              {(details.domains_detected as string[]).map(d => d.replace(/_/g, " ")).join(", ")}
+                              {normalized.assessedDomains.map(d => d.replace(/_/g, " ")).join(", ")}
                             </span>
                           </div>
                         )}
@@ -433,16 +432,16 @@ export default function PoliciesPage() {
 
                       {/* Detected Gaps by Domain */}
                       {(() => {
-                        const ppDetails = details.password_policy as Record<string, unknown> | undefined;
-                        const raDetails = details.risk_assessment as Record<string, unknown> | undefined;
-                        const domainsDetected = (details.domains_detected as string[]) || [];
-                        const ppGaps = (ppDetails?.details as GapDetail[]) || [];
-                        const raGaps = (raDetails?.details as GapDetail[]) || [];
-                        const showPasswordPolicy = domainsDetected.includes("password_policy") || ppGaps.length > 0;
-                        const showRiskAssessment = domainsDetected.includes("risk_assessment") || raGaps.length > 0;
-                        const totalGaps = ppGaps.length + raGaps.length;
+                        const domainsWithGaps = normalized.domains.filter((domain) => domain.gaps.length > 0);
+                        const affectedDomains = normalized.domains.filter((domain) => domain.gapCount > 0);
+                        const raGaps: GapDetail[] = [];
+                        const showRiskAssessment = false;
+                        const canShowNoGaps = normalized.score !== 0
+                          && normalized.complianceStatus !== "Non-Compliant"
+                          && normalized.gapCount === 0
+                          && affectedDomains.length === 0;
 
-                        if (totalGaps === 0) {
+                        if (canShowNoGaps) {
                           return (
                             <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                               <span className="text-gray-600 dark:text-gray-400 font-medium">✓ No compliance gaps detected</span>
@@ -450,15 +449,36 @@ export default function PoliciesPage() {
                           );
                         }
 
+                        if (domainsWithGaps.length === 0) {
+                          return (
+                            <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                              <div className="rounded bg-red-50 p-2 text-red-700 dark:bg-red-950/20 dark:text-red-300">
+                                Non-compliant policy detected across multiple domains. Detailed gap extraction was not available.
+                              </div>
+                              {affectedDomains.length > 0 && (
+                                <div className="space-y-1">
+                                  <span className="text-gray-500 dark:text-gray-400 font-medium">Affected Domains:</span>
+                                  {affectedDomains.map((domain) => (
+                                    <div key={domain.id} className="flex justify-between rounded bg-amber-50 px-2 py-1 text-amber-700 dark:bg-amber-950/20 dark:text-amber-300">
+                                      <span>{domain.label}</span>
+                                      <span className="font-semibold">Needs Attention</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+
                         return (
                           <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-2">
                             <span className="text-gray-500 dark:text-gray-400 font-medium">
-                              Detected Gaps ({totalGaps}):
+                              Detected Gaps ({normalized.gapCount}):
                             </span>
-                            {showPasswordPolicy && ppGaps.length > 0 && (
-                              <div className="space-y-1">
-                                <span className="text-gray-600 dark:text-gray-300 font-medium text-[11px] uppercase tracking-wider">Password Policy ({ppGaps.length})</span>
-                                {ppGaps.map((gap) => (
+                            {domainsWithGaps.map((domain) => (
+                              <div key={domain.id} className="space-y-1">
+                                <span className="text-gray-600 dark:text-gray-300 font-medium text-[11px] uppercase tracking-wider">{domain.label} ({domain.gaps.length})</span>
+                                {domain.gaps.map((gap) => (
                                   <div key={gap.gap_id} className="flex items-start gap-2 p-1.5 rounded bg-red-50 dark:bg-red-950/20">
                                     <span className="text-red-500 mt-0.5">⚠</span>
                                     <div className="flex-1">
@@ -470,7 +490,7 @@ export default function PoliciesPage() {
                                   </div>
                                 ))}
                               </div>
-                            )}
+                            ))}
                             {showRiskAssessment && raGaps.length > 0 && (
                               <div className="space-y-1">
                                 <span className="text-gray-600 dark:text-gray-300 font-medium text-[11px] uppercase tracking-wider">Risk Assessment ({raGaps.length})</span>
@@ -495,13 +515,34 @@ export default function PoliciesPage() {
                       {(() => {
                         const ppDetails = details.password_policy as Record<string, unknown> | undefined;
                         const raDetails = details.risk_assessment as Record<string, unknown> | undefined;
-                        const domainsDetected = (details.domains_detected as string[]) || [];
-                        const showPasswordPolicy = domainsDetected.includes("password_policy") || (((ppDetails?.gap_count as number | undefined) ?? 0) > 0);
-                        const showRiskAssessment = domainsDetected.includes("risk_assessment") || (((raDetails?.gap_count as number | undefined) ?? 0) > 0);
-                        if (!ppDetails && !raDetails) return null;
+                        const showPasswordPolicy = false;
+                        const showRiskAssessment = false;
                         return (
                           <div className="space-y-1 pt-2 border-t border-gray-200 dark:border-gray-700">
                             <span className="text-gray-500 dark:text-gray-400 font-medium">Domain Scores:</span>
+                            {normalized.domains.map((domain) => (
+                              <div key={domain.id} className="flex justify-between items-center gap-3">
+                                <span className="text-gray-600 dark:text-gray-300">{domain.label}</span>
+                                {domain.assessed ? (
+                                  <div className="flex items-center gap-2">
+                                    <span className={`text-[10px] font-semibold uppercase ${
+                                      domain.status === "needs_attention" ? "text-amber-600 dark:text-amber-400" : "text-gray-500 dark:text-gray-400"
+                                    }`}>
+                                      {domain.status === "needs_attention" ? "Needs Attention" : "Compliant"}
+                                    </span>
+                                    <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden dark:bg-gray-700">
+                                      <div
+                                        className={`h-1.5 rounded-full ${(domain.score ?? 0) >= 70 ? "bg-gray-500" : (domain.score ?? 0) >= 40 ? "bg-amber-500" : "bg-red-500"}`}
+                                        style={{ width: `${domain.score ?? 0}%` }}
+                                      />
+                                    </div>
+                                    <span className="font-mono w-12 text-right text-gray-900 dark:text-white">{domain.score ?? 0}%</span>
+                                  </div>
+                                ) : (
+                                  <span className="text-[10px] font-semibold uppercase text-gray-400 dark:text-gray-500">Not Assessed</span>
+                                )}
+                              </div>
+                            ))}
                             {ppDetails && showPasswordPolicy && (
                               <div className="flex justify-between items-center">
                                 <span className="text-gray-600 dark:text-gray-300">Password Policy</span>

@@ -135,6 +135,14 @@ export const DOMAIN_CONTROL_MAP: Record<string, string[]> = {
     "ECC-1-2-1",  // Risk Management Program
     "ECC-1-2-2",  // Risk Assessment
   ],
+  access_control: ["ECC-2-2-1", "ECC-2-2-2", "ECC-2-2-3"],
+  asset_management: ["ECC-2-1-1", "ECC-2-1-2"],
+  business_continuity: ["ECC-5-1-1", "ECC-5-1-2"],
+  data_protection: ["ECC-3-2-1", "ECC-3-2-2"],
+  incident_response: ["ECC-4-2-1", "ECC-4-2-2"],
+  log_monitoring: ["ECC-4-1-1", "ECC-4-1-2"],
+  third_party_security: ["ECC-1-1-2", "ECC-2-2-2"],
+  vuln_management: ["ECC-4-1-1", "ECC-4-1-2"],
 };
 
 /**
@@ -159,6 +167,38 @@ export const GAP_CONTROL_MAP: Record<string, string> = {
   GAP_RA_006: "ECC-1-2-1",  // Missing risk register → Risk Management Program
   GAP_RA_007: "ECC-1-2-1",  // Missing periodic review → Risk Management Program
   GAP_RA_008: "ECC-1-2-1",  // Missing project integration → Risk Management Program
+  GAP_AC_001: "ECC-2-2-1",
+  GAP_AC_002: "ECC-2-2-2",
+  GAP_AC_003: "ECC-2-2-3",
+  GAP_AC_004: "ECC-2-2-2",
+  GAP_AM_001: "ECC-2-1-1",
+  GAP_AM_002: "ECC-2-1-2",
+  GAP_AM_003: "ECC-2-1-1",
+  GAP_AM_004: "ECC-2-1-2",
+  GAP_BC_001: "ECC-5-1-1",
+  GAP_BC_002: "ECC-5-1-2",
+  GAP_BC_003: "ECC-5-1-1",
+  GAP_BC_004: "ECC-5-1-2",
+  GAP_DP_001: "ECC-3-2-1",
+  GAP_DP_002: "ECC-3-2-2",
+  GAP_DP_003: "ECC-3-2-1",
+  GAP_DP_004: "ECC-3-2-2",
+  GAP_IR_001: "ECC-4-2-1",
+  GAP_IR_002: "ECC-4-2-2",
+  GAP_IR_003: "ECC-4-2-1",
+  GAP_IR_004: "ECC-4-2-2",
+  GAP_LM_001: "ECC-4-1-1",
+  GAP_LM_002: "ECC-4-1-2",
+  GAP_LM_003: "ECC-4-1-1",
+  GAP_LM_004: "ECC-4-1-2",
+  GAP_TP_001: "ECC-1-1-2",
+  GAP_TP_002: "ECC-2-2-2",
+  GAP_TP_003: "ECC-1-1-2",
+  GAP_TP_004: "ECC-2-2-2",
+  GAP_VM_001: "ECC-4-1-1",
+  GAP_VM_002: "ECC-4-1-2",
+  GAP_VM_003: "ECC-4-1-1",
+  GAP_VM_004: "ECC-4-1-2",
 };
 
 /**
